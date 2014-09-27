@@ -39,14 +39,12 @@
     })
 
 (defn generate-field
+  [] [])
 
-  )
-
-(defn generate-board
-  ({
-     :selected (pos 0 0)
-     :fields
-               }))
+(defn generate-board []
+  {
+    :selected (pos 0 0)
+    :fields   []})
 
 (defn generate-rockets
   [b1 b2] [])

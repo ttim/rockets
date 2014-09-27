@@ -13,7 +13,7 @@
     ))
 
 ; world state
-(defonce world (atom sample/start-state))
+(defonce world (atom sample/game-state))
 
 (util/bind-state-log world (.getElementById js/document "state-log"))
 

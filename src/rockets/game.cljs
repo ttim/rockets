@@ -5,8 +5,13 @@
     [clojure.string :as string]
     [rockets.util :as util]))
 
+(def sprite-width "48px")
+
+(q/defcomponent
+  Sprite []
+  (html
+    [:div {:style {:width sprite-width, :height sprite-width, :background-color "#ffffff"}}]))
+
 (q/defcomponent
   GameComponent [data world-atom]
-  (html
-    [:h1 "Game Not Impplemented"]
-    ))
+  (Sprite))
