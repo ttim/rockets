@@ -62,9 +62,9 @@
             action (command 1)
             new-world (case action
                         :rotate (model/event-select @world board)
-                        :down (model/event-move-selection @world board 0)
+                        :up (model/event-move-selection @world board 0)
                         :right (model/event-move-selection @world board 1)
-                        :up (model/event-move-selection @world board 2)
+                        :down (model/event-move-selection @world board 2)
                         :left (model/event-move-selection @world board 3)
                         @world)]
         (reset! world new-world))
