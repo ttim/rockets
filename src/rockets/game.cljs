@@ -38,8 +38,11 @@
 (def rockets-space-height (* sprites/sprite-width 6))
 
 ; coordinates as school axis
-(defn calc-rocket-coordinates
-  [rocket] {:x 96, :y 0})
+(defn calc-rocket-coordinates [rocket]
+  (let [source-player (:source-player rocket)
+        source-slot (:source-slot rocket)
+        offset (if (= source-player :player1) 0 (+ board-width space-between-boards))]
+    {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y 0}))
 
 (q/defcomponent
   RocketComponent [rocket]
