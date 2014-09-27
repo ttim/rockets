@@ -1,10 +1,12 @@
-(ns rockets.util)
+(ns rockets.util
+  (:require
+    [clojure.browser.dom :as dom]))
 
 (defn update-text
   [world-atom key value] (reset! world-atom (assoc @world-atom key value)))
 
 (defn update-state-log
-  [state element] (clojure.browser.dom/set-text element (sablono.util/to-str state)))
+  [state element] (dom/set-text element (sablono.util/to-str state)))
 (defn bind-state-log
   [state-atom element]
   (add-watch

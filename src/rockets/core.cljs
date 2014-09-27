@@ -5,24 +5,25 @@
     [quiescent :as q :include-macros true]
     [clojure.string :as string]
     [rockets.model_sample :as sample]
+    [rockets.util :as util]
+
     [rockets.start :as start]
-    [rockets.util :as util]))
+    [rockets.game :as game]
+    [rockets.finish :as finish]
+    ))
 
 ; world state
 (defonce world (atom sample/start-state))
 
 (util/bind-state-log world (.getElementById js/document "state-log"))
 
-(q/defcomponent
-  DumbComponent [data world-atom]
-  (html
-    [:h1 "Not Impplemented"]
-    ))
-
 ; define render function
 (defn render [data]
   (q/render
-    (if (= (:type data) :start) (start/StartComponent data world) (DumbComponent data world))
+    (case (:type data)
+      :start (start/StartComponent data world)
+      :game (game/GameComponent data world)
+      :finish (finish/FinishComponent data world))
     (.getElementById js/document "main-area")))
 
 ; render for first time
