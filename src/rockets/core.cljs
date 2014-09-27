@@ -4,7 +4,7 @@
     [sablono.core :as html :refer-macros [html]]
     [quiescent :as q :include-macros true]
     [clojure.string :as string]
-    [rockets.model_sample :as sample]
+    [rockets.model :as model]
     [rockets.util :as util]
 
     [rockets.start :as start]
@@ -13,7 +13,7 @@
     ))
 
 ; world state
-(defonce world (atom sample/game-state))
+(defonce world (atom model/start-state))
 
 (util/bind-state-log world (.getElementById js/document "state-log"))
 
