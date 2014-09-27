@@ -2,8 +2,8 @@
 
 (def start-state
   {:type    :start
-   :player1 "name1"
-   :player2 "name2"})
+   :player1 "First Rocketeer"
+   :player2 "Second Rocketeer"})
 
 (defn generate-board
   [] [])

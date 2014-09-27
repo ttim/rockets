@@ -3,10 +3,11 @@
     [figwheel.client :as fw]
     [sablono.core :as html :refer-macros [html]]
     [quiescent :as q :include-macros true]
-    [clojure.string :as string]))
+    [clojure.string :as string]
+    [rockets.model_sample :as sample]))
 
 ; world state
-(defonce world (atom {:player1 "First Rocketeer" :player2 "Second Rocketeer"}))
+(defonce world (atom sample/start-state))
 
 (defn update-text
   [key value] (reset! world (assoc @world key value)))
