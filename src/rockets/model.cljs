@@ -8,10 +8,10 @@
 (def size-n)
 
 (defn pos [x y]
-      {
-        :x x
-        :y y
-        })
+  {
+    :x x
+    :y y
+    })
 
 ; 0 - top, 1 - right, 2 - down, 3 - left
 (def cell-types
@@ -25,41 +25,41 @@
     ])
 
 (defn cell
-      [orientation cell-type locked]
-      {
-        :orientation orientation
-        :cell-type   cell-type
-        :locked      locked
-        })
+  [orientation cell-type locked]
+  {
+    :orientation orientation
+    :cell-type   cell-type
+    :locked      locked
+    })
 
 (defn generate-rocket [state progress]
-      {
-        :state    state
-        :progress progress
-        })
+  {
+    :state    state
+    :progress progress
+    })
 
 (defn generate-field
 
-      )
+  )
 
 (defn generate-board
-      ({
-         :selected (pos 0 0)
-         :fields
-                   }))
+  ({
+     :selected (pos 0 0)
+     :fields
+               }))
 
 (defn generate-rockets
-      [b1 b2] [])
+  [b1 b2] [])
 
 (def game-state
   (let [board1 (generate-board)
         board2 (generate-board)]
-       {:type    :game
-        :player1 "name1"
-        :player2 "name2"
-        :board1  board1
-        :board2  board2
-        :rockets (generate-rockets board1 board2)}))
+    {:type    :game
+     :player1 "name1"
+     :player2 "name2"
+     :board1  board1
+     :board2  board2
+     :rockets (generate-rockets board1 board2)}))
 
 (def finish-state
   {:type    :finish
