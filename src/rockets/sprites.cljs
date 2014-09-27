@@ -7,7 +7,10 @@
 
 (def sprite-width "48px")
 
-(def base-style (merge {:width sprite-width, :height sprite-width, :background-image "url(../img/dummy.png)"} util/no-borders-style))
+(def base-style (merge {:width            sprite-width
+                        :height           sprite-width
+                        :background-image "url(../img/dummy.png)"}
+                       util/no-borders-style))
 
 (defn select-type [style type]
   (if (= type -1)
@@ -19,7 +22,10 @@
   )
 
 (defn sprite [type angle]
-  [:div {:style (rotate (select-type base-style type) angle)}]
+  [:div {:style {:border-style "solid solid none none"
+                 :border-width "1px"
+                 :border-color "transparent"}}
+   [:div {:style (rotate (select-type base-style type) angle)}]]
   )
 
 (q/defcomponent
