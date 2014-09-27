@@ -5,7 +5,7 @@
     [clojure.string :as string]
     [rockets.util :as util]))
 
-(def sprite-width 48)
+(def sprite-width 36)
 (def rocket-style (merge {:width sprite-width :height (* 3 sprite-width) :background-image "url(../img/rocket.png)"} util/no-borders-style))
 (def rocket-fire-style (merge {:width sprite-width :height (* 3 sprite-width) :background-image "url(../img/rocket-fire.png)"} util/no-borders-style))
 
