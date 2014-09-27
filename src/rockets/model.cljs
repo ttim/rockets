@@ -8,6 +8,14 @@
 (def size-n 8)
 (def size-m 8)
 (def rockets-cnt 4)
+(def max-rocket-fuel 3)
+(def max-reload-time 100)
+(def user1-id 0)
+(def user2-id 1)
+
+(def rocket-state-staying :staying)
+(def rocket-state-flying :flying)
+(def rocket-state-dying :dying)
 
 (defn pos [x y]
   {:x x
@@ -28,27 +36,32 @@
    :locked      locked
    })
 
-(defn generate-rocket [state progress]
-  {:state    state
-   :progress progress})
+(defn generate-rocket [state progress source-player source-slot]
+  {:state         state
+   :progress      progress
+   :fuel          max-rocket-fuel
+   :source-player source-player
+   :source-slot   source-slot})
 
-(defn generate-field []
-  [])
+(defn generate-rockets
+  ([] (into (vector) (concat (generate-rockets user1-id) (generate-rockets user2-id))))
+  ([source-player]
+   (let [slots (shuffle (range 0 size-m))]
+     (into (vector) (for [i (range 0 rockets-cnt)]
+                      (generate-rocket rocket-state-staying 0 source-player (slots i)))))))
 
 (defn generate-board-cell []
   (cell (rand-int (clojure.core/count cell-types)) (rand-int 4) false))
 
-(defn generate-cells []
+(defn generate-board-cells []
   (into (vector) (for [i (range 0 size-n)]
                    (into (vector) (for [j (range 0 size-m)]
                                     (generate-board-cell))))))
 
 (defn generate-board []
-  {:selected (pos 0 0)
-   :cells    (generate-cells)})
-
-(defn generate-rockets
-  [b1 b2] [])
+  {:selected    (pos 0 0)
+   :cells       (generate-board-cells)
+   :reload-time max-reload-time})
 
 (def game-state
   (let [board1 (generate-board)
@@ -58,7 +71,7 @@
      :player2 "name2"
      :board1  board1
      :board2  board2
-     :rockets (generate-rockets board1 board2)}))
+     :rockets (generate-rockets)}))
 
 (def finish-state
   {:type    :finish
