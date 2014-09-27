@@ -35,7 +35,7 @@
 (def board-width (* sprites/sprite-width (inc model/size-m)))
 (def boards-width (+ board-width board-width space-between-boards))
 (def board-height (* sprites/sprite-width (inc model/size-n)))
-(def rockets-space-height (* sprites/sprite-width 3))
+(def rockets-space-height (* sprites/sprite-width 6))
 
 (q/defcomponent
   RocketComponent [rocket]
