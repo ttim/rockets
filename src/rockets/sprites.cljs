@@ -19,7 +19,6 @@
   (if (= type -1)
     style
     (let [img (str "url(../img/generated/cell_" type (if fire? "_fire" "") ".png)")]
-      (js/console.log img)
       (assoc style :background-image img))))
 
 (defn rotate [style angle]
@@ -31,7 +30,7 @@
   )
 
 (defn selected-state [sprite selected?]
-  (if selected? [:div {:style {:background-color "#997777"}} sprite] sprite))
+  (if selected? [:div {:style {:background-image "url(../img/generated/selected.png)"}} sprite] sprite))
 
 (q/defcomponent
   ShuffleComponent [refresh-time]
