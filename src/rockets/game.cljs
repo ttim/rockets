@@ -37,9 +37,17 @@
 (def board-height (* sprites/sprite-width (inc model/size-n)))
 (def rockets-space-height (* sprites/sprite-width 6))
 
+; coordinates as school axis
+(defn calc-rocket-coordinates
+  [rocket] {:x 96, :y 0})
+
 (q/defcomponent
   RocketComponent [rocket]
-  (sprites/RocketComponent (not (= (:state rocket) :staying))))
+  (let [fire? (not (= (:state rocket) :staying))
+        coordinates (calc-rocket-coordinates rocket)]
+    (html
+      [:div {:style {:position "absolute", :bottom (:y coordinates), :left (:x coordinates)}}
+       (sprites/RocketComponent fire?)])))
 
 (q/defcomponent
   RocketsComponent [rockets]
@@ -61,7 +69,7 @@
   GameComponent [data world-atom]
   (html
     [:div {:style {:width boards-width, :height (+ board-height rockets-space-height), :background-color "#000"}}
-     [:div {:style {:position "absolute", :top rockets-space-height}}
+     [:div {:style {:position "absolute", :top (+ rockets-space-height 7)}}
       [:table {:style util/no-borders-style}
        [:tr {:style util/no-borders-style}
         [:td {:style util/no-borders-style} (BoardComponent (:board1 data))]
