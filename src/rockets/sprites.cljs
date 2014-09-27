@@ -9,6 +9,8 @@
 
 (def base-style (merge {:width sprite-width, :height sprite-width, :background-image "url(../img/dummy.png)"} util/no-borders-style))
 
+(def rocket-style (merge {:width sprite-width :height (* 3 sprite-width) :background-image "url(../img/rocket.png)"} util/no-borders-style))
+
 (defn select-type [style type]
   (if (= type -1)
     base-style
@@ -25,6 +27,10 @@
 (q/defcomponent
   SpriteComponent []
   (html (sprite -1 0)))
+
+(q/defcomponent
+  RocketComponent []
+  (html [:div {:style rocket-style}]))
 
 (q/defcomponent
   CoolSpriteComponent [type angle]
