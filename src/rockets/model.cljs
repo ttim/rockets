@@ -103,12 +103,12 @@
   (pos (+ (point :x) (dx direction)) (+ (point :y) (dy direction))))
 
 (defn valid-point? [point]
-  (or (and (<= 0 (point :x)) (<= (point :x) size-n) (<= 0 (point :y)) (<= (point :y) size-m))
+  (or (and (<= 0 (point :x)) (< (point :x) size-n) (<= 0 (point :y)) (< (point :y) size-m))
       (and (== 0 (point :x)) (== (point :y) -1))))
 
 (defn do-move-selection [direction]
   (fn [board] (let [next-point (get-next-point (board :selected) direction)]
-                (if (valid-point? next-point) (util/update-value board [:selected] next-point) board))))
+                (if (valid-point? next-point) (util/set-value board [:selected] next-point) board))))
 
 (defn next-orientation [orientation]
   (mod (inc orientation) 4))
