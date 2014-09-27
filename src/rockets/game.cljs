@@ -10,10 +10,11 @@
 (q/defcomponent
   ;CellComponent [cell selected?]
   CellComponent [args]
-  (let [cell-type ((args :cell) :cell-type)
-        orientation ((args :cell) :orientation)
-        selected? (args :selected?)]
-    (sprites/CoolSpriteComponent {:type cell-type, :angle orientation, :selected? selected?, :fire? false})))
+  (let [cell (args :cell)]
+    (sprites/CoolSpriteComponent {:type      (cell :cell-type),
+                                  :angle     (cell :orientation),
+                                  :selected? (args :selected?),
+                                  :fire?     (cell :locked)})))
 
 (q/defcomponent
   ;FieldComponent [cells selected]
