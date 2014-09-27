@@ -1,11 +1,8 @@
 (ns rockets.start
   (:require
-    [figwheel.client :as fw]
     [sablono.core :as html :refer-macros [html]]
     [quiescent :as q :include-macros true]
     [clojure.string :as string]
-    [rockets.model_sample :as sample]
-    [clojure.browser.dom :as cljsdom]
     [rockets.util :as util]))
 
 (q/defcomponent

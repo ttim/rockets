@@ -5,24 +5,13 @@
     [quiescent :as q :include-macros true]
     [clojure.string :as string]
     [rockets.model_sample :as sample]
-    [clojure.browser.dom :as cljsdom]
     [rockets.start :as start]
     [rockets.util :as util]))
 
 ; world state
 (defonce world (atom sample/start-state))
 
-; log state
-(def show-state-log true)
-
-(defn update-state-log
-  [data] (cljsdom/set-text (.getElementById js/document "state-log") (sablono.util/to-str data)))
-(when show-state-log
-  (add-watch
-    world ::state-log-render
-    (fn [_ _ _ data] (update-state-log data)))
-  (defonce _first_time_log_render (update-state-log @world)))
-
+(util/bind-state-log world (.getElementById js/document "state-log"))
 
 (q/defcomponent
   DumbComponent [data world-atom]
