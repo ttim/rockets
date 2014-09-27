@@ -20,7 +20,7 @@
   ;FieldComponent [cells selected]
   FieldComponent [args]
   (html [:table {:style util/no-borders-style}
-         (for [x (range 0 model/size-n)]
+         (for [x (reverse (range 0 model/size-n))]
            [:tr {:style util/no-borders-style}
             (for [y (range 0 model/size-m)
                   :let [cell (nth (nth (args :cells) x) y)]]
