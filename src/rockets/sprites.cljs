@@ -7,10 +7,25 @@
 
 (def sprite-width "48px")
 
-(def sprite
-  [:div {:style {:width sprite-width, :height sprite-width, :background-image "url(../img/dummy.png)"}}]
+(def base-style {:width sprite-width, :height sprite-width, :background-image "url(../img/dummy.png)"})
+
+(defn select-type [style type]
+  (if (= type -1)
+    base-style
+    (assoc style :background-image (str "url(../img/cell" type ".png)"))))
+
+(defn rotate [style angle]
+  (assoc style :transform (str "rotate(" (* angle 90) "deg)"))
+  )
+
+(defn sprite [type angle]
+  [:div {:style (rotate (select-type base-style type) angle)}]
   )
 
 (q/defcomponent
   SpriteComponent []
-  (html sprite))
+  (html (sprite -1 0)))
+
+(q/defcomponent
+  CoolSpriteComponent [type angle]
+  (html (sprite type angle)))
