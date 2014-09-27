@@ -5,7 +5,7 @@
     [clojure.string :as string]
     [rockets.util :as util]))
 
-(def sprite-width "48px")
+(def sprite-width 48)
 
 (def base-style (merge {:width            sprite-width
                         :height           sprite-width

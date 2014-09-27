@@ -13,8 +13,7 @@
 
 (q/defcomponent
   FieldComponent [cells selected]
-  (html [:table
-         {:style util/no-borders-style}
+  (html [:table {:style util/no-borders-style}
          (for [x (range 0 model/size-n)]
            [:tr {:style util/no-borders-style}
             (for [y (range 0 model/size-m)
@@ -22,8 +21,15 @@
               [:td {:style util/no-borders-style} (CellComponent cell false)])])]))
 
 (q/defcomponent
+  ShuffleComponent [refresh-time]
+  (sprites/SpriteComponent))
+
+(q/defcomponent
   BoardComponent [board]
-  (FieldComponent (:cells board) (:selected board)))
+  (html [:table {:style util/no-borders-style}
+         [:tr {:style util/no-borders-style}
+          [:td {:style (merge {:vertical-align "bottom"} util/no-borders-style)} (ShuffleComponent (:reload-time board))]
+          [:td {:style util/no-borders-style} (FieldComponent (:cells board) (:selected board))]]]))
 
 (q/defcomponent
   RocketsComponent [rockets]
@@ -31,4 +37,8 @@
 
 (q/defcomponent
   GameComponent [data world-atom]
-  (BoardComponent (:board1 data)))
+  (html [:table {:style util/no-borders-style}
+         [:tr {:style util/no-borders-style}
+          [:td {:style util/no-borders-style} (BoardComponent (:board1 data))]
+          [:td {:style (merge {:width (* sprites/sprite-width 4)} util/no-borders-style)}]
+          [:td {:style util/no-borders-style} (BoardComponent (:board2 data))]]]))
