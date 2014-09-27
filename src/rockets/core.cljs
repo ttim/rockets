@@ -52,11 +52,20 @@
       (recur (inc tick)))))
 
 ; keyboard controller
-(def keys (chan))
-(keys/init-events! keys)
+(def commands (chan))
+(keys/init-events! commands)
 (def keys-handler
   (go
     (loop []
-      ;(reset! world (model/event-tick @world tick))
-      (js/console.log (sablono.util/to-str (<! keys)))
+      (let [command (<! commands)
+            board ({:player1 :board1, :player2 :board2} (command 0))
+            action (command 1)
+            new-world (case action
+                        :rotate (model/event-select @world board)
+                        :down (model/event-move-selection @world board 0)
+                        :right (model/event-move-selection @world board 1)
+                        :up (model/event-move-selection @world board 2)
+                        :left (model/event-move-selection @world board 3)
+                        @world)]
+        (reset! world new-world))
       (recur))))

@@ -135,4 +135,4 @@
   (util/update-value game-state [board] do-rotate-selected))
 
 (defn event-tick [game-state tick]
-  (if (= (mod tick 10) 0) (event-select game-state :board1) game-state))
+  game-state)
