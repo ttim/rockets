@@ -50,20 +50,23 @@
 (defn calc-rocket-coordinates [rocket]
   (let [source-player (:source-player rocket)
         source-slot (:source-slot rocket)
-        offset (if (= source-player :player1) 0 (+ board-width space-between-boards))]
+        offset (if (= source-player :player1) 0 (+ board-width space-between-boards))
+        progress (:progress rocket)]                        ;0-100
     (case (rocket :state)
       :staying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y 0}
-      :dying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y 0}
+      :dying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y (* progress 1)}
       :flying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y 0})))
 
 (q/defcomponent
   RocketComponent [rocket]
   (let [fire? (not (= (:state rocket) :staying))
         coordinates (calc-rocket-coordinates rocket)
-        fuel (:fuel rocket)]
+        fuel (:fuel rocket)
+        state (:state rocket)
+        height (if (= state :dying) 30 sprites/rocket-height)]
     (html
       [:div {:style {:position "absolute", :bottom (:y coordinates), :left (:x coordinates)}}
-       (sprites/RocketComponent {:fire? fire? :fuel fuel})])))
+       (sprites/RocketComponent {:fire? fire? :fuel fuel :height height})])))
 
 (q/defcomponent
   RocketsComponent [rockets]

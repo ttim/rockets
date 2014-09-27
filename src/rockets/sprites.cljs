@@ -6,8 +6,12 @@
     [rockets.util :as util]))
 
 (def sprite-width 36)
-(def rocket-style (merge {:width sprite-width :height (* 2 sprite-width) :background-image "url(../img/generated/rocket.png)"} util/no-borders-style))
-(def rocket-fire-style (merge {:width sprite-width :height (* 2 sprite-width) :background-image "url(../img/generated/rocket_fire.png)"} util/no-borders-style))
+(def rocket-height (* 2 sprite-width))
+
+(defn rocket-style-fn
+  [img-src] (merge {:width sprite-width :height rocket-height :background-image img-src} util/no-borders-style))
+(def rocket-style (rocket-style-fn "url(../img/generated/rocket.png)"))
+(def rocket-fire-style (rocket-style-fn "url(../img/generated/rocket_fire.png)"))
 
 (def base-style (merge {:width sprite-width :height sprite-width} util/no-borders-style))
 
@@ -36,7 +40,7 @@
   {:opacity (/ opacity 100) :filter (str "alpha(opacity=" opacity "100)")})
 
 (q/defcomponent
-  ShuffleComponent [args] ;(selected time-to-reload)
+  ShuffleComponent [args]                                   ;(selected time-to-reload)
   (html
     (let [selected? (:selected? args)
           time-to-reload (- 100 (:time-to-reload args))]
@@ -44,10 +48,12 @@
        (selected-state [:div {:style (merge shuffle-style (opacity time-to-reload))}] selected?)])))
 
 (q/defcomponent
-  RocketComponent [args] ;[fire? fuel]
-  (html [:div {:style {:background-image (str "url(../img/generated/fuel_" (:fuel args) ".png)")}}
-         [:div {:style (if (:fire? args) rocket-fire-style rocket-style)}]
-         ]))
+  RocketComponent [args]                                    ;[fire? fuel height]
+  (let [height (min (:height args) rocket-height)
+        pos (str "bottom " height "px right 0px")]
+    (html [:div {:style {:height height, :background-position pos, :background-image (str "url(../img/generated/fuel_" (:fuel args) ".png)")}}
+           [:div {:style (assoc (if (:fire? args) rocket-fire-style rocket-style) :height height :background-position pos)}]
+           ])))
 
 (q/defcomponent
   EmptyComponent []
@@ -60,4 +66,4 @@
 (q/defcomponent
   CoolSpriteComponent [args]
   (html [:div {:style {:background-image "url(../img/generated/bg.png)"}}
-          (selected-state (sprite (args :type) (args :angle) (args :fire?)) (args :selected?))]))  ;CoolSpriteComponent [type, angle, fire?, selected?]
+         (selected-state (sprite (args :type) (args :angle) (args :fire?)) (args :selected?))])) ;CoolSpriteComponent [type, angle, fire?, selected?]
