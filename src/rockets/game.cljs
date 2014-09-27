@@ -33,12 +33,19 @@
 
 (def space-between-boards (* sprites/sprite-width 4))
 (def board-width (* sprites/sprite-width (inc model/size-m)))
+(def boards-width (+ board-width board-width space-between-boards))
 (def board-height (* sprites/sprite-width (inc model/size-n)))
 (def rockets-space-height (* sprites/sprite-width 3))
 
 (q/defcomponent
+  RocketComponent [rocket]
+  (sprites/RocketComponent (not (= (:state rocket) :staying))))
+
+(q/defcomponent
   RocketsComponent [rockets]
-  (sprites/SpriteComponent))
+  (html
+    [:div {:style {:position "absolute", :width boards-width, :height rockets-space-height}}
+     (map #(RocketComponent %) rockets)]))
 
 (q/defcomponent
   FitilComponent []
@@ -53,12 +60,13 @@
 (q/defcomponent
   GameComponent [data world-atom]
   (html
-    [:div {:style {:width (+ board-width board-width space-between-boards), :height (+ board-height rockets-space-height), :background-color "#000"}}
-     [:div {:style {:position "absolute", :top rockets-space-height}} [:table {:style util/no-borders-style}
-            [:tr {:style util/no-borders-style}
-             [:td {:style util/no-borders-style} (BoardComponent (:board1 data))]
-             [:td {:style (merge {:width space-between-boards} util/no-borders-style)}]
-             [:td {:style util/no-borders-style} (BoardComponent (:board2 data))]]
-            [:tr {:style util/no-borders-style} (FitilComponent)]]]
+    [:div {:style {:width boards-width, :height (+ board-height rockets-space-height), :background-color "#000"}}
+     [:div {:style {:position "absolute", :top rockets-space-height}}
+      [:table {:style util/no-borders-style}
+       [:tr {:style util/no-borders-style}
+        [:td {:style util/no-borders-style} (BoardComponent (:board1 data))]
+        [:td {:style (merge {:width space-between-boards} util/no-borders-style)}]
+        [:td {:style util/no-borders-style} (BoardComponent (:board2 data))]]
+       [:tr {:style util/no-borders-style} (FitilComponent)]]]
      [:div {:style {:position "absolute"}} (RocketsComponent (:rockets data))]]))
 
