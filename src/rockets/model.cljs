@@ -110,9 +110,9 @@
   (util/update-value board [:cells ((board :selected) :x) ((board :selected) :y)] do-rotate-cell))
 
 (defn event-select [game-state board]
+  ;(js/console.log (sablono.util/to-str ((:cells (game-state board)) 0)))
   ;todo add action when selected in reset field
   (util/update-value game-state [board] do-rotate-selected))
 
 (defn event-tick [game-state tick]
-  (when (= (mod tick 100) 0) (js/console.log tick))
-  game-state)
+  (if (= (mod tick 10) 0) (event-select game-state :board1) game-state))

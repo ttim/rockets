@@ -8,17 +8,22 @@
     [rockets.model :as model]))
 
 (q/defcomponent
-  CellComponent [cell selected?]
-  (sprites/CoolSpriteComponent (:cell-type cell) (:orientation cell) selected? false))
+  ;CellComponent [cell selected?]
+  CellComponent [args]
+  (let [cell-type ((args :cell) :cell-type)
+        orientation ((args :cell) :orientation)
+        selected? (args :selected?)]
+    (sprites/CoolSpriteComponent {:type cell-type, :angle orientation, :selected? selected?, :fire? false})))
 
 (q/defcomponent
-  FieldComponent [cells selected]
+  ;FieldComponent [cells selected]
+  FieldComponent [args]
   (html [:table {:style util/no-borders-style}
          (for [x (range 0 model/size-n)]
            [:tr {:style util/no-borders-style}
             (for [y (range 0 model/size-m)
-                  :let [cell (nth (nth cells x) y)]]
-              [:td {:style util/no-borders-style} (CellComponent cell false)])])]))
+                  :let [cell (nth (nth (args :cells) x) y)]]
+              [:td {:style util/no-borders-style} (CellComponent {:cell cell, :selected? false})])])]))
 
 (q/defcomponent
   ShuffleComponent [refresh-time]
@@ -29,7 +34,7 @@
   (html [:table {:style util/no-borders-style}
          [:tr {:style util/no-borders-style}
           [:td {:style (merge {:vertical-align "bottom"} util/no-borders-style)} (ShuffleComponent (:reload-time board))]
-          [:td {:style util/no-borders-style} (FieldComponent (:cells board) (:selected board))]]]))
+          [:td {:style util/no-borders-style} (FieldComponent board)]]]))
 
 (def space-between-boards (* sprites/sprite-width 4))
 (def board-width (* sprites/sprite-width (inc model/size-m)))

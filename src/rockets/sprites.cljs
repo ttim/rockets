@@ -52,5 +52,6 @@
   (html [:div {:style fire-style}]))
 
 (q/defcomponent
-  CoolSpriteComponent [type angle selected? fire?]
-  (html (selected-state (fire-state(sprite type angle) fire?) selected?)))
+  ;CoolSpriteComponent [type, angle, fire?, selected?]
+  CoolSpriteComponent [args]
+  (html (selected-state (fire-state(sprite (args :type) (args :angle)) (args :fire?)) (args :selected?))))
