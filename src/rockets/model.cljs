@@ -1,4 +1,6 @@
-(ns rockets.model)
+(ns rockets.model
+  (:require
+    [rockets.util :as util]))
 
 (def start-state
   {:type    :start
@@ -77,11 +79,17 @@
    :win     :player1})
 
 
-(defn event-move-selection [game-state player-id direction]
+(defn event-move-selection [game-state board direction]
   game-state)
 
-(defn event-rotate-selected [game-state player-id]
-  game-state)
+(defn next-orientation [orientation]
+  (rem (inc orientation) 4))
+
+(defn do-rotate-selected [board]
+  (util/update-value board [:cells ((board :selected) :x) ((board :selected) :y) :orientation] next-orientation))
+
+(defn event-rotate-selected [game-state board]
+  (util/update-value game-state [board] do-rotate-selected))
 
 (defn event-tick [game-state]
   game-state)
