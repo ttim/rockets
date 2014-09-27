@@ -13,6 +13,7 @@
 
 (def cell-style (merge base-style {:background-image "url(../img/dummy.png)"} util/no-borders-style))
 (def empty-style (merge base-style {:background-image "url(../img/empty.png)"} util/no-borders-style))
+(def shuffle-style (merge base-style {:background-image "url(../img/shuffle.png)"} util/no-borders-style))
 (def fire-style (merge base-style {:background-image "url(../img/fire.png)"} util/no-borders-style))
 
 (defn select-type [style type]
@@ -28,9 +29,15 @@
   [:div {:style (rotate (select-type cell-style type) angle)}]
   )
 
+(defn fire-state [sprite fire?]
+  (if fire? [:div {:style {:background-color "#ffaa22"}} sprite] sprite))
+
+(defn selected-state [sprite selected?]
+  (if selected? [:div {:style {:background-color "#997777"}} sprite] sprite))
+
 (q/defcomponent
-  SpriteComponent []
-  (html (sprite -1 0)))
+  ShuffleComponent [refresh-time]
+  (html [:div {:style shuffle-style}]))
 
 (q/defcomponent
   RocketComponent [fire?]
@@ -45,5 +52,5 @@
   (html [:div {:style fire-style}]))
 
 (q/defcomponent
-  CoolSpriteComponent [type angle]
-  (html (sprite type angle)))
+  CoolSpriteComponent [type angle selected? fire?]
+  (html (selected-state (fire-state(sprite type angle) fire?) selected?)))

@@ -9,7 +9,7 @@
 
 (q/defcomponent
   CellComponent [cell selected?]
-  (sprites/CoolSpriteComponent (:cell-type cell) (:orientation cell)))
+  (sprites/CoolSpriteComponent (:cell-type cell) (:orientation cell) selected? false))
 
 (q/defcomponent
   FieldComponent [cells selected]
@@ -22,7 +22,7 @@
 
 (q/defcomponent
   ShuffleComponent [refresh-time]
-  (sprites/SpriteComponent))
+  (sprites/ShuffleComponent refresh-time))
 
 (q/defcomponent
   BoardComponent [board]
@@ -71,7 +71,7 @@
 (q/defcomponent
   GameComponent [data world-atom]
   (html
-    [:div {:style {:width boards-width, :height (+ board-height rockets-space-height), :background-color "#000"}}
+    [:div {:style {:width boards-width, :height (+ board-height rockets-space-height), :background-color "#333355"}}
      [:div {:style {:position "absolute", :top (+ rockets-space-height 7)}}
       [:table {:style util/no-borders-style}
        [:tr {:style util/no-borders-style}
