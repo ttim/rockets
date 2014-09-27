@@ -110,9 +110,6 @@
   (fn [board] (let [next-point (get-next-point (board :selected) direction)]
                 (if (valid-point? next-point) (util/update-value board [:selected] next-point) board))))
 
-(defn event-move-selection [game-state board direction]
-  (util/update-value game-state [board] (do-move-selection direction)))
-
 (defn next-orientation [orientation]
   (mod (inc orientation) 4))
 
@@ -121,6 +118,16 @@
 
 (defn do-rotate-selected [board]
   (util/update-value board [:cells ((board :selected) :x) ((board :selected) :y)] do-rotate-cell))
+
+
+;====================================;
+;                                    ;
+;         Public API: events         ;
+;                                    ;
+;====================================;
+
+(defn event-move-selection [game-state board direction]
+  (util/update-value game-state [board] (do-move-selection direction)))
 
 (defn event-select [game-state board]
   ;(js/console.log (sablono.util/to-str ((:cells (game-state board)) 0)))
