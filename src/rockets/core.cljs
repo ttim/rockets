@@ -53,7 +53,7 @@
 
 ; keyboard controller
 (def commands (chan))
-(keys/init-events! commands)
+(keys/init-events! commands (fn [] (= (@world :type) :game)))
 (def keys-handler
   (go
     (loop []

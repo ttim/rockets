@@ -36,28 +36,32 @@
 (defn event-chan
   "Creates a channel with the events of type event-type and optionally applies
   the function parse-event to each event."
-  ([event-type] (event-chan event-type identity))
-  ([event-type parse-event]
+  ([event-type parse-event prevention-predicate]
    (let [ev-chan (chan)]
      (events/listen (.-body js/document)
                     event-type
-                    #(put! ev-chan (parse-event %)))
+                    #(let [prevent? (prevention-predicate)
+                           key-code (.-keyCode %)]
+                      (do
+                        (when (and prevent? (contains? #{37 38 39 40 32} key-code))
+                          (. % (preventDefault)))
+                        (put! ev-chan (parse-event %)))))
      ev-chan)))
 
 (defn keys-chan
   "Returns a channel with the key events of event-type parsed and
   filtered by the allowed-keys"
-  [event-type]
-  (let [evs (event-chan event-type event->key)]
+  [event-type prevention-predicate]
+  (let [evs (event-chan event-type event->key prevention-predicate)]
     evs))
 
 (defn keys-down-chan
   "Create a channel of keys pressed down restricted by the valid keys"
-  [] (keys-chan (.-KEYDOWN events/EventType)))
+  [prevention-predicate] (keys-chan (.-KEYDOWN events/EventType) prevention-predicate))
 
 (defn init-events!
   "Initialize event processing. It takes all the key presses and transforms
   them into commands and passes them to the game commands channel"
-  [game-commands]
-  (let [keys-pressed (keys-down-chan)]
+  [game-commands prevention-predicate]
+  (let [keys-pressed (keys-down-chan prevention-predicate)]
     (pipe keys-pressed game-commands)))
