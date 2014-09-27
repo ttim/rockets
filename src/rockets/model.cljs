@@ -5,7 +5,7 @@
    :player1 "First Rocketeer"
    :player2 "Second Rocketeer"})
 
-(def size-n)
+(def size-n 5)
 
 (defn pos [x y]
   {
