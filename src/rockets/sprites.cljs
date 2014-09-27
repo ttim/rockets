@@ -7,6 +7,10 @@
 
 (def sprite-width "48px")
 
-(defn sprite []
+(def sprite
   [:div {:style {:width sprite-width, :height sprite-width, :background-image "url(../img/dummy.png)"}}]
   )
+
+(q/defcomponent
+  SpriteComponent []
+  (html sprite))

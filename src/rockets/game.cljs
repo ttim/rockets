@@ -7,10 +7,5 @@
     [rockets.sprites :as sprites]))
 
 (q/defcomponent
-  Sprite []
-  (html
-    (sprites/sprite)))
-
-(q/defcomponent
   GameComponent [data world-atom]
-  (Sprite))
+  (sprites/SpriteComponent))
