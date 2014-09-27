@@ -26,8 +26,7 @@
 ; define render function
 (defn render [data]
   (q/render
-    (start/StartComponent data world)
-    #_(if (= (:type data) :start) (start/StartComponent data))
+    (if (= (:type @data) :start) (start/StartComponent data))
     (.getElementById js/document "main-area")))
 
 ; render for first time
