@@ -4,13 +4,25 @@
     [sablono.core :as html :refer-macros [html]]
     [quiescent :as q :include-macros true]
     [clojure.string :as string]
-    [rockets.model_sample :as sample]))
+    [rockets.model_sample :as sample]
+    [clojure.browser.dom :as cljsdom]))
 
 ; world state
 (defonce world (atom sample/start-state))
 
 (defn update-text
   [key value] (reset! world (assoc @world key value)))
+
+; log state
+(def show-state-log true)
+
+(defn update-state-log
+  [data] (cljsdom/set-text (.getElementById js/document "state-log") (sablono.util/to-str data)))
+(when show-state-log
+  (add-watch
+    world ::render
+    (fn [_ _ _ data] (update-state-log data)))
+  (defonce _first_time_log_render (update-state-log @world)))
 
 ; define component
 (q/defcomponent
@@ -27,7 +39,7 @@
      [:h1 (str "Second player name is " (:player2 data))]
      [:p]
      [:button
-      {:type "button"
+      {:type     "button"
        :disabled (or (string/blank? (:player1 data)) (string/blank? (:player2 data)))
        }
       "Go!"]
