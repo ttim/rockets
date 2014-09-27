@@ -37,8 +37,10 @@
   (html [:div {:style shuffle-style}]))
 
 (q/defcomponent
-  RocketComponent [fire?]
-  (html [:div {:style (if fire? rocket-fire-style rocket-style)}]))
+  RocketComponent [args] ;[fire? fuel]
+  (html [:div {:style {:background-image (str "url(../img/generated/fuel_" (:fuel args) ".png)")}}
+         [:div {:style (if (:fire? args) rocket-fire-style rocket-style)}]
+         ]))
 
 (q/defcomponent
   EmptyComponent []

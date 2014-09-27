@@ -54,10 +54,11 @@
 (q/defcomponent
   RocketComponent [rocket]
   (let [fire? (not (= (:state rocket) :staying))
-        coordinates (calc-rocket-coordinates rocket)]
+        coordinates (calc-rocket-coordinates rocket)
+        fuel (:fuel rocket)]
     (html
       [:div {:style {:position "absolute", :bottom (:y coordinates), :left (:x coordinates)}}
-       (sprites/RocketComponent fire?)])))
+       (sprites/RocketComponent {:fire fire? :fuel fuel})])))
 
 (q/defcomponent
   RocketsComponent [rockets]

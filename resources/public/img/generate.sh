@@ -20,6 +20,7 @@ convert templates/rocket_fire.png  -fill $rocket_normal -opaque $template genera
 convert templates/shuffle.png  -fill $path_normal -opaque $template generated/shuffle.png
 convert templates/selected.png  -fill $selected_cell -opaque $template generated/selected.png
 
+cp templates/empty_rocket.png generated/fuel_0.png
 convert templates/empty_rocket.png -fill $path_fire -stroke $path_fire -draw "rectangle 9 23 26 49" generated/fuel_3.png
 convert templates/empty_rocket.png -fill $path_fire -stroke $path_fire -draw "rectangle 9 32 26 49" generated/fuel_2.png
 convert templates/empty_rocket.png -fill $path_fire -stroke $path_fire -draw "rectangle 9 41 26 49" generated/fuel_1.png
