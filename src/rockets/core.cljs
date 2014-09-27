@@ -6,13 +6,11 @@
     [clojure.string :as string]
     [rockets.model_sample :as sample]
     [clojure.browser.dom :as cljsdom]
-    [rockets.start :as start]))
+    [rockets.start :as start]
+    [rockets.util :as util]))
 
 ; world state
 (defonce world (atom sample/start-state))
-
-(defn update-text
-  [world-atom key value] (reset! world-atom (assoc @world-atom key value)))
 
 ; log state
 (def show-state-log true)
