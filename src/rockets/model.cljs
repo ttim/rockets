@@ -87,7 +87,7 @@
   (let [state (generate-game-state "name1" "name2")]
     (let [state (util/set-value state [:rockets 0] (assoc ((state :rockets) 0) :state rocket-state-flying :progress 30 :target-slot 0))]
       (let [state (util/set-value state [:rockets 1] (assoc ((state :rockets) 1) :state rocket-state-dying :progress 60))]
-        (let [state (util/set-value state [:rockets 2] (assoc ((state :rockets) 2) :state rocket-state-dying :progress 100))]
+        (let [state (util/set-value state [:rockets 2] (assoc ((state :rockets) 2) :state rocket-state-dying :progress 99))]
           state)))))
 
 (def finish-state
@@ -103,8 +103,11 @@
 (defn next-orientation [orientation]
   (rem (inc orientation) 4))
 
+(defn do-rotate-cell [cell]
+  (if (cell :locked) cell (util/update-value cell [:orientation] next-orientation)))
+
 (defn do-rotate-selected [board]
-  (util/update-value board [:cells ((board :selected) :x) ((board :selected) :y) :orientation] next-orientation))
+  (util/update-value board [:cells ((board :selected) :x) ((board :selected) :y)] do-rotate-cell))
 
 (defn event-select [game-state board]
   ;todo add action when selected in reset field
