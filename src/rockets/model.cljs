@@ -66,8 +66,8 @@
   (cell (rand-int (clojure.core/count cell-types)) (rand-int 4) false))
 
 (defn generate-board-cells []
-  (into (vector) (for [i (range 0 size-n)]
-                   (into (vector) (for [j (range 0 size-m)]
+  (into (vector) (for [_ (range 0 size-n)]
+                   (into (vector) (for [_ (range 0 size-m)]
                                     (generate-board-cell))))))
 
 (defn generate-board []
@@ -96,12 +96,25 @@
    :player2 "name2"
    :win     :player1})
 
+(def dx [1 0 -1 0])
+(def dy [0 1 0 -1])
+
+(defn get-next-point [point direction]
+  (pos (+ (point :x) (dx direction)) (+ (point :y) (dy direction))))
+
+(defn valid-point? [point]
+  (or (and (<= 0 (point :x)) (<= (point :x) size-n) (<= 0 (point :y)) (<= (point :y) size-m))
+      (and (== 0 (point :x)) (== (point :y) -1))))
+
+(defn do-move-selection [direction]
+  (fn [board] (let [next-point (get-next-point (board :selected) direction)]
+                (if (valid-point? next-point) (util/update-value board [:selected] next-point) board))))
 
 (defn event-move-selection [game-state board direction]
-  game-state)
+  (util/update-value game-state [board] (do-move-selection direction)))
 
 (defn next-orientation [orientation]
-  (rem (inc orientation) 4))
+  (mod (inc orientation) 4))
 
 (defn do-rotate-cell [cell]
   (if (cell :locked) cell (util/update-value cell [:orientation] next-orientation)))
