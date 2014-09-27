@@ -9,14 +9,17 @@
 
 (q/defcomponent
   CellComponent [cell selected?]
-  (sprites/SpriteComponent))
+  (sprites/CoolSpriteComponent (:cell-type cell) (:orientation cell)))
 
 (q/defcomponent
   FieldComponent [cells selected]
-  (html [:table (for [x (range 0 model/size-n)]
-                  [:tr (for [y (range 0 model/size-m)
-                             :let [cell (nth (nth cells x) y)]]
-                         [:td (CellComponent cell false)])])]))
+  (html [:table
+         {:style util/no-borders-style}
+         (for [x (range 0 model/size-n)]
+           [:tr {:style util/no-borders-style}
+            (for [y (range 0 model/size-m)
+                  :let [cell (nth (nth cells x) y)]]
+              [:td {:style util/no-borders-style} (CellComponent cell false)])])]))
 
 (q/defcomponent
   BoardComponent [board]

@@ -13,3 +13,5 @@
     state-atom ::state-log-render
     (fn [_ _ _ data] (update-state-log data element)))
   (defonce _first_time_log_render (update-state-log @state-atom element)))
+
+(def no-borders-style {:border-width 0, :padding "0 0 0 0", :margin "0 0 0 0", :border-spacing 0})

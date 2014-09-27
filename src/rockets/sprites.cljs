@@ -7,7 +7,7 @@
 
 (def sprite-width "48px")
 
-(def base-style {:width sprite-width, :height sprite-width, :background-image "url(../img/dummy.png)"})
+(def base-style (merge {:width sprite-width, :height sprite-width, :background-image "url(../img/dummy.png)"} no-borders-style))
 
 (defn select-type [style type]
   (if (= type -1)
