@@ -35,7 +35,7 @@
   BoardComponent [board]
   (html [:table {:style util/no-borders-style}
          [:tr {:style util/no-borders-style}
-          [:td {:style (merge {:vertical-align "bottom"} util/no-borders-style)} (ShuffleComponent (:reload-time board))]
+          [:td {:style (merge {:vertical-align "bottom"} util/no-borders-style)} (ShuffleComponent (:time-to-reload board))]
           [:td {:style util/no-borders-style} (FieldComponent board)]]]))
 
 (def space-between-boards (* sprites/sprite-width 4))

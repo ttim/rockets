@@ -11,7 +11,7 @@
 (def size-m 8)
 (def rockets-cnt 4)
 (def max-rocket-fuel 3)
-(def max-reload-time 100)
+(def max-time-to-reload 100)
 
 (def rocket-state-staying :staying)
 (def rocket-state-flying :flying)
@@ -71,9 +71,9 @@
                                     (generate-board-cell))))))
 
 (defn generate-board []
-  {:selected    (pos 0 0)
-   :cells       (generate-board-cells)
-   :reload-time max-reload-time})
+  {:selected       (pos 0 0)
+   :cells          (generate-board-cells)
+   :time-to-reload max-time-to-reload})
 
 (defn generate-game-state [player1 player2]
   {:type    :game
@@ -102,9 +102,12 @@
 (defn get-next-point [point direction]
   (pos (+ (point :x) (dx direction)) (+ (point :y) (dy direction))))
 
+(defn reset-field? [point]
+  (and (== 0 (point :x)) (== (point :y) -1)))
+
 (defn valid-point? [point]
   (or (and (<= 0 (point :x)) (< (point :x) size-n) (<= 0 (point :y)) (< (point :y) size-m))
-      (and (== 0 (point :x)) (== (point :y) -1))))
+      (reset-field? point)))
 
 (defn do-move-selection [direction]
   (fn [board] (let [next-point (get-next-point (board :selected) direction)]
@@ -119,6 +122,13 @@
 (defn do-rotate-selected [board]
   (util/update-value board [:cells ((board :selected) :x) ((board :selected) :y)] do-rotate-cell))
 
+(defn do-reset-board [board]
+  (if (== 0 (board :time-to-reload))
+    (assoc board :cells (generate-board-cells) :time-to-reload max-time-to-reload)
+    board))
+
+(defn update-time-to-reload [time]
+  (if (== time 0) 0 (dec time)))
 
 ;====================================;
 ;                                    ;
@@ -131,8 +141,9 @@
 
 (defn event-select [game-state board]
   ;(js/console.log (sablono.util/to-str ((:cells (game-state board)) 0)))
-  ;todo add action when selected in reset field
-  (util/update-value game-state [board] do-rotate-selected))
+  (util/update-value game-state [board] (if (reset-field? ((game-state board) :selected)) do-reset-board do-rotate-selected)))
 
 (defn event-tick [game-state tick]
-  game-state)
+  (-> game-state
+      (util/update-value [:board1 :time-to-reload] update-time-to-reload)
+      (util/update-value [:board2 :time-to-reload] update-time-to-reload)))
