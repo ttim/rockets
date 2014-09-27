@@ -6,11 +6,14 @@
     [clojure.string :as string]
     [rockets.model :as model]
     [rockets.util :as util]
+    [goog.events :as events]
+    [goog.dom :as dom]
+    [cljs.core.async :as async :refer [<! >! chan close! sliding-buffer put! alts!]]
 
+    [rockets.keys :as keys]
     [rockets.start :as start]
     [rockets.game :as game]
-    [rockets.finish :as finish]
-    [cljs.core.async :as async :refer [<! >! chan close! sliding-buffer put! alts!]])
+    [rockets.finish :as finish])
   (:require-macros [cljs.core.async.macros :as m :refer [go alt!]]))
 
 ; world state
@@ -47,3 +50,13 @@
       (<! (async/timeout 10))
       (reset! world (model/event-tick @world tick))
       (recur (inc tick)))))
+
+; keyboard controller
+(def keys (chan))
+(keys/init-events! keys)
+(def keys-handler
+  (go
+    (loop []
+      ;(reset! world (model/event-tick @world tick))
+      (js/console.log (sablono.util/to-str (<! keys)))
+      (recur))))
