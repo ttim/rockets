@@ -24,7 +24,8 @@
            [:tr {:style util/no-borders-style}
             (for [y (range 0 model/size-m)
                   :let [cell (nth (nth (args :cells) x) y)]]
-              [:td {:style util/no-borders-style} (CellComponent {:cell cell, :selected? false})])])]))
+              [:td {:style util/no-borders-style}
+               (CellComponent {:cell cell, :selected? (and (= x ((args :selected) :x)) (= y ((args :selected) :y)))})])])]))
 
 (q/defcomponent
   ShuffleComponent [refresh-time]
