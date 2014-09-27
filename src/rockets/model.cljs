@@ -10,8 +10,6 @@
 (def rockets-cnt 4)
 (def max-rocket-fuel 3)
 (def max-reload-time 100)
-(def user1-id 0)
-(def user2-id 1)
 
 (def rocket-state-staying :staying)
 (def rocket-state-flying :flying)
@@ -23,12 +21,11 @@
 
 ; 0 - top, 1 - right, 2 - down, 3 - left
 (def cell-types
-  [[[2] [] [0] []]
-   [[1 3] [0 3] [] [0 1]]
+  [[[] [3] [] [1]]
    [[1] [0] [] []]
-   [[1 2 3] [0 2 3] [0 1 3] [0 1 2]]
-   [[] [3] [] [1]]
-   [[] [] [] []]])
+   [[1 3] [0 3] [] [0 1]]
+   [[] [] [] []]
+   [[1 2 3] [0 2 3] [0 1 3] [0 1 2]]])
 
 (defn cell [cell-type orientation locked]
   {:cell-type   cell-type
@@ -44,7 +41,7 @@
    :source-slot   source-slot})
 
 (defn generate-rockets
-  ([] (into (vector) (concat (generate-rockets user1-id) (generate-rockets user2-id))))
+  ([] (into (vector) (concat (generate-rockets :player1) (generate-rockets :player2))))
   ([source-player]
    (let [slots (shuffle (range 0 size-m))]
      (into (vector) (for [i (range 0 rockets-cnt)]
