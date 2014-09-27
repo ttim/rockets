@@ -6,31 +6,29 @@
     [rockets.util :as util]))
 
 (def sprite-width 36)
-(def rocket-style (merge {:width sprite-width :height (* 2 sprite-width) :background-image "url(../img/rocket.png)"} util/no-borders-style))
-(def rocket-fire-style (merge {:width sprite-width :height (* 2 sprite-width) :background-image "url(../img/rocket-fire.png)"} util/no-borders-style))
+(def rocket-style (merge {:width sprite-width :height (* 2 sprite-width) :background-image "url(../img/generated/rocket.png)"} util/no-borders-style))
+(def rocket-fire-style (merge {:width sprite-width :height (* 2 sprite-width) :background-image "url(../img/generated/rocket-fire.png)"} util/no-borders-style))
 
 (def base-style (merge {:width sprite-width :height sprite-width} util/no-borders-style))
 
-(def cell-style (merge base-style {:background-image "url(../img/dummy.png)"} util/no-borders-style))
 (def empty-style (merge base-style {:background-image "url(../img/empty.png)"} util/no-borders-style))
-(def shuffle-style (merge base-style {:background-image "url(../img/shuffle.png)"} util/no-borders-style))
+(def shuffle-style (merge base-style {:background-image "url(../img/generated/shuffle.png)"} util/no-borders-style))
 (def fire-style (merge base-style {:background-image "url(../img/fire.png)"} util/no-borders-style))
 
-(defn select-type [style type]
+(defn select-type [style type fire?]
   (if (= type -1)
     style
-    (assoc style :background-image (str "url(../img/cell" type ".png)"))))
+    (let [img (str "url(../img/generated/cell_" type (if fire? "_fire" "") ".png)")]
+      (js/console.log img)
+      (assoc style :background-image img))))
 
 (defn rotate [style angle]
   (assoc style :transform (str "rotate(" (* angle 90) "deg)"))
   )
 
-(defn sprite [type angle]
-  [:div {:style (rotate (select-type cell-style type) angle)}]
+(defn sprite [type angle fire?]
+  [:div {:style (rotate (select-type base-style type fire?) angle)}]
   )
-
-(defn fire-state [sprite fire?]
-  (if fire? [:div {:style {:background-color "#ffaa22"}} sprite] sprite))
 
 (defn selected-state [sprite selected?]
   (if selected? [:div {:style {:background-color "#997777"}} sprite] sprite))
@@ -52,6 +50,5 @@
   (html [:div {:style fire-style}]))
 
 (q/defcomponent
-  ;CoolSpriteComponent [type, angle, fire?, selected?]
   CoolSpriteComponent [args]
-  (html (selected-state (fire-state(sprite (args :type) (args :angle)) (args :fire?)) (args :selected?))))
+  (html (selected-state (sprite (args :type) (args :angle) (args :fire?)) (args :selected?))))  ;CoolSpriteComponent [type, angle, fire?, selected?]
