@@ -1,2 +1,7 @@
-/* some style */
+/* very cool style */
 
+.cell {
+    width:48px;
+    height: 48px;
+    background-image: url(../img/dummy.png);
+}

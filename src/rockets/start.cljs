@@ -22,4 +22,5 @@
        :on-click #(util/update-text world-atom :type :game)
        }
       "Go!"]
+     [:div.cell]
      ]))
