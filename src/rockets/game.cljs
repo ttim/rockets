@@ -7,5 +7,21 @@
     [rockets.sprites :as sprites]))
 
 (q/defcomponent
-  GameComponent [data world-atom]
+  CellComponent [cell selected?]
   (sprites/SpriteComponent))
+
+(q/defcomponent
+  FieldComponent [cells selected]
+  (CellComponent))
+
+(q/defcomponent
+  BoardComponent [board]
+  (FieldComponent (:cells board) (:selected board)))
+
+(q/defcomponent
+  RocketsComponent [rockets]
+  (Sprite))
+
+(q/defcomponent
+  GameComponent [data world-atom]
+  (BoardComponent (:board1 data)))
