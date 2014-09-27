@@ -3,6 +3,7 @@ resources/public/js/compiled
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 
+rockets.iml
 /*.iml
 
 ## Directory-based project format:
