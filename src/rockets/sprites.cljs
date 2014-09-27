@@ -34,7 +34,7 @@
 
 (q/defcomponent
   ShuffleComponent [refresh-time]
-  (html [:div {:style shuffle-style}]))
+  (html [:div {:style (assoc shuffle-style :opacity (/ refresh-time 100) :filter (str "alpha(opacity=" refresh-time "100)"))}]))
 
 (q/defcomponent
   RocketComponent [args] ;[fire? fuel]
