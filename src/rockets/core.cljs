@@ -10,7 +10,7 @@
     [rockets.start :as start]
     [rockets.game :as game]
     [rockets.finish :as finish]
-    ))
+    [clojure.core.async :as async]))
 
 ; world state
 (defonce world (atom model/game-state))
@@ -38,3 +38,11 @@
 (fw/watch-and-reload
   :jsload-callback
   (fn [] (swap! world update-in [:tmp-dev] not)))
+
+; ticker controller
+;(def ticker
+;  (async/go
+;    (loop [tick 0]
+;      (<! (async/timeout 10))
+;      (reset! world (model/event-tick @world tick))
+;      (recur (inc tick)))))

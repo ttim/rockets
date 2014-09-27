@@ -110,5 +110,6 @@
   ;todo add action when selected in reset field
   (util/update-value game-state [board] do-rotate-selected))
 
-(defn event-tick [game-state]
+(defn event-tick [game-state tick]
+  (js/console.log "hello")
   game-state)
