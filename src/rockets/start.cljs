@@ -22,6 +22,7 @@
      [:button
       {:type     "button"
        :disabled (or (string/blank? (:player1 data)) (string/blank? (:player2 data)))
+       :on-click #(util/update-text world-atom :type :game)
        }
       "Go!"]
      ]))

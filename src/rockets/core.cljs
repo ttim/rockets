@@ -23,10 +23,17 @@
     (fn [_ _ _ data] (update-state-log data)))
   (defonce _first_time_log_render (update-state-log @world)))
 
+
+(q/defcomponent
+  DumbComponent [data world-atom]
+  (html
+    [:h1 "Not Impplemented"]
+    ))
+
 ; define render function
 (defn render [data]
   (q/render
-    (if (= (:type @data) :start) (start/StartComponent data))
+    (if (= (:type data) :start) (start/StartComponent data world) (DumbComponent data world))
     (.getElementById js/document "main-area")))
 
 ; render for first time
