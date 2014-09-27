@@ -35,10 +35,23 @@
   RocketsComponent [rockets]
   (sprites/SpriteComponent))
 
+(def space-between-boards (* sprites/sprite-width 4))
+
+(q/defcomponent
+  FitilComponent []
+  (html [:table {:style util/no-borders-style}
+         [:tr {:style util/no-borders-style}
+          [:td {:style (merge {:width sprites/sprite-width} util/no-borders-style)}]
+          (repeat model/size-m [:td {:style util/no-borders-style} (sprites/SpriteComponent)])
+          [:td {:style (merge {:width space-between-boards} util/no-borders-style)}]
+          [:td {:style (merge {:width sprites/sprite-width} util/no-borders-style)}]
+          (repeat model/size-m [:td {:style util/no-borders-style} (sprites/SpriteComponent)])]]))
+
 (q/defcomponent
   GameComponent [data world-atom]
   (html [:table {:style util/no-borders-style}
          [:tr {:style util/no-borders-style}
           [:td {:style util/no-borders-style} (BoardComponent (:board1 data))]
-          [:td {:style (merge {:width (* sprites/sprite-width 4)} util/no-borders-style)}]
-          [:td {:style util/no-borders-style} (BoardComponent (:board2 data))]]]))
+          [:td {:style (merge {:width space-between-boards} util/no-borders-style)}]
+          [:td {:style util/no-borders-style} (BoardComponent (:board2 data))]]
+         [:tr {:style util/no-borders-style} (FitilComponent)]]))
