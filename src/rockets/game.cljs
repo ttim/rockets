@@ -42,10 +42,10 @@
   (html [:table {:style util/no-borders-style}
          [:tr {:style util/no-borders-style}
           [:td {:style (merge {:width sprites/sprite-width} util/no-borders-style)}]
-          (repeat model/size-m [:td {:style util/no-borders-style} (sprites/SpriteComponent)])
+          (repeat model/size-m [:td {:style util/no-borders-style} (sprites/FireComponent)])
           [:td {:style (merge {:width space-between-boards} util/no-borders-style)}]
           [:td {:style (merge {:width sprites/sprite-width} util/no-borders-style)}]
-          (repeat model/size-m [:td {:style util/no-borders-style} (sprites/SpriteComponent)])]]))
+          (repeat model/size-m [:td {:style util/no-borders-style} (sprites/FireComponent)])]]))
 
 (q/defcomponent
   GameComponent [data world-atom]
