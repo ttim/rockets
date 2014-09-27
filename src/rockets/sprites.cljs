@@ -33,8 +33,8 @@
   (html (sprite -1 0)))
 
 (q/defcomponent
-  RocketComponent [fire]
-  (html [:div {:style (if fire rocket-fire-style rocket-style)}]))
+  RocketComponent [fire?]
+  (html [:div {:style (if fire? rocket-fire-style rocket-style)}]))
 
 (q/defcomponent
   EmptyComponent []
