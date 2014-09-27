@@ -35,10 +35,23 @@
    :locked      locked
    })
 
-(defn generate-rocket [state progress source-player source-slot]
-  {:state         state
+(defn generate-rocket-staying [fuel source-player source-slot]
+  {:state         rocket-state-staying
+   :fuel          fuel
+   :source-player source-player
+   :source-slot   source-slot})
+
+(defn generate-rocket-flying [progress fuel source-player source-slot target-slot]
+  {:state         rocket-state-flying
    :progress      progress
-   :fuel          max-rocket-fuel
+   :fuel          fuel
+   :source-player source-player
+   :source-slot   source-slot
+   :target-slot   target-slot})
+
+(defn generate-rocket-dying [progress source-player source-slot]
+  {:state         rocket-state-dying
+   :progress      progress
    :source-player source-player
    :source-slot   source-slot})
 
@@ -47,7 +60,7 @@
   ([source-player]
    (let [slots (shuffle (range 0 size-m))]
      (into (vector) (for [i (range 0 rockets-cnt)]
-                      (generate-rocket rocket-state-staying 0 source-player (slots i)))))))
+                      (generate-rocket-staying max-rocket-fuel source-player (slots i)))))))
 
 (defn generate-board-cell []
   (cell (rand-int (clojure.core/count cell-types)) (rand-int 4) false))
@@ -62,15 +75,20 @@
    :cells       (generate-board-cells)
    :reload-time max-reload-time})
 
+(defn generate-game-state [player1 player2]
+  {:type    :game
+   :player1 player1
+   :player2 player2
+   :board1  (generate-board)
+   :board2  (generate-board)
+   :rockets (generate-rockets)})
+
 (def game-state
-  (let [board1 (generate-board)
-        board2 (generate-board)]
-    {:type    :game
-     :player1 "name1"
-     :player2 "name2"
-     :board1  board1
-     :board2  board2
-     :rockets (generate-rockets)}))
+  (let [state (generate-game-state "name1" "name2")]
+    (let [state (util/set-value state [:rockets 0] (assoc ((state :rockets) 0) :state rocket-state-flying :progress 30 :target-slot 0))]
+      (let [state (util/set-value state [:rockets 1] (assoc ((state :rockets) 1) :state rocket-state-dying :progress 60))]
+        (let [state (util/set-value state [:rockets 2] (assoc ((state :rockets) 2) :state rocket-state-dying :progress 100))]
+          state)))))
 
 (def finish-state
   {:type    :finish

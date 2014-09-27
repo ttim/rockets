@@ -20,3 +20,8 @@
   (if (empty? keys)
     (func obj)
     (assoc obj (keys 0) (update-value (obj (keys 0)) (subvec keys 1) func))))
+
+(defn set-value [obj keys val]
+  (if (empty? keys)
+    val
+    (assoc obj (keys 0) (set-value (obj (keys 0)) (subvec keys 1) val))))
