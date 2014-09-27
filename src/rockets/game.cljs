@@ -28,15 +28,17 @@
                (CellComponent {:cell cell, :selected? (and (= x ((args :selected) :x)) (= y ((args :selected) :y)))})])])]))
 
 (q/defcomponent
-  ShuffleComponent [refresh-time]
-  (sprites/ShuffleComponent refresh-time))
-
-(q/defcomponent
   BoardComponent [board]
-  (html [:table {:style util/no-borders-style}
-         [:tr {:style util/no-borders-style}
-          [:td {:style (merge {:vertical-align "bottom"} util/no-borders-style)} (ShuffleComponent (:time-to-reload board))]
-          [:td {:style util/no-borders-style} (FieldComponent board)]]]))
+  (let [selected (board :selected)
+        shuffle-selected? (and (= (selected :x) 0) (= (selected :y) -1))]
+    (do
+      (html [:table {:style util/no-borders-style}
+             [:tr {:style util/no-borders-style}
+              [:td {:style (merge {:vertical-align "bottom"} util/no-borders-style)}
+               (sprites/ShuffleComponent (assoc board :selected? shuffle-selected?))]
+              [:td {:style util/no-borders-style} (FieldComponent board)]]])
+      )
+    ))
 
 (def space-between-boards (* sprites/sprite-width 4))
 (def board-width (* sprites/sprite-width (inc model/size-m)))
