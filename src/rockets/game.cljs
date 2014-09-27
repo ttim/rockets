@@ -51,7 +51,10 @@
   (let [source-player (:source-player rocket)
         source-slot (:source-slot rocket)
         offset (if (= source-player :player1) 0 (+ board-width space-between-boards))]
-    {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y 0}))
+    (case (rocket :state)
+      :staying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y 0}
+      :dying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y 0}
+      :flying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y 0})))
 
 (q/defcomponent
   RocketComponent [rocket]
@@ -60,7 +63,7 @@
         fuel (:fuel rocket)]
     (html
       [:div {:style {:position "absolute", :bottom (:y coordinates), :left (:x coordinates)}}
-       (sprites/RocketComponent {:fire fire? :fuel fuel})])))
+       (sprites/RocketComponent {:fire? fire? :fuel fuel})])))
 
 (q/defcomponent
   RocketsComponent [rockets]
@@ -90,4 +93,3 @@
         [:td {:style util/no-borders-style} (BoardComponent (:board2 data))]]
        [:tr {:style util/no-borders-style} (FitilComponent)]]]
      [:div {:style {:position "absolute"}} (RocketsComponent (:rockets data))]]))
-
