@@ -114,5 +114,5 @@
   (util/update-value game-state [board] do-rotate-selected))
 
 (defn event-tick [game-state tick]
-  (js/console.log "hello")
+  (when (= (mod tick 100) 0) (js/console.log tick))
   game-state)

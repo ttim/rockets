@@ -10,7 +10,8 @@
     [rockets.start :as start]
     [rockets.game :as game]
     [rockets.finish :as finish]
-    [clojure.core.async :as async]))
+    [cljs.core.async :as async :refer [<! >! chan close! sliding-buffer put! alts!]])
+  (:require-macros [cljs.core.async.macros :as m :refer [go alt!]]))
 
 ; world state
 (defonce world (atom model/game-state))
@@ -40,9 +41,9 @@
   (fn [] (swap! world update-in [:tmp-dev] not)))
 
 ; ticker controller
-;(def ticker
-;  (async/go
-;    (loop [tick 0]
-;      (<! (async/timeout 10))
-;      (reset! world (model/event-tick @world tick))
-;      (recur (inc tick)))))
+(def ticker
+  (go
+    (loop [tick 0]
+      (<! (async/timeout 10))
+      (reset! world (model/event-tick @world tick))
+      (recur (inc tick)))))
