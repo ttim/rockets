@@ -4,7 +4,8 @@
     [quiescent :as q :include-macros true]
     [clojure.string :as string]
     [rockets.util :as util]
-    [rockets.sprites :as sprites]))
+    [rockets.sprites :as sprites]
+    [rockets.model :as model]))
 
 (q/defcomponent
   CellComponent [cell selected?]
@@ -12,7 +13,10 @@
 
 (q/defcomponent
   FieldComponent [cells selected]
-  (CellComponent))
+  (html [:div (for [x (range 0 model/size-n)
+                    y (range 0 model/size-m)
+                    :let [cell (nth (nth cells x) y)]]
+                (CellComponent cell false))]))
 
 (q/defcomponent
   BoardComponent [board]
@@ -20,7 +24,7 @@
 
 (q/defcomponent
   RocketsComponent [rockets]
-  (Sprite))
+  (sprites/SpriteComponent))
 
 (q/defcomponent
   GameComponent [data world-atom]
