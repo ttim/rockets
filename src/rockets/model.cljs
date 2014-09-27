@@ -88,7 +88,8 @@
 (defn do-rotate-selected [board]
   (util/update-value board [:cells ((board :selected) :x) ((board :selected) :y) :orientation] next-orientation))
 
-(defn event-rotate-selected [game-state board]
+(defn event-select [game-state board]
+  ;todo add action when selected in reset field
   (util/update-value game-state [board] do-rotate-selected))
 
 (defn event-tick [game-state]
