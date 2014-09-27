@@ -7,11 +7,16 @@
 ; world state
 (defonce world (atom {:text "Hello!"}))
 
+(defn update-text
+  [text] (reset! world {:text text}))
+
 ; define component
 (q/defcomponent
   Root [data]
   (html
-    [:h1 (:text data)]))
+    [:div
+     [:input {:type "text", :value (:text data), :on-change #(update-text (-> % .-target .-value))}]
+     [:h1 (:text data)]]))
 
 ; define render function
 (defn render [data]
