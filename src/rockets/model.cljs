@@ -13,6 +13,7 @@
 (def max-rocket-fuel 3)
 (def max-time-to-reload 100)
 
+(def rocket-max-progress 100)
 (def rocket-state-staying :staying)
 (def rocket-state-flying :flying)
 (def rocket-state-dying :dying)
@@ -130,6 +131,31 @@
 (defn update-time-to-reload [time]
   (if (== time 0) 0 (dec time)))
 
+(defn other-player [player]
+  (if (= player :player1) :player2 :player1))
+
+(defn live-rocket? [rocket]
+  (not (and (== rocket-state-dying (rocket :state)) (== rocket-max-progress (rocket :progress)))))
+
+(defn next-rocket-state-flying [rocket]
+  (if (== rocket-max-progress (rocket :progress))
+    (generate-rocket-staying (dec (rocket :fuel)) (other-player (rocket :source-player)) (rocket :target-slot))
+    (util/update-value rocket [:progress] inc)))
+
+(defn next-rocket-state-dying [rocket]
+  (if (== rocket-max-progress (rocket :progress))
+    rocket
+    (util/update-value rocket [:progress] inc)))
+
+(defn update-rocket [rocket]
+  (cond
+    (== rocket-state-flying (rocket :state)) (next-rocket-state-flying rocket)
+    (== rocket-state-dying (rocket :state)) (next-rocket-state-dying rocket)
+    :else rocket))
+
+(defn update-rockets [rockets]
+  (filter live-rocket? (map update-rocket rockets)))
+
 ;====================================;
 ;                                    ;
 ;         Public API: events         ;
@@ -146,4 +172,5 @@
 (defn event-tick [game-state tick]
   (-> game-state
       (util/update-value [:board1 :time-to-reload] update-time-to-reload)
-      (util/update-value [:board2 :time-to-reload] update-time-to-reload)))
+      (util/update-value [:board2 :time-to-reload] update-time-to-reload)
+      (util/update-value [:rockets] update-rockets)))
