@@ -33,8 +33,11 @@
   (if selected? [:div {:style {:background-image "url(../img/generated/selected.png)"}} sprite] sprite))
 
 (q/defcomponent
-  ShuffleComponent [refresh-time]
-  (html [:div {:style (assoc shuffle-style :opacity (/ refresh-time 100) :filter (str "alpha(opacity=" refresh-time "100)"))}]))
+  ShuffleComponent [args] ;(selected time-to-reload)
+  (html
+    (let [selected? (:selected? args)
+          time-to-reload (- 100 (:time-to-reload args))]
+      (selected-state [:div {:style (assoc shuffle-style :opacity (/ time-to-reload 100) :filter (str "alpha(opacity=" time-to-reload "100)"))}] selected?))))
 
 (q/defcomponent
   RocketComponent [args] ;[fire? fuel]
