@@ -1,4 +1,6 @@
 .DS_Store
+resources/public/js/compiled
+
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 
 /*.iml
