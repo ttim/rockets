@@ -7,16 +7,19 @@
     [rockets.model_sample :as sample]
     [clojure.browser.dom :as cljsdom]))
 
+(defn update-text
+  [world-atom key value] (reset! world-atom (assoc @world-atom key value)))
+
 (q/defcomponent
-  StartComponent [data]
+  StartComponent [data world-atom]
   (html
     [:div
      [:h1 "Welcome, Awesome Rocketeers!"]
      "Player 1"
-     [:input {:type "text", :value (:player1 data), :on-change #(update-text :player1 (-> % .-target .-value))}]
+     [:input {:type "text", :value (:player1 data), :on-change #(update-text world-atom :player1 (-> % .-target .-value))}]
      [:p]
      "Player 2"
-     [:input {:type "text", :value (:player2 data), :on-change #(update-text :player2 (-> % .-target .-value))}]
+     [:input {:type "text", :value (:player2 data), :on-change #(update-text world-atom :player2 (-> % .-target .-value))}]
      [:p]
      [:button
       {:type     "button"

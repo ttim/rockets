@@ -12,7 +12,7 @@
 (defonce world (atom sample/start-state))
 
 (defn update-text
-  [key value] (reset! world (assoc @world key value)))
+  [world-atom key value] (reset! world-atom (assoc @world-atom key value)))
 
 ; log state
 (def show-state-log true)
@@ -28,7 +28,7 @@
 ; define render function
 (defn render [data]
   (q/render
-    (start/StartComponent data)
+    (start/StartComponent data world)
     #_(if (= (:type data) :start) (start/StartComponent data))
     (.getElementById js/document "main-area")))
 
