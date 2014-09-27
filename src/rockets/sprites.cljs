@@ -6,8 +6,8 @@
     [rockets.util :as util]))
 
 (def sprite-width 36)
-(def rocket-style (merge {:width sprite-width :height (* 3 sprite-width) :background-image "url(../img/rocket.png)"} util/no-borders-style))
-(def rocket-fire-style (merge {:width sprite-width :height (* 3 sprite-width) :background-image "url(../img/rocket-fire.png)"} util/no-borders-style))
+(def rocket-style (merge {:width sprite-width :height (* 2 sprite-width) :background-image "url(../img/rocket.png)"} util/no-borders-style))
+(def rocket-fire-style (merge {:width sprite-width :height (* 2 sprite-width) :background-image "url(../img/rocket-fire.png)"} util/no-borders-style))
 
 (def base-style (merge {:width sprite-width :height sprite-width} util/no-borders-style))
 
