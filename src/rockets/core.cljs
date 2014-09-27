@@ -2,21 +2,35 @@
   (:require
     [figwheel.client :as fw]
     [sablono.core :as html :refer-macros [html]]
-    [quiescent :as q :include-macros true]))
+    [quiescent :as q :include-macros true]
+    [clojure.string :as string]))
 
 ; world state
-(defonce world (atom {:text "Hello!"}))
+(defonce world (atom {:player1 "First Rocketeer" :player2 "Second Rocketeer"}))
 
 (defn update-text
-  [text] (reset! world {:text text}))
+  [key value] (reset! world (assoc @world key value)))
 
 ; define component
 (q/defcomponent
   Root [data]
   (html
     [:div
-     [:input {:type "text", :value (:text data), :on-change #(update-text (-> % .-target .-value))}]
-     [:h1 (:text data)]]))
+     [:h1 "Welcome, Awesome Rocketeers!"]
+     "Player 1"
+     [:input {:type "text", :value (:player1 data), :on-change #(update-text :player1 (-> % .-target .-value))}]
+     [:p]
+     "Player 2"
+     [:input {:type "text", :value (:player2 data), :on-change #(update-text :player2 (-> % .-target .-value))}]
+     [:h1 (str "First player name is " (:player1 data))]
+     [:h1 (str "Second player name is " (:player2 data))]
+     [:p]
+     [:button
+      {:type "button"
+       :disabled (or (string/blank? (:player1 data)) (string/blank? (:player2 data)))
+       }
+      "Go!"]
+     ]))
 
 ; define render function
 (defn render [data]
