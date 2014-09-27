@@ -76,3 +76,12 @@
    :player2 "name2"
    :win     :player1})
 
+
+(defn event-move-selection [game-state player-id direction]
+  game-state)
+
+(defn event-rotate-selected [game-state player-id]
+  game-state)
+
+(defn event-tick [game-state]
+  game-state)
