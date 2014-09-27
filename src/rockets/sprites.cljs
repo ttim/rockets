@@ -7,13 +7,16 @@
 
 (def sprite-width 48)
 
-(def base-style (merge {:width sprite-width, :height sprite-width, :background-image "url(../img/dummy.png)"} util/no-borders-style))
 (def rocket-style (merge {:width sprite-width :height (* 3 sprite-width) :background-image "url(../img/rocket.png)"} util/no-borders-style))
-(def empty-style (merge {:width sprite-width :height sprite-width :background-image "url(../img/empty.png)"} util/no-borders-style))
+
+(def base-style (merge {:width sprite-width :height sprite-width} util/no-borders-style))
+
+(def cell-style (merge base-style {:background-image "url(../img/dummy.png)"} util/no-borders-style))
+(def empty-style (merge base-style {:background-image "url(../img/empty.png)"} util/no-borders-style))
 
 (defn select-type [style type]
   (if (= type -1)
-    base-style
+    style
     (assoc style :background-image (str "url(../img/cell" type ".png)"))))
 
 (defn rotate [style angle]
@@ -21,7 +24,7 @@
   )
 
 (defn sprite [type angle]
-  [:div {:style (rotate (select-type base-style type) angle)}]
+  [:div {:style (rotate (select-type cell-style type) angle)}]
   )
 
 (q/defcomponent
@@ -33,7 +36,7 @@
   (html [:div {:style rocket-style}]))
 
 (q/defcomponent
-  RocketComponent []
+  EmptyComponent []
   (html [:div {:style empty-style}]))
 
 (q/defcomponent
