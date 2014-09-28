@@ -11,7 +11,7 @@
   (html
     [:div {:style {:width game/boards-width :position "absolute" :height (+ game/board-height game/rockets-space-height)}}
      [:div.dim {:style {:position "absolute"}} (game/GameComponent data world-atom)]
-     [:div.dialogWrapper {:style {:position "absolute"}}
+     [:div.dialogWrapper {:style {:position "absolute" :top (- game/rockets-space-height rockets.sprites/sprite-width)}}
       [:div.dialog.titleText (str ((:winner data) data) " Won!")
        [:p]
        [:button.button "Play again"]
