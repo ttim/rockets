@@ -1,6 +1,7 @@
 .DS_Store
 resources/public/js/compiled
 .nrepl-port
+www/
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 
