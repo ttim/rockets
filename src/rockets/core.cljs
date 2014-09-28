@@ -36,8 +36,8 @@
      [:div {:id "footer"}
       [:div.titleText {:id "left-footer"} "Awesome Rocketeers"]
       [:div.titleText {:id "right-footer"}
-       [:button.button "Share"]
-       [:button.voteButton {:on-click #(util/redirect-to "https://clojurecup.com/#/apps/rockets")} "Vote"]
+       [:button.button {:on-click #(util/redirect-to util/twitter-share-url)} "Share"]
+       [:button.voteButton {:on-click #(util/redirect-to util/clojurecup-app-url)} "Vote"]
        ]]]))
 
 (defn render [data]

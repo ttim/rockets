@@ -24,7 +24,7 @@
         ]
        [:p]
        [:div.normalText "If You Like Our Game"]
-       [:button.voteButton {:on-click #(util/redirect-to "https://clojurecup.com/#/apps/rockets")} "Vote For Us!"]
+       [:button.voteButton {:on-click #(util/redirect-to util/clojurecup-app-url)} "Vote For Us!"]
        ]
       ]
      ]
