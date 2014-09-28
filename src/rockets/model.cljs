@@ -190,8 +190,8 @@
 
 (defn do-fire-cells
   ([board positions]
-   (do-fire-cells (do-fire-cells board positions true) 
-                  (into (vector) (clojure.set/difference all-points (set (flatten positions)))) 
+   (do-fire-cells (do-fire-cells board positions true)
+                  (into (vector) (clojure.set/difference all-points (set (flatten positions))))
                   false))
   ([board positions val]
    (if (or (nil? positions) (empty? positions))
@@ -212,6 +212,11 @@
                                              (for [i (range 0 size-m)]
                                                (connected-cells (game-state board) (pos -1 i)))))))))
 
+(defn do-win [game-state winner]
+  (-> game-state
+      (assoc :type :finish)
+      (assoc :winner winner)))
+
 ; states samples
 (def start-state
   {:type    :start
@@ -228,7 +233,7 @@
   {:type    :finish
    :player1 "First Rocketeer"
    :player2 "Second Rocketeer"
-   :win     :player1})
+   :winner  :player1})
 
 ; states modifiers
 (defn move [game-state board direction]
@@ -242,11 +247,13 @@
     game-state))
 
 (defn tick [game-state tick-value]
-  (case (:type game-state)
-    :game (-> game-state
-              (update-in [:board1 :time-to-reload] update-time-to-reload)
-              (update-in [:board2 :time-to-reload] update-time-to-reload)
-              (do-fire-wicks :board1)
-              (do-fire-wicks :board2)
-              (update-in [:rockets] update-rockets))
-    game-state))
+  (if (= tick-value 50)
+    (do-win game-state :player1)
+    (case (:type game-state)
+      :game (-> game-state
+                (update-in [:board1 :time-to-reload] update-time-to-reload)
+                (update-in [:board2 :time-to-reload] update-time-to-reload)
+                (do-fire-wicks :board1)
+                (do-fire-wicks :board2)
+                (update-in [:rockets] update-rockets))
+      game-state)))
