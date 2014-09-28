@@ -24,8 +24,8 @@
    87 [:player1 :up]                                        ; w
    68 [:player1 :right]                                     ; d
    83 [:player1 :down]                                      ; s
-   ;81 [:player1 :rotate]                                    ; q
-   16 [:player1 :rotate]                                    ; shift
+   81 [:player1 :rotate]                                    ; q
+   ;16 [:player1 :rotate]                                    ; shift
    })
 
 (defn event->key
