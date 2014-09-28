@@ -46,6 +46,9 @@
 (def board-height (* sprites/sprite-width (inc model/size-n)))
 (def rockets-space-height (* sprites/sprite-width 6))
 
+(defn convert
+  [progress min-value max-value] (+ min-value (/ (* progress (- max-value min-value)) 100)))
+
 ; coordinates as school axis
 (defn calc-rocket-coordinates [rocket]
   (let [source-player (:source-player rocket)
@@ -54,7 +57,7 @@
         progress (:progress rocket)]                        ;0-100
     (case (rocket :state)
       :staying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y 0}
-      :dying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y (* progress 1)}
+      :dying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y (convert progress 0 rockets-space-height)}
       :flying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y 0})))
 
 (q/defcomponent
@@ -63,7 +66,8 @@
         coordinates (calc-rocket-coordinates rocket)
         fuel (:fuel rocket)
         state (:state rocket)
-        height (if (= state :dying) 30 sprites/rocket-height)]
+        progress (:progress rocket)
+        height (if (= state :dying) (- rockets-space-height (convert progress 0 rockets-space-height)) sprites/rocket-height)]
     (html
       [:div {:style {:position "absolute", :bottom (:y coordinates), :left (:x coordinates)}}
        (sprites/RocketComponent {:fire? fire? :fuel fuel :height height})])))
