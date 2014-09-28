@@ -3,10 +3,12 @@
     [rockets.util :as util]))
 
 (def size-n 8)
-(def size-m 8)
-(def rockets-cnt 4)
+(def size-m size-n)
+(def rockets-cnt (divide size-m 2))
 (def max-rocket-fuel 3)
 (def max-time-to-reload 100)
+
+(def wick-timeout 10)
 
 (def rocket-max-progress 100)
 (def rocket-state-staying :staying)
@@ -160,15 +162,15 @@
   (if (= player :player1) :player2 :player1))
 
 (defn live-rocket? [rocket]
-  (not (and (== rocket-state-dying (rocket :state)) (== rocket-max-progress (rocket :progress)))))
+  (not (and (== rocket-state-dying (rocket :state)) (<= rocket-max-progress (rocket :progress)))))
 
 (defn next-rocket-state-flying [rocket]
-  (if (== rocket-max-progress (rocket :progress))
-    (generate-rocket-staying (dec (rocket :fuel)) (other-player (rocket :source-player)) (rocket :target-slot))
+  (if (<= rocket-max-progress (rocket :progress))
+    (generate-rocket-staying (rocket :fuel) (other-player (rocket :source-player)) (rocket :target-slot))
     (update-in rocket [:progress] inc)))
 
 (defn next-rocket-state-dying [rocket]
-  (if (== rocket-max-progress (rocket :progress))
+  (if (<= rocket-max-progress (rocket :progress))
     rocket
     (update-in rocket [:progress] inc)))
 
@@ -179,7 +181,7 @@
     :else rocket))
 
 (defn update-rockets [rockets]
-  (filter live-rocket? (map update-rocket rockets)))
+  (into (vector) (filter live-rocket? (map update-rocket rockets))))
 
 (def all-points
   (set
@@ -188,29 +190,86 @@
         (for [j (range 0 size-m)]
           (pos i j))))))
 
-(defn do-fire-cells
+(defn do-color-cells
   ([board positions]
-   (do-fire-cells (do-fire-cells board positions true)
-                  (into (vector) (clojure.set/difference all-points (set (flatten positions))))
-                  false))
+   (do-color-cells (do-color-cells board positions true)
+                   (into (vector) (clojure.set/difference all-points (set (flatten positions))))
+                   false))
   ([board positions val]
    (if (or (nil? positions) (empty? positions))
      board
      (let [cr-pos (positions 0)]
-       (do-fire-cells
+       (do-color-cells
          (assoc-in board [:cells (cr-pos :x) (cr-pos :y) :locked] val)
          (subvec positions 1)
          val)))))
 
-(defn do-fire-wicks [game-state board]
-  (assoc-in game-state [board]
-            (do-fire-cells (game-state board)
-                           (into
-                             (vector)
-                             (filter board-point?
-                                     (reduce clojure.set/union
-                                             (for [i (range 0 size-m)]
-                                               (connected-cells (game-state board) (pos -1 i)))))))))
+(defn do-color-wicks [game-state board-num]
+  (assoc-in game-state [board-num]
+            (do-color-cells (game-state board-num)
+                            (into
+                              (vector)
+                              (filter board-point?
+                                      (reduce clojure.set/union (for [i (range 0 size-m)] (connected-cells (game-state board-num) (pos -1 i)))))))))
+
+(defn reset-wicks [board conn-list]
+  (reduce (fn [board wick-num] (assoc-in board [:wick-timers wick-num] -1))
+          (flatten [board (map (fn [cr-pos] (cr-pos :y)) (filter (fn [cr-pos] (== (cr-pos :x) -1)) conn-list))])))
+
+(defn get-busy-slots [rockets source-player]
+  (set (map (fn [rocket] (rocket :source-slot))
+            (filter (fn [rocket] (or (and (== (rocket :state) rocket-state-staying) (not= (rocket :source-player) source-player))
+                                     (and (== (rocket :state) rocket-state-flying) (== (rocket :source-player) source-player)))) rockets)))
+  )
+(defn get-free-slots [rockets source-player]
+  (clojure.set/difference (set (range 0 size-m)) (get-busy-slots rockets source-player)))
+
+(defn run-rockets [game-state conn-list source-player]
+  (assoc-in game-state [:rockets]
+            (let [rockets (game-state :rockets)
+                  fired (set (map (fn [cr-pos] (cr-pos :y)) (filter (fn [cr-pos] (== (cr-pos :x) size-n)) conn-list)))
+                  free-slots (shuffle (into (vector) (get-free-slots rockets source-player)))]
+              (if (empty? rockets)
+                []
+                (into
+                  (vector)
+                  (loop [rocket-num 0
+                         slot-num 0
+                         result []]
+                    (let [rocket (rockets rocket-num)
+                          is-rocket-takes-slot (and (= (rocket :source-player) source-player) (== (rocket :state) rocket-state-staying) (contains? fired (rocket :source-slot)))
+                          is-rocket-died (== 0 (rocket :fuel))
+                          new-rocket (if is-rocket-takes-slot
+                                       (if is-rocket-died
+                                         (generate-rocket-dying 0 (rocket :source-player) (rocket :source-slot))
+                                         (generate-rocket-flying 0 (dec (rocket :fuel)) (rocket :source-player) (rocket :source-slot) (free-slots slot-num)))
+                                       rocket)]
+                      (if (< (inc rocket-num) (count rockets))
+                        (recur (inc rocket-num) (if (and is-rocket-takes-slot (not is-rocket-died)) (inc slot-num) slot-num) (conj result new-rocket))
+                        (conj result new-rocket)))))))))
+
+(defn clean-board [game-state board-num conn-list]
+  game-state)
+
+(defn update-wick [game-state board-num wick-num conn-list]
+  (if (empty? (filter (fn [cr-pos] (== (cr-pos :x) size-n)) conn-list))
+    (assoc-in game-state [board-num :wick-timers wick-num] -1)
+    (if (== (((game-state board-num) :wick-timers) wick-num) 0)
+      (clean-board
+        (run-rockets
+          (assoc-in game-state [board-num] (reset-wicks (game-state board-num) conn-list))
+          conn-list
+          (if (= board-num :board1) :player1 :player2))
+        board-num conn-list)
+      (if (== (((game-state board-num) :wick-timers) wick-num) -1)
+        (assoc-in game-state [board-num :wick-timers wick-num] wick-timeout)
+        (update-in game-state [board-num :wick-timers wick-num] dec)))))
+
+
+(defn do-fire-wicks [game-state board-num]
+  (let [conn-cells (into (vector) (for [i (range 0 size-m)] (connected-cells (game-state board-num) (pos -1 i))))]
+    (reduce (fn [game-state wick-num] (update-wick game-state board-num wick-num (conn-cells wick-num)))
+            (flatten [game-state (range 0 size-m)]))))
 
 (defn do-win [game-state winner]
   (-> game-state
@@ -252,5 +311,7 @@
                 (update-in [:board2 :time-to-reload] update-time-to-reload)
                 (do-fire-wicks :board1)
                 (do-fire-wicks :board2)
+                (do-color-wicks :board1)
+                (do-color-wicks :board2)
                 (update-in [:rockets] update-rockets))
       game-state)))
