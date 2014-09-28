@@ -99,9 +99,9 @@
     [:h1 {:style (assoc sprites/names-style :text-align "center")} name]))
 
 (q/defcomponent
-  PlayerNamesComponent [args]
+  PlayersComponent [args]
   (html
-    [:div {:style {:position "absolute", :width boards-width, :top (- rockets-space-height (* 5 sprites/sprite-width))}}
+    [:div {:style {:position "absolute", :width boards-width, :top (:top args)}}
      [:div {:style {:position "absolute", :width (- board-width sprites/sprite-width), :left sprites/sprite-width}}
       (PlayerNameComponent (:player1 args))]
      [:div {:style {:position "absolute", :width (- board-width sprites/sprite-width), :left (+ board-width space-between-boards sprites/sprite-width)}}
@@ -129,4 +129,6 @@
         [:td {:style util/no-borders-style} (BoardComponent (:board2 data))]]
        [:tr {:style util/no-borders-style} (FitilComponent)]]]
      [:div {:style {:position "absolute"}} (RocketsComponent (:rockets data))]
-     [:div {:style {:position "absolute"}} (PlayerNamesComponent data)]]))
+     [:div {:style {:position "absolute"}} (PlayersComponent (assoc data :top (- rockets-space-height (* 5 sprites/sprite-width))))]
+     [:div {:style {:position "absolute"}} (PlayersComponent {:player1 "W S A D Q" :player2 "\u2B06 \u2B07 \u2B05 \u27A1 Space" :top (+ rockets-space-height board-height)})]
+     ]))
