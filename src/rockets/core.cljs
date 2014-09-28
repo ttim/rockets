@@ -21,7 +21,7 @@
 (defonce world (atom model/game-state))
 ;(defonce world (atom model/finish-state))
 
-(util/bind-state-log world (.getElementById js/document "state-log"))
+;(util/bind-state-log world (.getElementById js/document "state-log"))
 
 ; define render function
 (defn render [data]
