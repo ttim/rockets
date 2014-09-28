@@ -159,14 +159,19 @@
 
 ; states modifiers
 (defn move [game-state board direction]
-  (util/update-value game-state [board] (do-move-selection direction)))
+  (case (:type game-state)
+    :game (util/update-value game-state [board] (do-move-selection direction))
+    game-state))
 
 (defn rotate [game-state board]
-  ;(js/console.log (sablono.util/to-str ((:cells (game-state board)) 0)))
-  (util/update-value game-state [board] (if (reset-field? ((game-state board) :selected)) do-reset-board do-rotate-selected)))
+  (case (:type game-state)
+    :game (util/update-value game-state [board] (if (reset-field? ((game-state board) :selected)) do-reset-board do-rotate-selected))
+    game-state))
 
 (defn tick [game-state tick-value]
-  (-> game-state
-      (util/update-value [:board1 :time-to-reload] update-time-to-reload)
-      (util/update-value [:board2 :time-to-reload] update-time-to-reload)
-      (util/update-value [:rockets] update-rockets)))
+  (case (:type game-state)
+    :game (-> game-state
+              (util/update-value [:board1 :time-to-reload] update-time-to-reload)
+              (util/update-value [:board2 :time-to-reload] update-time-to-reload)
+              (util/update-value [:rockets] update-rockets))
+    game-state))

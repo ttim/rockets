@@ -17,6 +17,7 @@
   (:require-macros [cljs.core.async.macros :as m :refer [go alt!]]))
 
 ; world state
+;(defonce world (atom model/start-state))
 (defonce world (atom model/game-state))
 
 (util/bind-state-log world (.getElementById js/document "state-log"))

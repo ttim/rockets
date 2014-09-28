@@ -3,7 +3,8 @@
     [sablono.core :as html :refer-macros [html]]
     [quiescent :as q :include-macros true]
     [clojure.string :as string]
-    [rockets.util :as util]))
+    [rockets.util :as util]
+    [rockets.model :as model]))
 
 (q/defcomponent
   StartComponent [data world-atom]
@@ -19,7 +20,7 @@
      [:button
       {:type     "button"
        :disabled (or (string/blank? (:player1 data)) (string/blank? (:player2 data)))
-       :on-click #(util/update-text world-atom :type :game)
+       :on-click #(reset! world-atom (model/generate-game-state (:player1 data) (:player2 data)))
        }
       "Go!"]
      ]))
