@@ -196,7 +196,7 @@
 (defn do-color-cells
   ([board positions]
    (do-color-cells (do-color-cells board positions true)
-                   (into (vector) (clojure.set/difference all-points (set (flatten positions))))
+                   (into (vector) (cljset/difference all-points (set (flatten positions))))
                    false))
   ([board positions val]
    (if (or (nil? positions) (empty? positions))
@@ -207,12 +207,11 @@
          (subvec positions 1)
          val)))))
 
+(defn all-connected-cells [board]
+  (reduce cljset/union (for [i (range 0 size-m)] (connected-cells board (pos -1 i)))))
+
 (defn do-color-wicks-board [board]
-  (do-color-cells board
-                  (into
-                    (vector)
-                    (filter board-point?
-                            (reduce cljset/union (for [i (range 0 size-m)] (connected-cells board (pos -1 i))))))))
+  (do-color-cells board (into (vector) (filter board-point? (all-connected-cells board)))))
 
 (defn do-color-wicks [game-state board-num]
   (assoc-in game-state [board-num] (do-color-wicks-board (game-state board-num))))
@@ -230,7 +229,7 @@
                         :else -1)) rockets))))
 
 (defn get-free-slots [rockets player]
-  (clojure.set/difference (set (range 0 size-m)) (get-busy-slots rockets player)))
+  (cljset/difference (set (range 0 size-m)) (get-busy-slots rockets player)))
 
 (defn run-rockets [game-state conn-list source-player]
   (assoc-in game-state [:rockets]
@@ -311,12 +310,18 @@
     (do-win game-state player)
     game-state))
 
+(defn generate-good-board []
+  (loglog (let [board (generate-board)]
+            (if (empty? (filter (fn [cr-pos] (= (cr-pos :x) size-n)) (all-connected-cells board)))
+              board
+              (generate-good-board)))))
+
 (defn generate-game-state [player1 player2]
   {:type    :game
    :player1 player1
    :player2 player2
-   :board1  (do-color-wicks-board (generate-board))
-   :board2  (do-color-wicks-board (generate-board))
+   :board1  (do-color-wicks-board (generate-good-board))
+   :board2  (do-color-wicks-board (generate-good-board))
    :rockets (generate-rockets)})
 
 ; states samples
