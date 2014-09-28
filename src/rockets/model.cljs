@@ -311,10 +311,10 @@
     game-state))
 
 (defn generate-good-board []
-  (loglog (let [board (generate-board)]
-            (if (empty? (filter (fn [cr-pos] (= (cr-pos :x) size-n)) (all-connected-cells board)))
-              board
-              (generate-good-board)))))
+  (let [board (generate-board)]
+    (if (empty? (filter (fn [cr-pos] (= (cr-pos :x) size-n)) (all-connected-cells board)))
+      board
+      (generate-good-board))))
 
 (defn generate-game-state [player1 player2]
   {:type    :game
