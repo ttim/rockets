@@ -48,14 +48,20 @@
 	padding:6px 12px;
 	text-decoration:none;
 	border:0;
+	box-shadow: none;
 }
 .button:hover {
-	background:#00a2ff;
-	background-color:#00a2ff;
+	background:#f6ff07;
+	background-color:#f6ff07;
 }
 .button:active {
 	position:relative;
 	top:1px;
+	background:#f6ff07;
+    background-color:#f6ff07;
+    color:#f6ff07;
+    outline: none;
+	box-shadow: none;
 }
 
 .background {
