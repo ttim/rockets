@@ -4,6 +4,9 @@
 
 (def size-n 8)
 (def size-m size-n)
+(def board-size (* size-n size-m))
+;Note: sum of (prob-by-cell-types) must be equals to (board-size)
+(def prob-by-cell-types [20 20 18 2 4])
 (def rockets-cnt (divide size-m 2))
 (def max-rocket-fuel 3)
 (def max-time-to-reload 100)
@@ -60,8 +63,15 @@
      (into (vector) (for [i (range 0 rockets-cnt)]
                       (generate-rocket-staying max-rocket-fuel source-player (slots i)))))))
 
+(defn generate-cell-type []
+  (loop [i 0
+         j (rand-int board-size)]
+    (if (< j (prob-by-cell-types i))
+      i
+      (recur (inc i) (- j (prob-by-cell-types i))))))
+
 (defn generate-board-cell []
-  (cell (rand-int (clojure.core/count cell-types)) (rand-int 4) false))
+  (cell (generate-cell-type) (rand-int 4) false))
 
 (defn generate-board-cells []
   (into (vector) (for [_ (range 0 size-n)]
