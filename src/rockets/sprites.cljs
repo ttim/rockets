@@ -10,19 +10,19 @@
 
 (defn rocket-style-fn
   [img-src] (merge {:width sprite-width :height rocket-height :background-image img-src} util/no-borders-style))
-(def rocket-style (rocket-style-fn "url(../img/generated/rocket.png)"))
-(def rocket-fire-style (rocket-style-fn "url(../img/generated/rocket_fire.png)"))
+(def rocket-style (rocket-style-fn "url(img/generated/rocket.png)"))
+(def rocket-fire-style (rocket-style-fn "url(img/generated/rocket_fire.png)"))
 
 (def base-style (merge {:width sprite-width :height sprite-width} util/no-borders-style))
 
-(def empty-style (merge base-style {:background-image "url(../img/empty.png)"} util/no-borders-style))
-(def shuffle-style (merge base-style {:background-image "url(../img/generated/shuffle.png)"} util/no-borders-style))
-(def fire-style (merge base-style {:background-image "url(../img/fire.png)"} util/no-borders-style))
+(def empty-style (merge base-style {:background-image "url(img/empty.png)"} util/no-borders-style))
+(def shuffle-style (merge base-style {:background-image "url(img/generated/shuffle.png)"} util/no-borders-style))
+(def fire-style (merge base-style {:background-image "url(img/fire.png)"} util/no-borders-style))
 
 (defn select-type [style type fire?]
   (if (= type -1)
     style
-    (let [img (str "url(../img/generated/cell_" type (if fire? "_fire" "") ".png)")]
+    (let [img (str "url(img/generated/cell_" type (if fire? "_fire" "") ".png)")]
       (assoc style :background-image img))))
 
 (defn rotate [style angle]
@@ -34,7 +34,7 @@
   )
 
 (defn selected-state [sprite selected?]
-  (if selected? [:div {:style {:background-image "url(../img/generated/selected.png)"}} sprite] sprite))
+  (if selected? [:div {:style {:background-image "url(img/generated/selected.png)"}} sprite] sprite))
 
 (defn opacity [opacity]
   {:opacity (/ opacity 100) :filter (str "alpha(opacity=" opacity "100)")})
@@ -44,7 +44,7 @@
   (html
     (let [selected? (:selected? args)
           time-to-reload (- 100 (:time-to-reload args))]
-      [:div {:style {:background-image "url(../img/generated/bg.png)"}}
+      [:div {:style {:background-image "url(img/generated/bg.png)"}}
        (selected-state [:div {:style (merge shuffle-style (opacity time-to-reload))}] selected?)])))
 
 (q/defcomponent
@@ -65,5 +65,5 @@
 
 (q/defcomponent
   CoolSpriteComponent [args]
-  (html [:div {:style {:background-image "url(../img/generated/bg.png)"}}
+  (html [:div {:style {:background-image "url(img/generated/bg.png)"}}
          (selected-state (sprite (args :type) (args :angle) (args :fire?)) (args :selected?))])) ;CoolSpriteComponent [type, angle, fire?, selected?]
