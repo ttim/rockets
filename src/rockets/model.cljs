@@ -328,7 +328,8 @@
 (def start-state
   {:type    :start
    :player1 "First Rocketeer"
-   :player2 "Second Rocketeer"})
+   :player2 "Second Rocketeer"
+   :audio?  true})
 
 (def game-state
   (-> (generate-game-state "name1" "name2")
@@ -363,4 +364,4 @@
         (do-color-wicks :board1)
         (do-color-wicks :board2)
         (update-in [:rockets] update-rockets))
-    game-state))
+    (if (= tick-value 20) (do (js/console.log "!") (assoc game-state :audio? false)) game-state)))

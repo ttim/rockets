@@ -22,6 +22,10 @@
 ;(defonce world (atom model/game-state))
 ;(defonce world (atom model/finish-state))
 
+; audio
+(audio/init! world)
+;(audio/play! audio/rocket1)
+
 ;(util/bind-state-log world (.getElementById js/document "state-log"))
 
 ; define render function
