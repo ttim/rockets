@@ -14,7 +14,7 @@
 }
 
 /*dark bg*/
-.dialog, .dim, .usual-background {
+.dialog, .usual-background {
     background-color:#333355;
 }
 /*dark fg*/
@@ -121,10 +121,10 @@
     left:0;
     top:0;
     z-index:1 !important;
-    filter: alpha(opacity=75); /* internet explorer */
-    -khtml-opacity: 0.75;      /* khtml, old safari */
-      -moz-opacity: 0.75;      /* mozilla, netscape */
-           opacity: 0.75;      /* fx, safari, opera */
+    filter: alpha(opacity=25); /* internet explorer */
+    -khtml-opacity: 0.25;      /* khtml, old safari */
+      -moz-opacity: 0.25;      /* mozilla, netscape */
+           opacity: 0.25;      /* fx, safari, opera */
 }
 
 .dialogWrapper {
