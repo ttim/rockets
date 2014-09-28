@@ -11,6 +11,20 @@ body {
     left: 0px;
     right: 0px;
     margin-bottom: 0px;
-    padding-bottom: 30px;
-    padding-left: 30px;
+    /*padding-bottom: 30px;*/
+    /*padding-left: 30px;*/
+}
+
+#left-footer {
+    position: absolute;
+    right: 0px;
+    font-size: 30px;
+    padding-right: 10px;
+}
+
+#right-footer {
+    position: absolute;
+    left: 0px;
+    font-size: 30px;
+    padding-left: 10px;
 }

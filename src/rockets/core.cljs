@@ -34,7 +34,8 @@
         :game (game/GameComponent data world)
         :finish (finish/FinishComponent data world))]
      [:div {:id "footer"}
-      [:h1 "hello from footer"]]]))
+      [:div {:id "left-footer"} "hello from left footer"]
+      [:div {:id "right-footer"} "hello from right footer"]]]))
 
 (defn render [data]
   (q/render
