@@ -24,12 +24,18 @@
 ;(util/bind-state-log world (.getElementById js/document "state-log"))
 
 ; define render function
+(q/defcomponent
+  GameComponent [data world]
+  (html
+    [:div {:style {:width game/boards-width, :margin "0 auto"}}
+     (case (:type data)
+       :start (start/StartComponent data world)
+       :game (game/GameComponent data world)
+       :finish (finish/FinishComponent data world))]))
+
 (defn render [data]
   (q/render
-    (case (:type data)
-      :start (start/StartComponent data world)
-      :game (game/GameComponent data world)
-      :finish (finish/FinishComponent data world))
+    (GameComponent data world)
     (.getElementById js/document "main-area")))
 
 ; render for first time
