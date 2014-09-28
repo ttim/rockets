@@ -24,7 +24,8 @@
    87 [:player1 :up]                                        ; w
    68 [:player1 :right]                                     ; d
    83 [:player1 :down]                                      ; s
-   81 [:player1 :rotate]                                    ; q
+   ;81 [:player1 :rotate]                                    ; q
+   16 [:player1 :rotate]                                    ; shift
    })
 
 (defn event->key
@@ -43,6 +44,7 @@
                     #(let [prevent? (prevention-predicate)
                            key-code (.-keyCode %)]
                       (do
+                        (js/console.log "!!!" key-code)
                         (when (and prevent? (contains? #{37 38 39 40 32} key-code))
                           (. % (preventDefault)))
                         (put! ev-chan (parse-event %)))))
