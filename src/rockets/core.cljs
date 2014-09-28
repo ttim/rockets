@@ -34,8 +34,11 @@
         :game (game/GameComponent data world)
         :finish (finish/FinishComponent data world))]
      [:div {:id "footer"}
-      [:div {:id "left-footer"} "hello from left footer"]
-      [:div {:id "right-footer"} "hello from right footer"]]]))
+      [:div.titleText {:id "left-footer"} "Awesome Rocketeers"]
+      [:div.titleText {:id "right-footer"}
+       [:button.button "Share"]
+       [:button.button "Vote"]
+       ]]]))
 
 (defn render [data]
   (q/render

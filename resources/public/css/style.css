@@ -6,7 +6,7 @@ body {
 #footer {
     position: fixed;
     height: 50px;
-    background-color: red;
+    background-color:#383859;
     bottom: 0px;
     left: 0px;
     right: 0px;
@@ -17,15 +17,17 @@ body {
 
 #left-footer {
     position: absolute;
-    right: 0px;
+    left: 10px;
     font-size: 30px;
+    font-family:Geo;
     padding-right: 10px;
 }
 
 #right-footer {
     position: absolute;
-    left: 0px;
+    right: 10px;
     font-size: 30px;
+    font-family:Geo;
     padding-left: 10px;
 }
 
