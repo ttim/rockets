@@ -13,7 +13,8 @@
     [rockets.keys :as keys]
     [rockets.start :as start]
     [rockets.game :as game]
-    [rockets.finish :as finish])
+    [rockets.finish :as finish]
+    [rockets.audio :as audio])
   (:require-macros [cljs.core.async.macros :as m :refer [go alt!]]))
 
 ; world state
