@@ -8,7 +8,7 @@
 (def max-rocket-fuel 3)
 (def max-time-to-reload 100)
 
-(def wick-timeout 10)
+(def wick-timeout 15)
 
 (def rocket-max-progress 100)
 (def rocket-state-staying :staying)
