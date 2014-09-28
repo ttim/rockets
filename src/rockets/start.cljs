@@ -9,13 +9,12 @@
 (q/defcomponent
   StartComponent [data world-atom]
   (html
-    [:div.background.titleText
-     [:h1.titleText "Welcome, Awesome Rocketeers!"]
-     "Player 1"
-     [:input {:type "text", :value (:player1 data), :on-change #(util/update-text world-atom :player1 (-> % .-target .-value))}]
+    [:div.usual-background {:style {:text-align "center"}}
+     [:div.titleText {:style {:text-align "center"}} "Welcome, Rocketeers!"]
      [:p]
-     "Player 2"
-     [:input {:type "text", :value (:player2 data), :on-change #(util/update-text world-atom :player2 (-> % .-target .-value))}]
+     [:input.inputField {:type "text", :value (:player1 data), :on-change #(util/update-text world-atom :player1 (-> % .-target .-value))}]
+     [:p]
+     [:input.inputField {:type "text", :value (:player2 data), :on-change #(util/update-text world-atom :player2 (-> % .-target .-value))}]
      [:p]
      [:button.button
       {:type     "button"

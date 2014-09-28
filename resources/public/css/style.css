@@ -1,16 +1,69 @@
 /* very cool style */
 
-.usual-background {
-    background-color: #333355
+/*blue bg*/
+.button {
+    background-color:#00a2ff;
 }
-.grey-background {
-    background-color: #fff
+/*blue fg*/
+.titleText, .inputField, .bigText, .normalText, .smallText {
+    color:#00a2ff;
+}
+
+/*dark bg*/
+.dialog, .dim, .usual-background {
+    background-color:#333355;
+}
+/*dark fg*/
+.button {
+    color:#333355;
+}
+
+/*light bg*/
+#footer, .inputField, .button:disabled, .grey-background {
+    background-color:#383859;
+}
+/*light fg*/
+.button:disabled {
+    color:#383859;
+}
+
+/*yellow bg*/
+.button:hover, .button:active {
+    background-color:#f6ff07;
+}
+/*yellow fg*/
+.inputField:active, .inputField:focus {
+    color:#f6ff07;
+}
+
+/*no clue how this is done normally*/
+/*text stuff*/
+.button, .bigText, .normalText, .smallText, .titleText, #left-footer, #right-footer, .button, .inputField, #footer {
+    font-family:'Geo';
+}
+/*big text*/
+.bigText, .titleText {
+    font-size: 42px;
+    font-weight:bold;
+}
+/*normal text*/
+.normalText, #left-footer, #right-footer {
+    font-size: 30px;
+    font-weight:bold;
+}
+/*button*/
+.button {
+    font-size: 18px;
+    font-weight:bold;
+}
+/*type text*/
+.smallText, .inputField {
+    font-size: 20px;
 }
 
 #footer {
     position: fixed;
     height: 50px;
-    background-color:#383859;
     bottom: 0px;
     left: 0px;
     right: 0px;
@@ -23,55 +76,42 @@
 #left-footer {
     position: absolute;
     left: 10px;
-    font-size: 30px;
-    font-family:Geo;
     padding-right: 10px;
 }
 
 #right-footer {
     position: absolute;
     right: 10px;
-    font-size: 30px;
-    font-family:Geo;
     padding-left: 10px;
 }
 
 .button {
-	background:#00a2ff;
-    background-color:#00a2ff;
 	display:inline-block;
 	cursor:pointer;
-	color:#333355;
-	font-family:Geo;
-	font-size:18px;
-	font-weight:bold;
 	padding:6px 12px;
 	text-decoration:none;
 	border:0;
 	box-shadow: none;
 }
-.button:hover {
-	background:#f6ff07;
-	background-color:#f6ff07;
-}
 .button:active {
 	position:relative;
 	top:1px;
-	background:#f6ff07;
-    background-color:#f6ff07;
-    color:#f6ff07;
     outline: none;
 	box-shadow: none;
 }
-
-.background {
-    background-color:#333355;
+.button:selected,.button:hover,.button:active,.inputField:active {
+    border:0px solid;
+}
+.button:disabled {
+    background:red;
+    background-color:red;
 }
 
-.titleText {
-    font-family:'Geo';
-    color:#00a2ff;
-    font-size:42px;
+.inputField {
+    border:0px solid;
+    height:100%;
+    width:100%;
+    text-align:center;
 }
 
 .dim {
@@ -81,7 +121,6 @@
     left:0;
     top:0;
     z-index:1 !important;
-    background-color:#333355;
     filter: alpha(opacity=75); /* internet explorer */
     -khtml-opacity: 0.75;      /* khtml, old safari */
       -moz-opacity: 0.75;      /* mozilla, netscape */
@@ -101,6 +140,5 @@
     height: 200px;
     margin: 0 auto;
     padding: 40px;
-    background-color: #333355;
     border: 0px solid #ccc;
 }
