@@ -216,13 +216,16 @@
   (reduce (fn [board wick-num] (assoc-in board [:wick-timers wick-num] -1))
           (flatten [board (map (fn [cr-pos] (cr-pos :y)) (filter (fn [cr-pos] (== (cr-pos :x) -1)) conn-list))])))
 
-(defn get-busy-slots [rockets source-player]
-  (set (map (fn [rocket] (rocket :source-slot))
-            (filter (fn [rocket] (or (and (= (rocket :state) rocket-state-staying) (not (= (rocket :source-player) source-player)))
-                                     (and (= (rocket :state) rocket-state-flying) (= (rocket :source-player) source-player)))) rockets))))
+(defn get-busy-slots [rockets player]
+  (set (filter (fn [slot] (not= -1 slot))
+               (map (fn [rocket]
+                      (cond
+                        (and (= (rocket :state) rocket-state-staying) (= (rocket :source-player) player)) (rocket :source-slot)
+                        (and (= (rocket :state) rocket-state-flying) (not (= (rocket :source-player) player))) (rocket :target-slot)
+                        :else -1)) rockets))))
 
-(defn get-free-slots [rockets source-player]
-  (clojure.set/difference (set (range 0 size-m)) (get-busy-slots rockets source-player)))
+(defn get-free-slots [rockets player]
+  (clojure.set/difference (set (range 0 size-m)) (get-busy-slots rockets player)))
 
 (defn run-rockets [game-state conn-list source-player]
   (assoc-in game-state [:rockets]
@@ -237,7 +240,7 @@
                          slot-num 0
                          result []]
                     (let [rocket (rockets rocket-num)
-                          is-rocket-takes-slot (and (= (rocket :source-player) source-player) (== (rocket :state) rocket-state-staying) (contains? fired (rocket :source-slot)))
+                          is-rocket-takes-slot (and (= (rocket :source-player) source-player) (= (rocket :state) rocket-state-staying) (contains? fired (rocket :source-slot)))
                           is-rocket-died (== 0 (rocket :fuel))
                           new-rocket (if is-rocket-takes-slot
                                        (if is-rocket-died
