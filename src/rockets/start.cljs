@@ -9,7 +9,7 @@
 (q/defcomponent
   StartComponent [data world-atom]
   (html
-    [:div.usual-background {:style {:text-align "center"}}
+    [:div.usual-background {:style {:text-align "center" :position "relative" :top "50%" :transform "translateY(50%)"}}
      [:div.titleText {:style {:text-align "center"}} "Welcome, Rocketeers!"]
      [:p]
      [:input.inputField {:type "text", :value (:player1 data), :on-change #(util/update-text world-atom :player1 (-> % .-target .-value))}]
