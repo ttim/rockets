@@ -4,7 +4,8 @@
     [quiescent :as q :include-macros true]
     [clojure.string :as string]
     [rockets.util :as util]
-    [rockets.game :as game]))
+    [rockets.game :as game]
+    [rockets.model :as model]))
 
 (q/defcomponent
   FinishComponent [data world-atom]
@@ -15,7 +16,12 @@
       [:div.dialog
        [:div.titleText (str ((:winner data) data) " Won!")]
        [:p]
-       [:button.button "Play again"]
+       [:button.button
+        {:type "button"
+         :on-click #(reset! world-atom (model/generate-game-state (:player1 data) (:player2 data)))
+        }
+        "Play again"
+        ]
        [:p]
        [:div.normalText "If You Like Our Game"]
        [:button.voteButton "Vote For Us!"]
