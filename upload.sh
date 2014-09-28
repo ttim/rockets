@@ -4,6 +4,7 @@ rm -rf www/*
 lein cljsbuild once
 cp -rf resources/public/css www/
 cp -rf resources/public/img www/
+cp -rf resources/public/sound www/
 rm www/img/generate.sh
 cp resources/public/index.html www/
 cat www/index.html | sed 's/js\/compiled\/rockets\.js/rockets.min.js/g' | sed 's/<script src="js\/compiled\/out\/goog\/base.js" type="text\/javascript"><\/script>//g' > www/index_new.html
