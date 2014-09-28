@@ -37,7 +37,10 @@
   (if selected? [:div {:style {:background-image "url(img/generated/selected.png)"}} sprite] sprite))
 
 (defn opacity [opacity]
-  {:opacity (/ opacity 100) :filter (str "alpha(opacity=" opacity "100)")})
+  {:opacity (/ opacity 100) :filter (str "alpha(opacity=" opacity ")")})
+
+(def names-style
+  (merge {:font-family "'Geo', sans-serif" :color "white" } (opacity 10)))
 
 (q/defcomponent
   ShuffleComponent [args]                                   ;(selected time-to-reload)
