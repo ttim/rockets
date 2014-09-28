@@ -120,8 +120,8 @@
 (q/defcomponent
   GameComponent [data world-atom]
   (html
-    [:div {:style {:width boards-width, :height (+ board-height rockets-space-height)}}
-     [:div {:style {:position "absolute", :top (+ rockets-space-height 7)}}
+    [:div {:style {:width boards-width, :height (+ board-height rockets-space-height), :position "relative" }}
+     [:div {:style {:position "absolute", :top rockets-space-height}}
       [:table {:style util/no-borders-style}
        [:tr {:style util/no-borders-style}
         [:td {:style util/no-borders-style} (BoardComponent (:board1 data))]
