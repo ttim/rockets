@@ -130,7 +130,7 @@
        [:tr {:style util/no-borders-style} (FitilComponent)]]]
      [:div {:style {:position "absolute"}} (RocketsComponent (:rockets data))]
      [:div {:style {:position "absolute"}} (PlayersComponent (assoc data :top (- rockets-space-height (* 5 sprites/sprite-width))))]
-     [:div {:style {:position "absolute"}} (PlayersComponent {:player1 "W S A D Q" :player2
-                                                                       "Arrows Space"
+     [:div {:style {:position "absolute"}} (PlayersComponent {:player1 "W S A D + Q" :player2
+                                                                       "Arrows + Space"
                                                               :top (+ rockets-space-height board-height)})]
      ]))
