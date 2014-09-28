@@ -1,7 +1,7 @@
 /* very cool style */
 
 /*blue bg*/
-.button {
+.button{
     background-color:#00a2ff;
 }
 /*blue fg*/
@@ -27,7 +27,7 @@
     background-color:#383859;
 }
 /*light fg*/
-.button:disabled, .voteButton {
+.button:disabled, .voteButton:disabled {
     color:#383859;
 }
 
@@ -60,6 +60,7 @@
     font-size: 18px;
     font-weight:bold;
 }
+
 /*type text*/
 .smallText, .inputField {
     font-size: 20px;
