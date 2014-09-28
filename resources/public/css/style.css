@@ -1,7 +1,7 @@
 /* very cool style */
 
 /*blue bg*/
-.button{
+.button, .sButton {
     background-color:#00a2ff;
 }
 /*blue fg*/
