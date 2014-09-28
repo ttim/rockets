@@ -166,7 +166,7 @@
 
 (defn next-rocket-state-flying [rocket]
   (if (<= rocket-max-progress (rocket :progress))
-    (generate-rocket-staying (rocket :fuel) (other-player (rocket :source-player)) (rocket :target-slot))
+    (generate-rocket-staying (dec (rocket :fuel)) (other-player (rocket :source-player)) (rocket :target-slot))
     (update-in rocket [:progress] inc)))
 
 (defn next-rocket-state-dying [rocket]
@@ -242,7 +242,7 @@
                           new-rocket (if is-rocket-takes-slot
                                        (if is-rocket-died
                                          (generate-rocket-dying 0 (rocket :source-player) (rocket :source-slot))
-                                         (generate-rocket-flying 0 (dec (rocket :fuel)) (rocket :source-player) (rocket :source-slot) (free-slots slot-num)))
+                                         (generate-rocket-flying 0 (rocket :fuel) (rocket :source-player) (rocket :source-slot) (free-slots slot-num)))
                                        rocket)]
                       (if (< (inc rocket-num) (count rockets))
                         (recur (inc rocket-num) (if (and is-rocket-takes-slot (not is-rocket-died)) (inc slot-num) slot-num) (conj result new-rocket))
