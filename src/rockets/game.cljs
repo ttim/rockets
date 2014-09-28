@@ -96,7 +96,7 @@
 (q/defcomponent
   PlayerNameComponent [name]
   (html
-    [:h1 name]))
+    [:h1 {:style (assoc sprites/names-style :text-align "center")} name]))
 
 (q/defcomponent
   PlayerNamesComponent [args]
