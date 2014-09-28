@@ -48,7 +48,7 @@
   (go
     (loop [tick 0]
       (<! (async/timeout 20))
-      (reset! world (model/event-tick @world tick))
+      (reset! world (model/tick @world tick))
       (recur (inc tick)))))
 
 ; keyboard controller
@@ -61,11 +61,11 @@
             board ({:player1 :board1, :player2 :board2} (command 0))
             action (command 1)
             new-world (case action
-                        :rotate (model/event-select @world board)
-                        :up (model/event-move-selection @world board 0)
-                        :right (model/event-move-selection @world board 1)
-                        :down (model/event-move-selection @world board 2)
-                        :left (model/event-move-selection @world board 3)
+                        :rotate (model/rotate @world board)
+                        :up (model/move @world board 0)
+                        :right (model/move @world board 1)
+                        :down (model/move @world board 2)
+                        :left (model/move @world board 3)
                         @world)]
         (reset! world new-world))
       (recur))))

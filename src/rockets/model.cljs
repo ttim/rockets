@@ -2,11 +2,6 @@
   (:require
     [rockets.util :as util]))
 
-(def start-state
-  {:type    :start
-   :player1 "First Rocketeer"
-   :player2 "Second Rocketeer"})
-
 (def size-n 8)
 (def size-m 8)
 (def rockets-cnt 4)
@@ -84,19 +79,6 @@
    :board2  (generate-board)
    :rockets (generate-rockets)})
 
-(def game-state
-  (let [state (generate-game-state "name1" "name2")]
-    (let [state (util/set-value state [:rockets 0] (assoc ((state :rockets) 0) :state rocket-state-flying :progress 0 :target-slot 0))]
-      (let [state (util/set-value state [:rockets 1] (assoc ((state :rockets) 1) :state rocket-state-dying :progress 60))]
-        (let [state (util/set-value state [:rockets 2] (assoc ((state :rockets) 2) :state rocket-state-dying :progress 99))]
-          state)))))
-
-(def finish-state
-  {:type    :finish
-   :player1 "name1"
-   :player2 "name2"
-   :win     :player1})
-
 (def dx [1 0 -1 0])
 (def dy [0 1 0 -1])
 
@@ -156,20 +138,34 @@
 (defn update-rockets [rockets]
   (filter live-rocket? (map update-rocket rockets)))
 
-;====================================;
-;                                    ;
-;         Public API: events         ;
-;                                    ;
-;====================================;
+; states samples
+(def start-state
+  {:type    :start
+   :player1 "First Rocketeer"
+   :player2 "Second Rocketeer"})
 
-(defn event-move-selection [game-state board direction]
+(def game-state
+  (let [state (generate-game-state "name1" "name2")]
+    (let [state (util/set-value state [:rockets 0] (assoc ((state :rockets) 0) :state rocket-state-flying :progress 0 :target-slot 0))]
+      (let [state (util/set-value state [:rockets 1] (assoc ((state :rockets) 1) :state rocket-state-dying :progress 60))]
+        (let [state (util/set-value state [:rockets 2] (assoc ((state :rockets) 2) :state rocket-state-dying :progress 99))]
+          state)))))
+
+(def finish-state
+  {:type    :finish
+   :player1 "First Rocketeer"
+   :player2 "Second Rocketeer"
+   :win     :player1})
+
+; states modifiers
+(defn move [game-state board direction]
   (util/update-value game-state [board] (do-move-selection direction)))
 
-(defn event-select [game-state board]
+(defn rotate [game-state board]
   ;(js/console.log (sablono.util/to-str ((:cells (game-state board)) 0)))
   (util/update-value game-state [board] (if (reset-field? ((game-state board) :selected)) do-reset-board do-rotate-selected)))
 
-(defn event-tick [game-state tick]
+(defn tick [game-state tick-value]
   (-> game-state
       (util/update-value [:board1 :time-to-reload] update-time-to-reload)
       (util/update-value [:board2 :time-to-reload] update-time-to-reload)
