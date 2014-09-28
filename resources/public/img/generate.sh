@@ -25,3 +25,5 @@ convert templates/empty_rocket.png -fill $path_fire -stroke $path_fire -draw "re
 convert templates/empty_rocket.png -fill $path_fire -stroke $path_fire -draw "rectangle 9 32 26 49" generated/fuel_2.png
 convert templates/empty_rocket.png -fill $path_fire -stroke $path_fire -draw "rectangle 9 41 26 49" generated/fuel_1.png
 convert empty.png -fill "white" -stroke "none" -draw "fill-opacity 0.04 rectangle 1 1 34 34" generated/bg.png
+
+cp templates/player.png generated/player.png

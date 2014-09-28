@@ -230,10 +230,7 @@
       (update-in [:rockets 2] #(assoc % :state rocket-state-dying :progress 0))))
 
 (def finish-state
-  {:type    :finish
-   :player1 "First Rocketeer"
-   :player2 "Second Rocketeer"
-   :winner  :player1})
+  (do-win game-state :player1))
 
 ; states modifiers
 (defn move [game-state board direction]
