@@ -10,6 +10,7 @@
     res))
 (defn play! [audio]
   (let [audio? (:audio? @audio-world)]
+    (set! (.-currentTime audio) 0)
     (when audio? (. audio (play)))))
 (defn stop! [audio]
   (do
@@ -25,10 +26,10 @@
       (when (and (not (:audio? data)) (:audio? old-data))
         (doall (map stop! audios))))))
 
-(defonce rocket1-sound (audio "rocket1"))
-(defonce rocket2-sound (audio "rocket2"))
-(defonce rotate1-sound (audio "rotate1"))
-(defonce rotate2-sound (audio "rotate2"))
+(defonce rocket-sound (audio "rocket1"))
+;(defonce rocket2-sound (audio "rocket2"))
+(defonce rotate-sound (audio "rotate1"))
+;(defonce rotate2-sound (audio "rotate2"))
 (defonce shuffle-sound (audio "shuffle"))
 
 ;(js/console.log (sablono.util/to-str audios))

@@ -112,6 +112,7 @@
   (update-in cell [:orientation] next-orientation))
 
 (defn do-rotate-selected [board]
+  (rockets.audio/play! rockets.audio/rotate-sound)
   (update-in board [:cells ((board :selected) :x) ((board :selected) :y)] do-rotate-cell))
 
 (defn next-cell [cr-pos direction]
@@ -152,10 +153,12 @@
 
 (defn do-reset-board [board]
   (if (== 0 (board :time-to-reload))
-    (assoc board
-      :cells (generate-board-cells)
-      :time-to-reload max-time-to-reload
-      :wick-timers (into (vector) (repeat size-m -1)))
+    (do
+      (rockets.audio/play! rockets.audio/shuffle-sound)
+      (assoc board
+        :cells (generate-board-cells)
+        :time-to-reload max-time-to-reload
+        :wick-timers (into (vector) (repeat size-m -1))))
     board))
 
 (defn update-time-to-reload [time]
@@ -316,10 +319,11 @@
       board
       (generate-good-board))))
 
-(defn generate-game-state [player1 player2]
+(defn generate-game-state [player1 player2 audio?]
   {:type    :game
    :player1 player1
    :player2 player2
+   :audio?  audio?
    :board1  (do-color-wicks-board (generate-good-board))
    :board2  (do-color-wicks-board (generate-good-board))
    :rockets (generate-rockets)})
@@ -332,7 +336,7 @@
    :audio?  true})
 
 (def game-state
-  (-> (generate-game-state "name1" "name2")
+  (-> (generate-game-state "name1" "name2" true)
       (update-in [:rockets 0] #(assoc % :state rocket-state-flying :progress 0 :target-slot 0))
       (update-in [:rockets 1] #(assoc % :state rocket-state-dying :progress 60))
       (update-in [:rockets 2] #(assoc % :state rocket-state-dying :progress 0))))
@@ -364,4 +368,4 @@
         (do-color-wicks :board1)
         (do-color-wicks :board2)
         (update-in [:rockets] update-rockets))
-    (if (= tick-value 20) (do (js/console.log "!") (assoc game-state :audio? false)) game-state)))
+    game-state))
