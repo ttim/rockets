@@ -86,7 +86,7 @@
 
 (def game-state
   (let [state (generate-game-state "name1" "name2")]
-    (let [state (util/set-value state [:rockets 0] (assoc ((state :rockets) 0) :state rocket-state-flying :progress 30 :target-slot 0))]
+    (let [state (util/set-value state [:rockets 0] (assoc ((state :rockets) 0) :state rocket-state-flying :progress 0 :target-slot 0))]
       (let [state (util/set-value state [:rockets 1] (assoc ((state :rockets) 1) :state rocket-state-dying :progress 60))]
         (let [state (util/set-value state [:rockets 2] (assoc ((state :rockets) 2) :state rocket-state-dying :progress 99))]
           state)))))

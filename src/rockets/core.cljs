@@ -47,7 +47,7 @@
 (def ticker
   (go
     (loop [tick 0]
-      (<! (async/timeout 10))
+      (<! (async/timeout 20))
       (reset! world (model/event-tick @world tick))
       (recur (inc tick)))))
 

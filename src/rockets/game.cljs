@@ -50,6 +50,14 @@
   [progress min-value max-value] (+ min-value (/ (* progress (- max-value min-value)) 100)))
 
 ; coordinates as school axis
+(defn calc-flying-rocket-coordinates [rocket]
+  (let [source-player (:source-player rocket)
+        source-slot (:source-slot rocket)
+        offset (if (= source-player :player1) 0 (+ board-width space-between-boards))
+        progress (:progress rocket)                         ; 0..20 20..80 80..100
+        y-progress (if (<= progress 20) (* progress 5) (if (<= progress 80) 100 (* (- 100 progress) 5)))]
+    {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y (convert y-progress 0 (- rockets-space-height sprites/rocket-height))}))
+
 (defn calc-rocket-coordinates [rocket]
   (let [source-player (:source-player rocket)
         source-slot (:source-slot rocket)
@@ -58,7 +66,7 @@
     (case (rocket :state)
       :staying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y 0}
       :dying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y (convert progress 0 rockets-space-height)}
-      :flying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y 0})))
+      :flying (calc-flying-rocket-coordinates rocket))))
 
 (q/defcomponent
   RocketComponent [rocket]
