@@ -17,14 +17,14 @@
        [:div.titleText (str ((:winner data) data) " Won!")]
        [:p]
        [:button.button
-        {:type "button"
+        {:type     "button"
          :on-click #(reset! world-atom (model/generate-game-state (:player1 data) (:player2 data)))
-        }
+         }
         "Play again"
         ]
        [:p]
        [:div.normalText "If You Like Our Game"]
-       [:button.voteButton "Vote For Us!"]
+       [:button.voteButton {:on-click #(util/redirect-to "https://clojurecup.com/#/apps/rockets")} "Vote For Us!"]
        ]
       ]
      ]

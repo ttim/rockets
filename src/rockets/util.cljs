@@ -15,3 +15,6 @@
   (defonce _first_time_log_render (update-state-log @state-atom element)))
 
 (def no-borders-style {:border-width 0, :padding "0 0 0 0", :margin "0 0 0 0", :border-spacing 0})
+
+(defn redirect-to [url]
+  (set! (.-href js/window.location) url))

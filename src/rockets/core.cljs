@@ -17,8 +17,8 @@
   (:require-macros [cljs.core.async.macros :as m :refer [go alt!]]))
 
 ; world state
-;(defonce world (atom model/start-state))
-(defonce world (atom model/game-state))
+(defonce world (atom model/start-state))
+;(defonce world (atom model/game-state))
 ;(defonce world (atom model/finish-state))
 
 ;(util/bind-state-log world (.getElementById js/document "state-log"))
@@ -37,7 +37,7 @@
       [:div.titleText {:id "left-footer"} "Awesome Rocketeers"]
       [:div.titleText {:id "right-footer"}
        [:button.button "Share"]
-       [:button.voteButton "Vote"]
+       [:button.voteButton {:on-click #(util/redirect-to "https://clojurecup.com/#/apps/rockets")} "Vote"]
        ]]]))
 
 (defn render [data]
