@@ -141,4 +141,7 @@
     margin: 0 auto;
     padding: 40px;
     border: 0px solid #ccc;
+    position: relative;
+    top: 50%;
+    transform: translateY(50%);
 }
