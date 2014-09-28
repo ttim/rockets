@@ -32,7 +32,7 @@
 }
 
 /*yellow bg*/
-.button:hover, .button:active, .voteButton:active, .voteButton:hover {
+.button:hover, .button:focus, .button:active, .voteButton:active, .voteButton:hover, .voteButton:focus {
     background-color:#f6ff07;
 }
 /*yellow fg*/
