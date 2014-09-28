@@ -84,14 +84,6 @@
    :time-to-reload max-time-to-reload
    :wick-timers    (into (vector) (repeat size-m -1))})
 
-(defn generate-game-state [player1 player2]
-  {:type    :game
-   :player1 player1
-   :player2 player2
-   :board1  (generate-board)
-   :board2  (generate-board)
-   :rockets (generate-rockets)})
-
 (def dx [1 0 -1 0])
 (def dy [0 1 0 -1])
 
@@ -214,13 +206,15 @@
          (subvec positions 1)
          val)))))
 
+(defn do-color-wicks-board [board]
+  (do-color-cells board
+                  (into
+                    (vector)
+                    (filter board-point?
+                            (reduce clojure.set/union (for [i (range 0 size-m)] (connected-cells board (pos -1 i))))))))
+
 (defn do-color-wicks [game-state board-num]
-  (assoc-in game-state [board-num]
-            (do-color-cells (game-state board-num)
-                            (into
-                              (vector)
-                              (filter board-point?
-                                      (reduce clojure.set/union (for [i (range 0 size-m)] (connected-cells (game-state board-num) (pos -1 i)))))))))
+  (assoc-in game-state [board-num] (do-color-wicks-board (game-state board-num))))
 
 (defn reset-wicks [board conn-list]
   (reduce (fn [board wick-num] (assoc-in board [:wick-timers wick-num] -1))
@@ -315,6 +309,14 @@
   (if (and (= (:type game-state) :game) (empty? (get-busy-slots (game-state :rockets) player)))
     (do-win game-state player)
     game-state))
+
+(defn generate-game-state [player1 player2]
+  {:type    :game
+   :player1 player1
+   :player2 player2
+   :board1  (do-color-wicks-board (generate-board))
+   :board2  (do-color-wicks-board (generate-board))
+   :rockets (generate-rockets)})
 
 ; states samples
 (def start-state
