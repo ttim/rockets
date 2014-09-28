@@ -1,6 +1,10 @@
 /* very cool style */
-body {
+
+.usual-background {
     background-color: #333355
+}
+.grey-background {
+    background-color: #fff
 }
 
 #footer {
@@ -11,6 +15,7 @@ body {
     left: 0px;
     right: 0px;
     margin-bottom: 0px;
+    padding-top: 12px;
     /*padding-bottom: 30px;*/
     /*padding-left: 30px;*/
 }

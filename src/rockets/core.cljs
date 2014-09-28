@@ -53,6 +53,16 @@
   world ::render
   (fn [_ _ _ data] (render data)))
 
+; watch world for background painting
+(defn update-background [world]
+  (let [background-class (if (= (:type world) :finish) "grey-background" "usual-background")]
+    (js/console.log background-class)
+    (set! (.-className (js/document.getElementById "body")) background-class)))
+(update-background @world)
+(add-watch
+  world ::background-updater
+  (fn [_ _ old-data data] (when (not (= (:type old-data) (:type data))) (update-background data))))
+
 ; watch js code reload, by this code we are forcing world atom update without update itself
 (fw/watch-and-reload
   :jsload-callback
