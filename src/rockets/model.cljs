@@ -94,16 +94,16 @@
 
 (defn do-move-selection [direction]
   (fn [board] (let [next-point (get-next-point (board :selected) direction)]
-                (if (valid-point? next-point) (util/set-value board [:selected] next-point) board))))
+                (if (valid-point? next-point) (assoc-in board [:selected] next-point) board))))
 
 (defn next-orientation [orientation]
   (mod (inc orientation) 4))
 
 (defn do-rotate-cell [cell]
-  (if (cell :locked) cell (util/update-value cell [:orientation] next-orientation)))
+  (if (cell :locked) cell (update-in cell [:orientation] next-orientation)))
 
 (defn do-rotate-selected [board]
-  (util/update-value board [:cells ((board :selected) :x) ((board :selected) :y)] do-rotate-cell))
+  (update-in board [:cells ((board :selected) :x) ((board :selected) :y)] do-rotate-cell))
 
 (defn do-reset-board [board]
   (if (== 0 (board :time-to-reload))
@@ -122,12 +122,12 @@
 (defn next-rocket-state-flying [rocket]
   (if (== rocket-max-progress (rocket :progress))
     (generate-rocket-staying (dec (rocket :fuel)) (other-player (rocket :source-player)) (rocket :target-slot))
-    (util/update-value rocket [:progress] inc)))
+    (update-in rocket [:progress] inc)))
 
 (defn next-rocket-state-dying [rocket]
   (if (== rocket-max-progress (rocket :progress))
     rocket
-    (util/update-value rocket [:progress] inc)))
+    (update-in rocket [:progress] inc)))
 
 (defn update-rocket [rocket]
   (cond
@@ -146,9 +146,9 @@
 
 (def game-state
   (let [state (generate-game-state "name1" "name2")]
-    (let [state (util/set-value state [:rockets 0] (assoc ((state :rockets) 0) :state rocket-state-flying :progress 0 :target-slot 0))]
-      (let [state (util/set-value state [:rockets 1] (assoc ((state :rockets) 1) :state rocket-state-dying :progress 60))]
-        (let [state (util/set-value state [:rockets 2] (assoc ((state :rockets) 2) :state rocket-state-dying :progress 99))]
+    (let [state (assoc-in state [:rockets 0] (assoc ((state :rockets) 0) :state rocket-state-flying :progress 0 :target-slot 0))]
+      (let [state (assoc-in state [:rockets 1] (assoc ((state :rockets) 1) :state rocket-state-dying :progress 60))]
+        (let [state (assoc-in state [:rockets 2] (assoc ((state :rockets) 2) :state rocket-state-dying :progress 99))]
           state)))))
 
 (def finish-state
@@ -160,18 +160,18 @@
 ; states modifiers
 (defn move [game-state board direction]
   (case (:type game-state)
-    :game (util/update-value game-state [board] (do-move-selection direction))
+    :game (update-in game-state [board] (do-move-selection direction))
     game-state))
 
 (defn rotate [game-state board]
   (case (:type game-state)
-    :game (util/update-value game-state [board] (if (reset-field? ((game-state board) :selected)) do-reset-board do-rotate-selected))
+    :game (update-in game-state [board] (if (reset-field? ((game-state board) :selected)) do-reset-board do-rotate-selected))
     game-state))
 
 (defn tick [game-state tick-value]
   (case (:type game-state)
     :game (-> game-state
-              (util/update-value [:board1 :time-to-reload] update-time-to-reload)
-              (util/update-value [:board2 :time-to-reload] update-time-to-reload)
-              (util/update-value [:rockets] update-rockets))
+              (update-in [:board1 :time-to-reload] update-time-to-reload)
+              (update-in [:board2 :time-to-reload] update-time-to-reload)
+              (update-in [:rockets] update-rockets))
     game-state))

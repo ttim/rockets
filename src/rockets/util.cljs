@@ -15,13 +15,3 @@
   (defonce _first_time_log_render (update-state-log @state-atom element)))
 
 (def no-borders-style {:border-width 0, :padding "0 0 0 0", :margin "0 0 0 0", :border-spacing 0})
-
-(defn update-value [obj keys func]
-  (if (empty? keys)
-    (func obj)
-    (assoc obj (keys 0) (update-value (obj (keys 0)) (subvec keys 1) func))))
-
-(defn set-value [obj keys val]
-  (if (empty? keys)
-    val
-    (assoc obj (keys 0) (set-value (obj (keys 0)) (subvec keys 1) val))))
