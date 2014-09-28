@@ -150,3 +150,24 @@
     top: 50%;
     transform: translateY(50%);
 }
+
+body:after{
+    display:none;
+    content: url(/img/fire.png)
+                   url(/img/generated/bg.png)
+                   url(/img/generated/rocket.png)
+                   url(/img/generated/rocket_fire.png)
+                   url(/img/generated/selected.png)
+                   url(/img/generated/rocket_fire.png)
+                   url(/img/generated/cell_0.png)
+                   url(/img/generated/cell_1.png)
+                   url(/img/generated/cell_2.png)
+                   url(/img/generated/cell_3.png)
+                   url(/img/generated/cell_0_fire.png)
+                   url(/img/generated/cell_1_fire.png)
+                   url(/img/generated/cell_2_fire.png)
+                   url(/img/generated/cell_3_fire.png)
+                   url(/img/generated/fuel_0.png)
+                   url(/img/generated/fuel_1.png)
+                   url(/img/generated/fuel_2.png);
+}
