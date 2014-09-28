@@ -2,3 +2,15 @@
 body {
     background-color: #333355
 }
+
+#footer {
+    position: fixed;
+    height: 50px;
+    background-color: red;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin-bottom: 0px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+}

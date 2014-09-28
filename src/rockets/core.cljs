@@ -27,11 +27,14 @@
 (q/defcomponent
   GameComponent [data world]
   (html
-    [:div {:style {:width game/boards-width, :margin "0 auto"}}
-     (case (:type data)
-       :start (start/StartComponent data world)
-       :game (game/GameComponent data world)
-       :finish (finish/FinishComponent data world))]))
+    [:div
+     [:div {:style {:width (+ game/boards-width rockets.sprites/sprite-width), :margin "0 auto"}}
+      (case (:type data)
+        :start (start/StartComponent data world)
+        :game (game/GameComponent data world)
+        :finish (finish/FinishComponent data world))]
+     [:div {:id "footer"}
+      [:h1 "hello from footer"]]]))
 
 (defn render [data]
   (q/render
