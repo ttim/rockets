@@ -37,7 +37,7 @@
       [:div.titleText {:id "left-footer"} "Awesome Rocketeers"]
       [:div.titleText {:id "right-footer"}
        [:button.button "Share"]
-       [:button.button "Vote"]
+       [:button.voteButton "Vote"]
        ]]]))
 
 (defn render [data]

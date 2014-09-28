@@ -8,27 +8,31 @@
 .titleText, .inputField, .bigText, .normalText, .smallText {
     color:#00a2ff;
 }
+/*orange bg for vote button*/
+.voteButton {
+    background-color:#ff8407;
+}
 
 /*dark bg*/
 .dialog, .dim, .usual-background {
     background-color:#333355;
 }
 /*dark fg*/
-.button {
+.button, .voteButton {
     color:#333355;
 }
 
 /*light bg*/
-#footer, .inputField, .button:disabled, .grey-background {
+#footer, .inputField, .grey-background {
     background-color:#383859;
 }
 /*light fg*/
-.button:disabled {
+.button:disabled, .voteButton {
     color:#383859;
 }
 
 /*yellow bg*/
-.button:hover, .button:active {
+.button:hover, .button:active, .voteButton:active, .voteButton:hover {
     background-color:#f6ff07;
 }
 /*yellow fg*/
@@ -38,7 +42,7 @@
 
 /*no clue how this is done normally*/
 /*text stuff*/
-.button, .bigText, .normalText, .smallText, .titleText, #left-footer, #right-footer, .button, .inputField, #footer {
+.bigText, .normalText, .smallText, .titleText, #left-footer, #right-footer, .button, .voteButton, .inputField, #footer {
     font-family:'Geo';
 }
 /*big text*/
@@ -52,7 +56,7 @@
     font-weight:bold;
 }
 /*button*/
-.button {
+.button, .voteButton {
     font-size: 18px;
     font-weight:bold;
 }
@@ -85,7 +89,7 @@
     padding-left: 10px;
 }
 
-.button {
+.button, .voteButton {
 	display:inline-block;
 	cursor:pointer;
 	padding:6px 12px;
@@ -93,18 +97,14 @@
 	border:0;
 	box-shadow: none;
 }
-.button:active {
+.button:active, .voteButton:active {
 	position:relative;
 	top:1px;
     outline: none;
 	box-shadow: none;
 }
-.button:selected,.button:hover,.button:active,.inputField:active {
+.button:selected,.button:hover,.button:active, .inputField:active, .voteButton:active, .voteButton.selected, .voteButton.hover {
     border:0px solid;
-}
-.button:disabled {
-    background:red;
-    background-color:red;
 }
 
 .inputField {
