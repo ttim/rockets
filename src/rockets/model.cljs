@@ -251,23 +251,45 @@
                         (recur (inc rocket-num) (if (and is-rocket-takes-slot (not is-rocket-died)) (inc slot-num) slot-num) (conj result new-rocket))
                         (conj result new-rocket)))))))))
 
-(defn clean-board [game-state board-num conn-list]
-  game-state)
+(defn clean-board [game-state board-num conn-set]
+  (assoc-in game-state
+            [board-num :cells]
+            (let [cells ((game-state board-num) :cells)]
+              (loop [j 0
+                     i 0
+                     k 0
+                     cells cells]
+                (cond
+                  (= j size-m) cells
+                  (= i size-n) (recur (inc j) 0 0 cells)
+                  (= k size-n) (recur j (inc i) k (assoc-in cells [i j] (generate-board-cell)))
+                  (contains? conn-set (pos k j)) (recur j i (inc k) cells)
+                  :else (recur j (inc i) (inc k) (assoc-in cells [i j] ((cells k) j))))))))
+
+(defn rocket-exist [rockets player conn-set]
+  (if (empty? rockets)
+    false
+    (let [rocket (rockets 0)]
+      (or
+        (and (= (rocket :state) rocket-state-staying)
+             (= (rocket :source-player) player)
+             (contains? conn-set (pos size-n (rocket :source-slot))))
+        (rocket-exist (subvec rockets 1) player conn-set)))))
 
 (defn update-wick [game-state board-num wick-num conn-list]
-  (if (empty? (filter (fn [cr-pos] (== (cr-pos :x) size-n)) conn-list))
-    (assoc-in game-state [board-num :wick-timers wick-num] -1)
-    (if (== (((game-state board-num) :wick-timers) wick-num) 0)
-      (clean-board
-        (run-rockets
-          (assoc-in game-state [board-num] (reset-wicks (game-state board-num) conn-list))
-          conn-list
-          (if (= board-num :board1) :player1 :player2))
-        board-num conn-list)
-      (if (== (((game-state board-num) :wick-timers) wick-num) -1)
-        (assoc-in game-state [board-num :wick-timers wick-num] wick-timeout)
-        (update-in game-state [board-num :wick-timers wick-num] dec)))))
-
+  (let [player (if (= board-num :board1) :player1 :player2)]
+    (if-not (rocket-exist (game-state :rockets) player conn-list)
+      (assoc-in game-state [board-num :wick-timers wick-num] -1)
+      (if (== (((game-state board-num) :wick-timers) wick-num) 0)
+        (clean-board
+          (run-rockets
+            (assoc-in game-state [board-num] (reset-wicks (game-state board-num) conn-list))
+            conn-list
+            player)
+          board-num conn-list)
+        (if (== (((game-state board-num) :wick-timers) wick-num) -1)
+          (assoc-in game-state [board-num :wick-timers wick-num] wick-timeout)
+          (update-in game-state [board-num :wick-timers wick-num] dec))))))
 
 (defn do-fire-wicks [game-state board-num]
   (let [conn-cells (into (vector) (for [i (range 0 size-m)] (connected-cells (game-state board-num) (pos -1 i))))]
