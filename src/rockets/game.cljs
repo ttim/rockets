@@ -47,25 +47,32 @@
 (def rockets-space-height (* sprites/sprite-width 6))
 
 (defn convert
-  [progress min-value max-value] (+ min-value (/ (* progress (- max-value min-value)) 100)))
+  ([progress min-value max-value] (convert progress 0 100 min-value max-value))
+  ([progress min-progress max-progress min-value max-value] (+ min-value (/ (* (- progress min-progress) (- max-value min-value)) (- max-progress min-progress)))))
 
 ; coordinates as school axis
+(defn calc-x-coordinate
+  [player slot]
+  (let [offset (if (= player :player1) 0 (+ board-width space-between-boards))]
+    (+ sprites/sprite-width offset (* slot sprites/sprite-width))))
+
 (defn calc-flying-rocket-coordinates [rocket]
   (let [source-player (:source-player rocket)
-        source-slot (:source-slot rocket)
-        offset (if (= source-player :player1) 0 (+ board-width space-between-boards))
+        target-player ({:player1 :player2, :player2 :player1} source-player)
+        source-x (calc-x-coordinate source-player (:source-slot rocket))
+        target-x (calc-x-coordinate target-player (:target-slot rocket))
         progress (:progress rocket)                         ; 0..20 20..80 80..100
-        y-progress (if (<= progress 20) (* progress 5) (if (<= progress 80) 100 (* (- 100 progress) 5)))]
-    {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y (convert y-progress 0 (- rockets-space-height sprites/rocket-height))}))
+        y-progress (if (<= progress 20) (* progress 5) (if (<= progress 80) 100 (* (- 100 progress) 5)))
+        x-progress (if (<= progress 20) 0 (if (<= progress 80) (convert progress 20 80 0 100) 100))]
+    {:x (convert x-progress source-x target-x), :y (convert y-progress 0 (- rockets-space-height (+ sprites/rocket-height 16)))}))
 
 (defn calc-rocket-coordinates [rocket]
   (let [source-player (:source-player rocket)
         source-slot (:source-slot rocket)
-        offset (if (= source-player :player1) 0 (+ board-width space-between-boards))
         progress (:progress rocket)]                        ;0-100
     (case (rocket :state)
-      :staying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y 0}
-      :dying {:x (+ sprites/sprite-width offset (* source-slot sprites/sprite-width)), :y (convert progress 0 rockets-space-height)}
+      :staying {:x (calc-x-coordinate source-player source-slot), :y 0}
+      :dying {:x (calc-x-coordinate source-player source-slot), :y (convert progress 0 rockets-space-height)}
       :flying (calc-flying-rocket-coordinates rocket))))
 
 (q/defcomponent
