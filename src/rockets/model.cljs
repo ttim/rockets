@@ -218,9 +218,9 @@
 
 (defn get-busy-slots [rockets source-player]
   (set (map (fn [rocket] (rocket :source-slot))
-            (filter (fn [rocket] (or (and (== (rocket :state) rocket-state-staying) (not= (rocket :source-player) source-player))
-                                     (and (== (rocket :state) rocket-state-flying) (== (rocket :source-player) source-player)))) rockets)))
-  )
+            (filter (fn [rocket] (or (and (= (rocket :state) rocket-state-staying) (not (= (rocket :source-player) source-player)))
+                                     (and (= (rocket :state) rocket-state-flying) (= (rocket :source-player) source-player)))) rockets))))
+
 (defn get-free-slots [rockets source-player]
   (clojure.set/difference (set (range 0 size-m)) (get-busy-slots rockets source-player)))
 
@@ -228,7 +228,7 @@
   (assoc-in game-state [:rockets]
             (let [rockets (game-state :rockets)
                   fired (set (map (fn [cr-pos] (cr-pos :y)) (filter (fn [cr-pos] (== (cr-pos :x) size-n)) conn-list)))
-                  free-slots (shuffle (into (vector) (get-free-slots rockets source-player)))]
+                  free-slots (shuffle (into (vector) (get-free-slots rockets (other-player source-player))))]
               (if (empty? rockets)
                 []
                 (into
@@ -303,15 +303,17 @@
     game-state))
 
 (defn tick [game-state tick-value]
-  (if (= tick-value 50)
-    (do-win game-state :player1)
-    (case (:type game-state)
-      :game (-> game-state
-                (update-in [:board1 :time-to-reload] update-time-to-reload)
-                (update-in [:board2 :time-to-reload] update-time-to-reload)
-                (do-fire-wicks :board1)
-                (do-fire-wicks :board2)
-                (do-color-wicks :board1)
-                (do-color-wicks :board2)
-                (update-in [:rockets] update-rockets))
-      game-state)))
+  (cond
+    ;todo maybe draw
+    (empty? (loglog(get-busy-slots (game-state :rockets) :player1))) (do-win game-state :player1)
+    (empty? (loglog(get-busy-slots (game-state :rockets) :player2))) (do-win game-state :player2)
+    :else (case (:type game-state)
+            :game (-> game-state
+                      (update-in [:board1 :time-to-reload] update-time-to-reload)
+                      (update-in [:board2 :time-to-reload] update-time-to-reload)
+                      (do-fire-wicks :board1)
+                      (do-fire-wicks :board2)
+                      (do-color-wicks :board1)
+                      (do-color-wicks :board2)
+                      (update-in [:rockets] update-rockets))
+            game-state)))
