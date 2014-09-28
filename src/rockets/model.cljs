@@ -1,6 +1,7 @@
 (ns rockets.model
   (:require
-    [rockets.util :as util]))
+    [rockets.util :as util]
+    [clojure.set :as cljset]))
 
 (def size-n 8)
 (def size-m size-n)
@@ -211,7 +212,7 @@
                   (into
                     (vector)
                     (filter board-point?
-                            (reduce clojure.set/union (for [i (range 0 size-m)] (connected-cells board (pos -1 i))))))))
+                            (reduce cljset/union (for [i (range 0 size-m)] (connected-cells board (pos -1 i))))))))
 
 (defn do-color-wicks [game-state board-num]
   (assoc-in game-state [board-num] (do-color-wicks-board (game-state board-num))))
