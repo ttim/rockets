@@ -11,7 +11,7 @@
   FinishComponent [data world-atom]
   (html
     [:div {:style {:width game/boards-width :position "absolute" :height (+ game/board-height game/rockets-space-height)}}
-     [:div.dim {:style {:position "absolute"}} (game/GameComponent data world-atom)]
+     [:div.dim.elonmusk {:style {:position "absolute"}} (game/GameComponent data world-atom)]
      [:div.dialogWrapper {:style {:position "absolute" :text-align "center"}}
       [:div.dialog
        [:div.titleText (str ((:winner data) data) " Won!")]

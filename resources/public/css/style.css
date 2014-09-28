@@ -127,6 +127,11 @@
            opacity: 0.25;      /* fx, safari, opera */
 }
 
+.elonmusk {
+    background-image: url("/img/elonmusk.jpg");
+    background-size: 10% 10%;
+}
+
 .dialogWrapper {
     width: 100%;
     left: 0px;
