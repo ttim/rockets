@@ -305,8 +305,8 @@
 (defn tick [game-state tick-value]
   (cond
     ;todo maybe draw
-    (empty? (loglog(get-busy-slots (game-state :rockets) :player1))) (do-win game-state :player1)
-    (empty? (loglog(get-busy-slots (game-state :rockets) :player2))) (do-win game-state :player2)
+    (empty? (get-busy-slots (game-state :rockets) :player1)) (do-win game-state :player1)
+    (empty? (get-busy-slots (game-state :rockets) :player2)) (do-win game-state :player2)
     :else (case (:type game-state)
             :game (-> game-state
                       (update-in [:board1 :time-to-reload] update-time-to-reload)
