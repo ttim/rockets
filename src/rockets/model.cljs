@@ -306,12 +306,12 @@
     game-state))
 
 (defn tick [game-state tick-value]
-  (cond
-    ;todo maybe draw
-    (empty? (get-busy-slots (game-state :rockets) :player1)) (do-win game-state :player1)
-    (empty? (get-busy-slots (game-state :rockets) :player2)) (do-win game-state :player2)
-    :else (case (:type game-state)
-            :game (-> game-state
+  (case (:type game-state)
+    :game (cond
+            ;todo maybe draw
+            (empty? (get-busy-slots (game-state :rockets) :player1)) (do-win game-state :player1)
+            (empty? (get-busy-slots (game-state :rockets) :player2)) (do-win game-state :player2)
+            :else (-> game-state
                       (update-in [:board1 :time-to-reload] update-time-to-reload)
                       (update-in [:board2 :time-to-reload] update-time-to-reload)
                       (do-fire-wicks :board1)
@@ -319,4 +319,5 @@
                       (do-color-wicks :board1)
                       (do-color-wicks :board2)
                       (update-in [:rockets] update-rockets))
-            game-state)))
+            )
+    game-state))
