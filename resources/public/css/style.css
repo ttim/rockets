@@ -151,6 +151,11 @@
     transform: translateY(50%);
 }
 
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
 body:after{
     display:none;
     content: url(../img/fire.png)
