@@ -19,11 +19,11 @@
 
 ; 0 - top, 1 - right, 2 - down, 3 - left
 (def cell-types
-  [[[] [3] [] [1]]
-   [[1] [0] [] []]
-   [[1 3] [0 3] [] [0 1]]
-   [[] [] [] []]
-   [[1 2 3] [0 2 3] [0 1 3] [0 1 2]]])
+  [[#{} #{1 3} #{} #{1 3}]
+   [#{0 1} #{0 1} #{} #{}]
+   [#{0 1 3} #{0 1 3} #{} #{0 1 3}]
+   [#{} #{1} #{} #{}]
+   [#{0 1 2 3} #{0 1 2 3} #{0 1 2 3} #{0 1 2 3}]])
 
 (defn cell [cell-type orientation locked]
   {:cell-type   cell-type
@@ -69,7 +69,8 @@
 (defn generate-board []
   {:selected       (pos 0 0)
    :cells          (generate-board-cells)
-   :time-to-reload max-time-to-reload})
+   :time-to-reload max-time-to-reload
+   :wick-timers    (into (vector) (repeat size-m -1))})
 
 (defn generate-game-state [player1 player2]
   {:type    :game
@@ -88,8 +89,11 @@
 (defn reset-field? [point]
   (and (== 0 (point :x)) (== (point :y) -1)))
 
+(defn board-point? [point]
+  (and (<= 0 (point :x)) (< (point :x) size-n) (<= 0 (point :y)) (< (point :y) size-m)))
+
 (defn valid-point? [point]
-  (or (and (<= 0 (point :x)) (< (point :x) size-n) (<= 0 (point :y)) (< (point :y) size-m))
+  (or (board-point? point)
       (reset-field? point)))
 
 (defn do-move-selection [direction]
@@ -100,14 +104,53 @@
   (mod (inc orientation) 4))
 
 (defn do-rotate-cell [cell]
-  (if (cell :locked) cell (update-in cell [:orientation] next-orientation)))
+  (update-in cell [:orientation] next-orientation))
 
 (defn do-rotate-selected [board]
   (update-in board [:cells ((board :selected) :x) ((board :selected) :y)] do-rotate-cell))
 
+(defn next-cell [cr-pos direction]
+  (pos (+ (cr-pos :x) (dx direction)) (+ (cr-pos :y) (dy direction))))
+
+(defn revert-direction [direction]
+  (mod (+ direction 2) 4))
+
+(defn cell-have-conn? [board cell-pos conn-border]
+  (if (or (< (cell-pos :y) 0) (<= size-m (cell-pos :y)))
+    false
+    (if (or (and (== (cell-pos :x) -1) (== conn-border 0)) (and (== (cell-pos :x) size-n) (== conn-border 2)))
+      true
+      (if-not (board-point? cell-pos)
+        false
+        (let [cell (((board :cells) (cell-pos :x)) (cell-pos :y))
+              border-num (mod (- conn-border (cell :orientation)) 4)]
+          (contains? ((cell-types (cell :cell-type)) border-num) border-num))))))
+
+(defn next-cells [board cr-pos]
+  (into
+    (vector)
+    (map (fn [i] (next-cell cr-pos i))
+         (filter (fn [i] (and (cell-have-conn? board cr-pos i)
+                              (cell-have-conn? board (next-cell cr-pos i) (revert-direction i))))
+                 (range 0 4)))))
+
+(defn connected-cells [board cr-pos]
+  (let [visited (transient #{})]
+    (do ((fn dfs [cr-pos]
+           (do (conj! visited cr-pos)
+               (doseq [next (next-cells board cr-pos)]
+                 (if-not (contains? visited next)
+                   (dfs next))
+                 )))
+         cr-pos)
+        (persistent! visited))))
+
 (defn do-reset-board [board]
   (if (== 0 (board :time-to-reload))
-    (assoc board :cells (generate-board-cells) :time-to-reload max-time-to-reload)
+    (assoc board
+      :cells (generate-board-cells)
+      :time-to-reload max-time-to-reload
+      :wick-timers (into (vector) (repeat size-m -1)))
     board))
 
 (defn update-time-to-reload [time]
@@ -137,6 +180,37 @@
 
 (defn update-rockets [rockets]
   (filter live-rocket? (map update-rocket rockets)))
+
+(def all-points
+  (set
+    (flatten
+      (for [i (range 0 size-n)]
+        (for [j (range 0 size-m)]
+          (pos i j))))))
+
+(defn do-fire-cells
+  ([board positions]
+   (do-fire-cells (do-fire-cells board positions true) 
+                  (into (vector) (clojure.set/difference all-points (set (flatten positions)))) 
+                  false))
+  ([board positions val]
+   (if (or (nil? positions) (empty? positions))
+     board
+     (let [cr-pos (positions 0)]
+       (do-fire-cells
+         (assoc-in board [:cells (cr-pos :x) (cr-pos :y) :locked] val)
+         (subvec positions 1)
+         val)))))
+
+(defn do-fire-wicks [game-state board]
+  (assoc-in game-state [board]
+            (do-fire-cells (game-state board)
+                           (into
+                             (vector)
+                             (filter board-point?
+                                     (reduce clojure.set/union
+                                             (for [i (range 0 size-m)]
+                                               (connected-cells (game-state board) (pos -1 i)))))))))
 
 ; states samples
 (def start-state
@@ -172,5 +246,7 @@
     :game (-> game-state
               (update-in [:board1 :time-to-reload] update-time-to-reload)
               (update-in [:board2 :time-to-reload] update-time-to-reload)
+              (do-fire-wicks :board1)
+              (do-fire-wicks :board2)
               (update-in [:rockets] update-rockets))
     game-state))
