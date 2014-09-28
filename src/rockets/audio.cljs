@@ -31,5 +31,6 @@
 (defonce rotate-sound (audio "rotate1"))
 ;(defonce rotate2-sound (audio "rotate2"))
 (defonce shuffle-sound (audio "shuffle"))
+(defonce win-sound (audio "tada"))
 
 ;(js/console.log (sablono.util/to-str audios))

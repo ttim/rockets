@@ -311,7 +311,9 @@
 
 (defn check-win [game-state player]
   (if (and (= (:type game-state) :game) (empty? (get-busy-slots (game-state :rockets) player)))
-    (do-win game-state player)
+    (do
+      (rockets.audio/play! rockets.audio/win-sound)
+      (do-win game-state player))
     game-state))
 
 (defn generate-good-board []

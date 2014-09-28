@@ -24,7 +24,7 @@
 
 ; audio
 (audio/init! world)
-;(audio/play! audio/rocket1-sound)
+;(audio/play! audio/win-sound)
 
 ;(util/bind-state-log world (.getElementById js/document "state-log"))
 
