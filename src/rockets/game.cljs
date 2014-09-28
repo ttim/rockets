@@ -94,6 +94,20 @@
      (map #(RocketComponent %) rockets)]))
 
 (q/defcomponent
+  PlayerNameComponent [name]
+  (html
+    [:h1 name]))
+
+(q/defcomponent
+  PlayerNamesComponent [args]
+  (html
+    [:div {:style {:position "absolute", :width boards-width, :top (- rockets-space-height (* 5 sprites/sprite-width))}}
+     [:div {:style {:position "absolute", :width (- board-width sprites/sprite-width), :left sprites/sprite-width}}
+      (PlayerNameComponent (:player1 args))]
+     [:div {:style {:position "absolute", :width (- board-width sprites/sprite-width), :left (+ board-width space-between-boards sprites/sprite-width)}}
+      (PlayerNameComponent (:player2 args))]]))
+
+(q/defcomponent
   FitilComponent []
   (html [:table {:style util/no-borders-style}
          [:tr {:style util/no-borders-style}
@@ -114,4 +128,5 @@
         [:td {:style (merge {:width space-between-boards} util/no-borders-style)}]
         [:td {:style util/no-borders-style} (BoardComponent (:board2 data))]]
        [:tr {:style util/no-borders-style} (FitilComponent)]]]
-     [:div {:style {:position "absolute"}} (RocketsComponent (:rockets data))]]))
+     [:div {:style {:position "absolute"}} (RocketsComponent (:rockets data))]
+     [:div {:style {:position "absolute"}} (PlayerNamesComponent data)]]))
