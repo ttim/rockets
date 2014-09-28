@@ -279,6 +279,11 @@
       (assoc :type :finish)
       (assoc :winner winner)))
 
+(defn check-win [game-state player]
+  (if (and (= (:type game-state) :game) (empty? (get-busy-slots (game-state :rockets) player)))
+    (do-win game-state player)
+    game-state))
+
 ; states samples
 (def start-state
   {:type    :start
@@ -306,18 +311,16 @@
     game-state))
 
 (defn tick [game-state tick-value]
-  (case (:type game-state)
-    :game (cond
-            ;todo maybe draw
-            (empty? (get-busy-slots (game-state :rockets) :player1)) (do-win game-state :player1)
-            (empty? (get-busy-slots (game-state :rockets) :player2)) (do-win game-state :player2)
-            :else (-> game-state
-                      (update-in [:board1 :time-to-reload] update-time-to-reload)
-                      (update-in [:board2 :time-to-reload] update-time-to-reload)
-                      (do-fire-wicks :board1)
-                      (do-fire-wicks :board2)
-                      (do-color-wicks :board1)
-                      (do-color-wicks :board2)
-                      (update-in [:rockets] update-rockets))
-            )
+  (if (not (= (:type game-state) :start))
+    (-> game-state
+        (check-win :player1)
+        (check-win :player2)
+        ; update ticks in case of finished game too: we need flying rockets at background =)
+        (update-in [:board1 :time-to-reload] update-time-to-reload)
+        (update-in [:board2 :time-to-reload] update-time-to-reload)
+        (do-fire-wicks :board1)
+        (do-fire-wicks :board2)
+        (do-color-wicks :board1)
+        (do-color-wicks :board2)
+        (update-in [:rockets] update-rockets))
     game-state))
