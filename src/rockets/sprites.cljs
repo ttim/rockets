@@ -54,7 +54,7 @@
   RocketComponent [args]                                    ;[fire? fuel height]
   (let [height (min (:height args) rocket-height)
         pos (str "bottom " height "px right 0px")]
-    (html [:div {:style {:height height, :background-position pos, :background-image (str "url(../img/generated/fuel_" (:fuel args) ".png)")}}
+    (html [:div {:style {:height height, :background-position pos, :background-image (str "url(img/generated/fuel_" (:fuel args) ".png)")}}
            [:div {:style (assoc (if (:fire? args) rocket-fire-style rocket-style) :height height :background-position pos)}]
            ])))
 
