@@ -44,6 +44,7 @@
    :source-slot   source-slot})
 
 (defn generate-rocket-flying [progress fuel source-player source-slot target-slot]
+  (rockets.audio/play! rockets.audio/rocket-sound)
   {:state         rocket-state-flying
    :progress      progress
    :fuel          fuel
