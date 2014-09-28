@@ -1,7 +1,7 @@
 #!/bin/sh
-#lein cljsbuild clean
-#rm -rf www/*
-#lein cljsbuild once
+lein cljsbuild clean
+rm -rf www/*
+lein cljsbuild once
 cp -rf resources/public/css www/
 cp -rf resources/public/img www/
 rm www/img/generate.sh
