@@ -8,15 +8,6 @@
     [rockets.model :as model]))
 
 (q/defcomponent
-  ;CellComponent [cell selected?]
-  CellComponent [args]
-  (let [cell (args :cell)]
-    (sprites/CoolSpriteComponent {:type      (cell :cell-type),
-                                  :angle     (cell :orientation),
-                                  :selected? (args :selected?),
-                                  :fire?     (cell :locked)})))
-
-(q/defcomponent
   SpritesComponent [sprites]
   (html [:table {:style util/no-borders-style}
          (for [sprites-line sprites]
@@ -45,8 +36,13 @@
 (defn field-sprites [cells selected]
   (create-sprites
     model/size-n model/size-m
-    #(let [x (- model/size-n (inc %1)) y %2]
-      (CellComponent {:cell ((cells x) y), :selected? (and (= x (:x selected)) (= y (:y selected)))}))))
+    #(let [x (- model/size-n (inc %1))
+           y %2
+           cell ((cells x) y)]
+      (sprites/CoolSpriteComponent {:type      (:cell-type cell),
+                                    :angle     (:orientation cell),
+                                    :selected? (and (= x (:x selected)) (= y (:y selected))),
+                                    :fire?     (:locked cell)}))))
 
 (defn board-sprites [board]
   (let [selected (board :selected)
