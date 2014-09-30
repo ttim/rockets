@@ -26,9 +26,7 @@
 
 (defn create-sprites
   ([n m sprite-creator]
-   (for [x (range 0 n)]
-     (for [y (range 0 m)]
-       (sprite-creator x y))))
+   (into [] (for [x (range 0 n)] (into [] (for [y (range 0 m)] (sprite-creator x y))))))
   ([n m] (create-sprites n m (fn [x y] nil))))
 
 (defn merge-sprites [sprites upper-sprites offset-x offset-y]
@@ -50,23 +48,16 @@
     #(let [x (- model/size-n (inc %1)) y %2]
       (CellComponent {:cell ((cells x) y), :selected? (and (= x (:x selected)) (= y (:y selected)))}))))
 
-(q/defcomponent
-  ;FieldComponent [cells selected]
-  FieldComponent [args]
-  (SpritesComponent (field-sprites (:cells args) (:selected args))))
+(defn board-sprites [board]
+  (let [selected (board :selected)
+        shuffle-selected? (and (= (selected :x) 0) (= (selected :y) -1))]
+    (-> (create-sprites model/size-n (inc model/size-m))
+        (merge-sprites (field-sprites (:cells board) selected) 0 1)
+        (merge-sprites [[(sprites/ShuffleComponent (assoc board :selected? shuffle-selected?))]] (dec model/size-n) 0))))
 
 (q/defcomponent
   BoardComponent [board]
-  (let [selected (board :selected)
-        shuffle-selected? (and (= (selected :x) 0) (= (selected :y) -1))]
-    (do
-      (html [:table {:style util/no-borders-style}
-             [:tr {:style util/no-borders-style}
-              [:td {:style (merge {:vertical-align "bottom"} util/no-borders-style)}
-               (sprites/ShuffleComponent (assoc board :selected? shuffle-selected?))]
-              [:td {:style util/no-borders-style} (FieldComponent board)]]])
-      )
-    ))
+  (SpritesComponent (board-sprites board)))
 
 (def space-between-boards (* sprites/sprite-width 4))
 (def board-width (* sprites/sprite-width (inc model/size-m)))
