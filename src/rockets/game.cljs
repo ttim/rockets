@@ -17,15 +17,23 @@
                                   :fire?     (cell :locked)})))
 
 (q/defcomponent
+  SpritesComponent [sprites]
+  (html [:table {:style util/no-borders-style}
+         (for [sprites-line sprites]
+           [:tr {:style util/no-borders-style}
+            (for [sprite sprites-line]
+              [:td {:style util/no-borders-style} sprite])])]))
+
+(defn field-sprites [cells selected]
+  (for [x (reverse (range 0 model/size-n))]
+    (for [y (range 0 model/size-m)
+          :let [cell ((cells x) y)]]
+      (CellComponent {:cell cell, :selected? (and (= x (:x selected)) (= y (:y selected)))}))))
+
+(q/defcomponent
   ;FieldComponent [cells selected]
   FieldComponent [args]
-  (html [:table {:style util/no-borders-style}
-         (for [x (reverse (range 0 model/size-n))]
-           [:tr {:style util/no-borders-style}
-            (for [y (range 0 model/size-m)
-                  :let [cell (nth (nth (args :cells) x) y)]]
-              [:td {:style util/no-borders-style}
-               (CellComponent {:cell cell, :selected? (and (= x ((args :selected) :x)) (= y ((args :selected) :y)))})])])]))
+  (SpritesComponent (field-sprites (:cells args) (:selected args))))
 
 (q/defcomponent
   BoardComponent [board]
@@ -120,7 +128,7 @@
 (q/defcomponent
   GameComponent [data world-atom]
   (html
-    [:div {:style {:width boards-width, :height (+ board-height rockets-space-height), :position "relative" }}
+    [:div {:style {:width boards-width, :height (+ board-height rockets-space-height), :position "relative"}}
      [:div {:style {:position "absolute", :top rockets-space-height}}
       [:table {:style util/no-borders-style}
        [:tr {:style util/no-borders-style}
@@ -132,5 +140,5 @@
      [:div {:style {:position "absolute"}} (PlayersComponent (assoc data :top (- rockets-space-height (* 5 sprites/sprite-width))))]
      [:div {:style {:position "absolute"}} (PlayersComponent {:player1 "W S A D + Q" :player2
                                                                        "Arrows + Space"
-                                                              :top (+ rockets-space-height board-height)})]
+                                                              :top     (+ rockets-space-height board-height)})]
      ]))
