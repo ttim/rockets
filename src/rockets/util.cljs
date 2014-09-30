@@ -24,3 +24,5 @@
 (def twitter-share-url
   (let [text "Check%20out%20Awesome%20Rocketeers%20game%20https%3A%2F%2Fclojurecup.com%2F%23%2Fapps%2Frockets%20%23clojurecup%20%23rocketeers%0A"]
     (str "https://twitter.com/intent/tweet?text=" text)))
+
+(defn log [obj] (js/console.log (sablono.util/to-str obj)))
