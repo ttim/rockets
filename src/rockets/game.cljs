@@ -47,9 +47,10 @@
 (defn board-sprites [board]
   (let [selected (board :selected)
         shuffle-selected? (and (= (selected :x) 0) (= (selected :y) -1))]
-    (-> (create-sprites model/size-n (inc model/size-m))
+    (-> (create-sprites (inc model/size-n) (inc model/size-m))
         (merge-sprites (field-sprites (:cells board) selected) 0 1)
-        (merge-sprites [[(sprites/ShuffleComponent (assoc board :selected? shuffle-selected?))]] (dec model/size-n) 0))))
+        (merge-sprites [[(sprites/ShuffleComponent (assoc board :selected? shuffle-selected?))]] (dec model/size-n) 0)
+        (merge-sprites (create-sprites 1 model/size-m (fn [x y] (sprites/FireComponent))) model/size-n 1))))
 
 (q/defcomponent
   BoardComponent [board]
@@ -123,16 +124,6 @@
       (PlayerNameComponent (:player2 args))]]))
 
 (q/defcomponent
-  FitilComponent []
-  (html [:table {:style util/no-borders-style}
-         [:tr {:style util/no-borders-style}
-          [:td {:style (merge {:width sprites/sprite-width} util/no-borders-style)}]
-          (repeat model/size-m [:td {:style util/no-borders-style} (sprites/FireComponent)])
-          [:td {:style (merge {:width space-between-boards} util/no-borders-style)}]
-          [:td {:style (merge {:width sprites/sprite-width} util/no-borders-style)}]
-          (repeat model/size-m [:td {:style util/no-borders-style} (sprites/FireComponent)])]]))
-
-(q/defcomponent
   GameComponent [data world-atom]
   (html
     [:div {:style {:width boards-width, :height (+ board-height rockets-space-height), :position "relative"}}
@@ -142,7 +133,7 @@
         [:td {:style util/no-borders-style} (BoardComponent (:board1 data))]
         [:td {:style (merge {:width space-between-boards} util/no-borders-style)}]
         [:td {:style util/no-borders-style} (BoardComponent (:board2 data))]]
-       [:tr {:style util/no-borders-style} (FitilComponent)]]]
+       ]]
      [:div {:style {:position "absolute"}} (RocketsComponent (:rockets data))]
      [:div {:style {:position "absolute"}} (PlayersComponent (assoc data :top (- rockets-space-height (* 5 sprites/sprite-width))))]
      [:div {:style {:position "absolute"}} (PlayersComponent {:player1 "W S A D + Q" :player2
