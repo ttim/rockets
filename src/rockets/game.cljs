@@ -24,16 +24,30 @@
             (for [sprite sprites-line]
               [:td {:style util/no-borders-style} sprite])])]))
 
-(defn create-sprites [n m sprite-creator]
-  (for [x (range 0 n)]
-    (for [y (range 0 m)]
-      (sprite-creator x y))))
+(defn create-sprites
+  ([n m sprite-creator]
+   (for [x (range 0 n)]
+     (for [y (range 0 m)]
+       (sprite-creator x y))))
+  ([n m] (create-sprites n m (fn [x y] nil))))
+
+(defn merge-sprites [sprites upper-sprites offset-x offset-y]
+  (create-sprites
+    (count sprites) (count (sprites 0))
+    (fn [x y]
+      (let [original ((sprites x) y)
+            ux (- x offset-x)
+            uy (- y offset-y)]
+        (if (and (>= ux 0) (< ux (count upper-sprites)))
+          (if (and (>= uy 0) (< uy (count (upper-sprites 0))))
+            ((upper-sprites ux) uy)
+            original)
+          original)))))
 
 (defn field-sprites [cells selected]
   (create-sprites
     model/size-n model/size-m
-    #(let [x (- model/size-n (inc %1))
-           y %2]
+    #(let [x (- model/size-n (inc %1)) y %2]
       (CellComponent {:cell ((cells x) y), :selected? (and (= x (:x selected)) (= y (:y selected)))}))))
 
 (q/defcomponent
