@@ -24,11 +24,17 @@
             (for [sprite sprites-line]
               [:td {:style util/no-borders-style} sprite])])]))
 
+(defn create-sprites [n m sprite-creator]
+  (for [x (range 0 n)]
+    (for [y (range 0 m)]
+      (sprite-creator x y))))
+
 (defn field-sprites [cells selected]
-  (for [x (reverse (range 0 model/size-n))]
-    (for [y (range 0 model/size-m)
-          :let [cell ((cells x) y)]]
-      (CellComponent {:cell cell, :selected? (and (= x (:x selected)) (= y (:y selected)))}))))
+  (create-sprites
+    model/size-n model/size-m
+    #(let [x (- model/size-n (inc %1))
+           y %2]
+      (CellComponent {:cell ((cells x) y), :selected? (and (= x (:x selected)) (= y (:y selected)))}))))
 
 (q/defcomponent
   ;FieldComponent [cells selected]
