@@ -1,13 +1,16 @@
-Awesome Rocketeers Go Ahead!
+Awesome Rocketeers is puzzle game for two players.
 
-В качестве ide юзаем cursive https://cursiveclojure.com/
+IDE: IDEA/cursive https://cursiveclojure.com/
 
-Для работы нужны: lein
-Фреймворк для веба юзаем: quiescent
-Для старта юзал: http://solovyov.net/en/2014/cljs-start/
+Project model: lein
 
-Для апдейта версии на сервере нужно запустить на нем ~/update.sh
-Для запуска делаем в корне lein figwheel dev
-Поднимется на http://localhost:3449
-Эта штука автоматом проверяет исходники и обновляет код в браузере когда он меняется, так что нужно запустить 1 раз и забыть
+Frontend framework: quiescent
+
+Started from template described in http://solovyov.net/en/2014/cljs-start/
+
+For deployment: ~/update.sh
+
+For development: lein figwheel dev
+
+Will be at http://localhost:3449 with code autocompile/autoreload
 
