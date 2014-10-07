@@ -8,7 +8,7 @@ Developed during [Clojure Cup](clojurecup.com) contest.
 
 ## Developer notes
 
-[This exellent article](http://solovyov.net/en/2014/cljs-start/) by Alexander Solovyov was used to setup the project. We follow its author advice to use [Quiescent](https://github.com/levand/quiescent) web framework.
+[This exellent article](http://solovyov.net/en/2014/cljs-start/) by Alexander Solovyov was used to setup the project. We follow its author advice to use [Quiescent](https://github.com/levand/quiescent) frontend framework.
 
 To start, install
 * [Leiningen](http://leiningen.org/);
@@ -20,4 +20,4 @@ To run on local machine run in the project root folder:
 
 This will start server on http://localhost:3449 and watch for local file changes. Browser code will be reloaded automatically (so only need to start lein once).
 
-For updating server version one needs to start update.sh in the root folder.
+For deployment start update.sh in the root folder.
