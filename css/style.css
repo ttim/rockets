@@ -1,0 +1,174 @@
+/* very cool style */
+
+/*blue bg*/
+.button, .sButton {
+    background-color:#00a2ff;
+}
+/*blue fg*/
+.titleText, .inputField, .bigText, .normalText, .smallText {
+    color:#00a2ff;
+}
+/*orange bg for vote button*/
+.voteButton {
+    background-color:#ff8407;
+}
+
+/*dark bg*/
+.dialog, .usual-background {
+    background-color:#333355;
+}
+/*dark fg*/
+.button, .voteButton {
+    color:#333355;
+}
+
+/*light bg*/
+#footer, .inputField, .grey-background {
+    background-color:#383859;
+}
+/*light fg*/
+.button:disabled, .voteButton:disabled {
+    color:#383859;
+}
+
+/*yellow bg*/
+.button:hover, .button:focus, .button:active, .voteButton:active, .voteButton:hover, .voteButton:focus {
+    background-color:#f6ff07;
+}
+/*yellow fg*/
+.inputField:active, .inputField:focus {
+    color:#f6ff07;
+}
+
+/*no clue how this is done normally*/
+/*text stuff*/
+.bigText, .normalText, .smallText, .titleText, #left-footer, #right-footer, .button, .voteButton, .inputField, #footer {
+    font-family:'Geo';
+}
+/*big text*/
+.bigText, .titleText {
+    font-size: 42px;
+    font-weight:bold;
+}
+/*normal text*/
+.normalText, #left-footer, #right-footer {
+    font-size: 30px;
+    font-weight:bold;
+}
+/*button*/
+.button, .voteButton {
+    font-size: 18px;
+    font-weight:bold;
+}
+
+/*type text*/
+.smallText, .inputField {
+    font-size: 20px;
+}
+
+#footer {
+    position: fixed;
+    height: 50px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin-bottom: 0px;
+    padding-top: 12px;
+    /*padding-bottom: 30px;*/
+    /*padding-left: 30px;*/
+}
+
+#left-footer {
+    position: absolute;
+    left: 10px;
+    padding-right: 10px;
+}
+
+#right-footer {
+    position: absolute;
+    right: 10px;
+    padding-left: 10px;
+}
+
+.button, .voteButton {
+	display:inline-block;
+	cursor:pointer;
+	padding:6px 12px;
+	text-decoration:none;
+	border:0;
+	box-shadow: none;
+}
+.button:active, .voteButton:active {
+	position:relative;
+	top:1px;
+    outline: none;
+	box-shadow: none;
+}
+.button:selected,.button:hover,.button:active, .inputField:active, .voteButton:active, .voteButton.selected, .voteButton.hover {
+    border:0px solid;
+}
+
+.inputField {
+    border:0px solid;
+    height:100%;
+    width:100%;
+    text-align:center;
+}
+
+.dim {
+    height:100%;
+    width:100%;
+    position:fixed;
+    left:0;
+    top:0;
+    z-index:1 !important;
+    filter: alpha(opacity=25); /* internet explorer */
+    -khtml-opacity: 0.25;      /* khtml, old safari */
+      -moz-opacity: 0.25;      /* mozilla, netscape */
+           opacity: 0.25;      /* fx, safari, opera */
+}
+
+.dialogWrapper {
+    width: 100%;
+    left: 0px;
+    position: absolute;
+    z-index: 5;
+    display: block;
+    margin: auto;
+}
+.dialog {
+    width: 70%;
+    height: 40%;
+    margin: 0 auto;
+    padding: 40px;
+    border: 0px solid #ccc;
+    position: relative;
+    top: 30%;
+    transform: translateY(30%);
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+body:after{
+    display:none;
+    content: url(../img/fire.png)
+                   url(../img/generated/bg.png)
+                   url(../img/generated/rocket.png)
+                   url(../img/generated/rocket_fire.png)
+                   url(../img/generated/selected.png)
+                   url(../img/generated/rocket_fire.png)
+                   url(../img/generated/cell_0.png)
+                   url(../img/generated/cell_1.png)
+                   url(../img/generated/cell_2.png)
+                   url(../img/generated/cell_3.png)
+                   url(../img/generated/cell_0_fire.png)
+                   url(../img/generated/cell_1_fire.png)
+                   url(../img/generated/cell_2_fire.png)
+                   url(../img/generated/cell_3_fire.png)
+                   url(../img/generated/fuel_0.png)
+                   url(../img/generated/fuel_1.png)
+                   url(../img/generated/fuel_2.png);
+}
