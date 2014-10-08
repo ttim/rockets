@@ -77,6 +77,10 @@
          (selected-state (sprite (args :type) (args :angle) (args :fire?)) (args :selected?))])) ;CoolSpriteComponent [type, angle, fire?, selected?]
 
 ; start sprites framework
+(def debug-sprites? (atom false))
+(defn debug-sprites! [debug?]
+  (reset! debug-sprites? debug?))
+
 (defn create-sprites
   ([n m sprite-creator]
    (into [] (for [x (range 0 n)] (into [] (for [y (range 0 m)] (sprite-creator x y))))))
@@ -101,12 +105,11 @@
 ; args {:sprites, :zones}
 (q/defcomponent
   SpritesComponent [args]
-  (let [{:keys [sprites zones]} args]
-    (html [:div {:style {
-                          :border   "1px double white"
-                          :position "relative"
-                          :width    (* (sw sprites) sprite-width)
-                          :height   (* (sh sprites) sprite-width)}}
+  (let [{:keys [sprites zones]} args
+        debug-style (if @debug-sprites? {:border "1px double white"} {})]
+    (html [:div {:style (merge {:position "relative"
+                                :width    (* (sw sprites) sprite-width)
+                                :height   (* (sh sprites) sprite-width)} debug-style)}
            (for [zone zones
                  :let [{:keys [offset-x, offset-y, width, height, component]} zone]]
              [:div {:style {

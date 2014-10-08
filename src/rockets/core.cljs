@@ -27,6 +27,7 @@
 ;(audio/play! audio/win-sound)
 
 ;(util/bind-state-log world (.getElementById js/document "state-log"))
+;(rockets.sprites/debug-sprites! true)
 
 ; define render function
 (q/defcomponent
