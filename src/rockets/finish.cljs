@@ -23,9 +23,6 @@
          }
         "Play again"
         ]
-       [:p]
-       [:div.normalText "If You Like Our Game"]
-       [:button.voteButton {:on-click #(util/redirect-to util/clojurecup-app-url)} "Vote For Us!"]
        ]
       ]
      ]

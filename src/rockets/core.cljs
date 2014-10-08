@@ -44,7 +44,6 @@
        [:button.button { :on-click #(util/update-text world :audio? (not (:audio? data)))
                          :style {:color "#300a2ff" :width 30 :background-image (str "url(img/" (if (:audio? data) "sound_on" "sound_off") ".png)")}} "."]
        [:button.button {:on-click #(util/redirect-to util/twitter-share-url)} "Share"]
-       [:button.voteButton {:on-click #(util/redirect-to util/clojurecup-app-url)} "Vote"]
        ]]]))
 
 (defn render [data]
