@@ -9,11 +9,13 @@
 
 (q/defcomponent
   SpritesComponent [sprites]
-  (html [:table {:style util/no-borders-style}
-         (for [sprites-line sprites]
-           [:tr {:style util/no-borders-style}
-            (for [sprite sprites-line]
-              [:td {:style util/no-borders-style} (if (nil? sprite) (sprites/EmptyComponent) sprite)])])]))
+  (html [:div {:style {:border "1px double white"}}
+         [:table {:style util/no-borders-style}
+          (for [sprites-line sprites]
+            [:tr {:style util/no-borders-style}
+             (for [sprite sprites-line]
+               [:td {:style util/no-borders-style} (if (nil? sprite) (sprites/EmptyComponent) sprite)])])]
+         ]))
 
 (defn create-sprites
   ([n m sprite-creator]
@@ -44,26 +46,30 @@
                                     :selected? (and (= x (:x selected)) (= y (:y selected))),
                                     :fire?     (:locked cell)}))))
 
+(def sprites-between-boards 4)
+(def rockets-space-sprites-height 6)
+(def board-sprites-height (inc state/size-n))
+(def board-sprites-width (inc state/size-m))
+(def boards-sprites-width (+ sprites-between-boards (* 2 board-sprites-width)))
+
 (defn board-sprites [board]
   (let [selected (board :selected)
         shuffle-selected? (and (= (selected :x) 0) (= (selected :y) -1))]
-    (-> (create-sprites (inc state/size-n) (inc state/size-m))
+    (-> (create-sprites board-sprites-height board-sprites-width)
         (merge-sprites (field-sprites (:cells board) selected) 0 1)
         (merge-sprites [[(sprites/ShuffleComponent (assoc board :selected? shuffle-selected?))]] (dec state/size-n) 0)
         (merge-sprites (create-sprites 1 state/size-m (fn [x y] (sprites/FireComponent))) state/size-n 1))))
 
-(def sprites-between-boards 4)
-
 (defn boards-sprites [boards]
-  (-> (create-sprites (inc state/size-n) (+ sprites-between-boards (* 2 (inc state/size-m))))
+  (-> (create-sprites board-sprites-height boards-sprites-width)
       (merge-sprites (board-sprites (:board1 boards)) 0 0)
       (merge-sprites (board-sprites (:board2 boards)) 0 (+ sprites-between-boards (inc state/size-m)))))
 
-(def space-between-boards (* sprites/sprite-width 4))
+(def space-between-boards (* sprites/sprite-width sprites-between-boards))
 (def board-width (* sprites/sprite-width (inc state/size-m)))
 (def boards-width (+ board-width board-width space-between-boards))
 (def board-height (* sprites/sprite-width (inc state/size-n)))
-(def rockets-space-height (* sprites/sprite-width 6))
+(def rockets-space-height (* sprites/sprite-width rockets-space-sprites-height))
 
 (defn convert
   ([progress min-value max-value] (convert progress 0 100 min-value max-value))
@@ -126,14 +132,18 @@
      [:div {:style {:position "absolute", :width (- board-width sprites/sprite-width), :left (+ board-width space-between-boards sprites/sprite-width)}}
       (PlayerNameComponent (:player2 args))]]))
 
+(defn gamezone-sprites [data]
+  (-> (create-sprites (+ rockets-space-sprites-height board-sprites-height) boards-sprites-width)
+      (merge-sprites (boards-sprites data) rockets-space-sprites-height 0)))
+
 (q/defcomponent
   GameComponent [data world-atom]
   (html
     [:div {:style {:width boards-width, :height (+ board-height rockets-space-height), :position "relative"}}
-     [:div {:style {:position "absolute", :top rockets-space-height}}
+     [:div {:style {:position "absolute", :top 0}}
       [:table {:style util/no-borders-style}
        [:tr {:style util/no-borders-style}
-        [:td {:style util/no-borders-style} (SpritesComponent (boards-sprites data))]]]]
+        [:td {:style util/no-borders-style} (SpritesComponent (gamezone-sprites data))]]]]
      [:div {:style {:position "absolute"}} (RocketsComponent (:rockets data))]
      [:div {:style {:position "absolute"}} (PlayersComponent (assoc data :top (- rockets-space-height (* 5 sprites/sprite-width))))]
      [:div {:style {:position "absolute"}} (PlayersComponent {:player1 "W S A D + Q" :player2
