@@ -5,7 +5,7 @@
     [clojure.string :as string]
     [rockets.util :as util]
     [rockets.game :as game]
-    [rockets.model :as model]))
+    [rockets.state :as state]))
 
 (q/defcomponent
   FinishComponent [data world-atom]
@@ -19,7 +19,7 @@
        [:p]
        [:button.button
         {:type     "button"
-         :on-click #(reset! world-atom (model/generate-game-state (:player1 data) (:player2 data) (:audio? data)))
+         :on-click #(reset! world-atom (state/generate-game-state (:player1 data) (:player2 data) (:audio? data)))
          }
         "Play again"
         ]

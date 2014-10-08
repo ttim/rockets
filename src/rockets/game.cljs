@@ -5,7 +5,7 @@
     [clojure.string :as string]
     [rockets.util :as util]
     [rockets.sprites :as sprites]
-    [rockets.model :as model]))
+    [rockets.state :as state]))
 
 (q/defcomponent
   SpritesComponent [sprites]
@@ -35,8 +35,8 @@
 
 (defn field-sprites [cells selected]
   (create-sprites
-    model/size-n model/size-m
-    #(let [x (- model/size-n (inc %1))
+    state/size-n state/size-m
+    #(let [x (- state/size-n (inc %1))
            y %2
            cell ((cells x) y)]
       (sprites/CoolSpriteComponent {:type      (:cell-type cell),
@@ -47,22 +47,22 @@
 (defn board-sprites [board]
   (let [selected (board :selected)
         shuffle-selected? (and (= (selected :x) 0) (= (selected :y) -1))]
-    (-> (create-sprites (inc model/size-n) (inc model/size-m))
+    (-> (create-sprites (inc state/size-n) (inc state/size-m))
         (merge-sprites (field-sprites (:cells board) selected) 0 1)
-        (merge-sprites [[(sprites/ShuffleComponent (assoc board :selected? shuffle-selected?))]] (dec model/size-n) 0)
-        (merge-sprites (create-sprites 1 model/size-m (fn [x y] (sprites/FireComponent))) model/size-n 1))))
+        (merge-sprites [[(sprites/ShuffleComponent (assoc board :selected? shuffle-selected?))]] (dec state/size-n) 0)
+        (merge-sprites (create-sprites 1 state/size-m (fn [x y] (sprites/FireComponent))) state/size-n 1))))
 
 (def sprites-between-boards 4)
 
 (defn boards-sprites [boards]
-  (-> (create-sprites (inc model/size-n) (+ sprites-between-boards (* 2 (inc model/size-m))))
+  (-> (create-sprites (inc state/size-n) (+ sprites-between-boards (* 2 (inc state/size-m))))
       (merge-sprites (board-sprites (:board1 boards)) 0 0)
-      (merge-sprites (board-sprites (:board2 boards)) 0 (+ sprites-between-boards (inc model/size-m)))))
+      (merge-sprites (board-sprites (:board2 boards)) 0 (+ sprites-between-boards (inc state/size-m)))))
 
 (def space-between-boards (* sprites/sprite-width 4))
-(def board-width (* sprites/sprite-width (inc model/size-m)))
+(def board-width (* sprites/sprite-width (inc state/size-m)))
 (def boards-width (+ board-width board-width space-between-boards))
-(def board-height (* sprites/sprite-width (inc model/size-n)))
+(def board-height (* sprites/sprite-width (inc state/size-n)))
 (def rockets-space-height (* sprites/sprite-width 6))
 
 (defn convert

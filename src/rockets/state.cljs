@@ -1,4 +1,4 @@
-(ns rockets.model
+(ns rockets.state
   (:require
     [rockets.util :as util]
     [clojure.set :as cljset]))

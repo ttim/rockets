@@ -4,7 +4,7 @@
     [quiescent :as q :include-macros true]
     [clojure.string :as string]
     [rockets.util :as util]
-    [rockets.model :as model]))
+    [rockets.state :as state]))
 
 (q/defcomponent
   StartComponent [data world-atom]
@@ -19,7 +19,7 @@
      [:button.button
       {:type     "button"
        :disabled (or (string/blank? (:player1 data)) (string/blank? (:player2 data)))
-       :on-click #(reset! world-atom (model/generate-game-state (:player1 data) (:player2 data) (:audio? data)))
+       :on-click #(reset! world-atom (state/generate-game-state (:player1 data) (:player2 data) (:audio? data)))
        }
       "Go!"]
      ]))

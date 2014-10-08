@@ -4,12 +4,12 @@
     [sablono.core :as html :refer-macros [html]]
     [quiescent :as q :include-macros true]
     [clojure.string :as string]
-    [rockets.model :as model]
-    [rockets.util :as util]
     [goog.events :as events]
     [goog.dom :as dom]
     [cljs.core.async :as async :refer [<! >! chan close! sliding-buffer put! alts!]]
 
+    [rockets.state :as state]
+    [rockets.util :as util]
     [rockets.keys :as keys]
     [rockets.start :as start]
     [rockets.game :as game]
@@ -18,9 +18,9 @@
   (:require-macros [cljs.core.async.macros :as m :refer [go alt!]]))
 
 ; world state
-(defonce world (atom model/start-state))
-;(defonce world (atom model/game-state))
-;(defonce world (atom model/finish-state))
+(defonce world (atom state/start-state))
+;(defonce world (atom state/game-state))
+;(defonce world (atom state/finish-state))
 
 ; audio
 (audio/init! world)
@@ -79,7 +79,7 @@
   (go
     (loop [tick 0]
       (<! (async/timeout 20))
-      (reset! world (model/tick @world tick))
+      (reset! world (state/tick @world tick))
       (recur (inc tick)))))
 
 ; keyboard controller
@@ -92,11 +92,11 @@
             board ({:player1 :board1, :player2 :board2} (command 0))
             action (command 1)
             new-world (case action
-                        :rotate (model/rotate @world board)
-                        :up (model/move @world board 0)
-                        :right (model/move @world board 1)
-                        :down (model/move @world board 2)
-                        :left (model/move @world board 3)
+                        :rotate (state/rotate @world board)
+                        :up (state/move @world board 0)
+                        :right (state/move @world board 1)
+                        :down (state/move @world board 2)
+                        :left (state/move @world board 3)
                         @world)]
         (reset! world new-world))
       (recur))))
