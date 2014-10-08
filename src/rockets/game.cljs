@@ -87,10 +87,6 @@
       (merge-sprites (board-sprites (:board1 boards)) 0 0)
       (merge-sprites (board-sprites (:board2 boards)) 0 (+ sprites-between-boards (inc state/size-m)))))
 
-(def space-between-boards (* sprites/sprite-width sprites-between-boards))
-(def board-width (* sprites/sprite-width (inc state/size-m)))
-(def boards-width (+ board-width board-width space-between-boards))
-(def board-height (* sprites/sprite-width (inc state/size-n)))
 (def rockets-space-height (* sprites/sprite-width rockets-space-sprites-height))
 
 (defn convert
@@ -100,8 +96,8 @@
 ; coordinates as school axis
 (defn calc-x-coordinate
   [player slot]
-  (let [offset (if (= player :player1) 0 (+ board-width space-between-boards))]
-    (+ sprites/sprite-width offset (* slot sprites/sprite-width))))
+  (let [offset (if (= player :player1) 0 (+ board-sprites-width sprites-between-boards))]
+    (* sprites/sprite-width (+ 1 offset slot))))
 
 (defn calc-flying-rocket-coordinates [rocket]
   (let [source-player (:source-player rocket)
@@ -137,7 +133,7 @@
 (q/defcomponent
   RocketsComponent [rockets]
   (html
-    [:div {:style {:position "absolute", :width boards-width, :height rockets-space-height}}
+    [:div {:style {:position "absolute", :width "100%", :height "100%"}}
      (map #(RocketComponent %) rockets)]))
 
 (q/defcomponent
