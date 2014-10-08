@@ -11,9 +11,7 @@
     [rockets.state :as state]
     [rockets.util :as util]
     [rockets.keys :as keys]
-    [rockets.start :as start]
-    [rockets.game :as game]
-    [rockets.finish :as finish]
+    [rockets.view :as view]
     [rockets.audio :as audio])
   (:require-macros [cljs.core.async.macros :as m :refer [go alt!]]))
 
@@ -34,11 +32,11 @@
   GameComponent [data world]
   (html
     [:div
-     [:div {:style {:width (+ (* rockets.sprites/sprite-width game/boards-sprites-width) rockets.sprites/sprite-width), :margin "0 auto"}}
+     [:div {:style {:width (+ (* rockets.sprites/sprite-width view/boards-sprites-width) rockets.sprites/sprite-width), :margin "0 auto"}}
       (case (:type data)
-        :start (start/StartComponent data world)
-        :game (game/GameComponent data world)
-        :finish (finish/FinishComponent data world))]
+        :start (view/StartComponent data world)
+        :game (view/GameComponent data world)
+        :finish (view/FinishComponent data world))]
      [:div {:id "footer"}
       [:div.titleText {:id "left-footer"} "Awesome Rocketeers"]
       [:div.titleText {:id "right-footer"}

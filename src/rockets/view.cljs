@@ -1,4 +1,4 @@
-(ns rockets.game
+(ns rockets.view
   (:require
     [sablono.core :as html :refer-macros [html]]
     [quiescent :as q :include-macros true]
@@ -7,6 +7,25 @@
     [rockets.sprites :as sprites :refer [create-sprites, merge-sprites, sprite-width, add-zone]]
     [rockets.state :as state]))
 
+; start
+(q/defcomponent
+  StartComponent [data world-atom]
+  (html
+    [:div.usual-background {:style {:text-align "center" :position "relative" :top "50%" :transform "translateY(50%)"}}
+     [:div.titleText {:style {:text-align "center"}} "Welcome, Rocketeers!"]
+     [:p]
+     [:input.inputField {:type "text", :value (:player1 data), :on-change #(util/update-text world-atom :player1 (-> % .-target .-value))}]
+     [:p]
+     [:input.inputField {:type "text", :value (:player2 data), :on-change #(util/update-text world-atom :player2 (-> % .-target .-value))}]
+     [:p]
+     [:button.button
+      {:type     "button"
+       :disabled (or (string/blank? (:player1 data)) (string/blank? (:player2 data)))
+       :on-click #(swap! world-atom state/start-game)
+       }
+      "Go!"]]))
+
+; game
 (def sprites-between-boards 4)
 (def rockets-space-sprites-height 6)
 (def board-sprites-height (inc state/size-n))
@@ -110,3 +129,21 @@
         (add-zone 0 0 boards-sprites-width rockets-space-sprites-height (RocketsComponent (:rockets data))))))
 
 (q/defcomponent GameComponent [data world-atom] (sprites/SpritesComponent (gamezone-sprites data)))
+
+; finish
+(q/defcomponent
+  FinishComponent [data world-atom]
+  (html
+    [:div {:style {:width game/boards-width :position "absolute" :height (+ game/board-height rockets-space-height)}}
+     [:div.dim {:style {:position "absolute"}} (GameComponent data world-atom)]
+     [:div.dialogWrapper {:style {:position "absolute" :text-align "center"}}
+      [:div.dialog
+       [:img {:src "img/elonmusk.jpg"}]
+       [:div.titleText (str ((:winner data) data) " Won!")]
+       [:p]
+       [:button.button
+        {:type     "button"
+         :on-click #(swap! world-atom state/start-game)
+         }
+        "Play again"
+        ]]]]))
