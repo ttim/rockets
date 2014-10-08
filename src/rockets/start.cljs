@@ -19,7 +19,7 @@
      [:button.button
       {:type     "button"
        :disabled (or (string/blank? (:player1 data)) (string/blank? (:player2 data)))
-       :on-click #(reset! world-atom (state/generate-game-state (:player1 data) (:player2 data) (:audio? data)))
+       :on-click #(swap! world-atom state/start-game)
        }
       "Go!"]
      ]))

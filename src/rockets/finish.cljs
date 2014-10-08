@@ -19,7 +19,7 @@
        [:p]
        [:button.button
         {:type     "button"
-         :on-click #(reset! world-atom (state/generate-game-state (:player1 data) (:player2 data) (:audio? data)))
+         :on-click #(swap! world-atom state/start-game)
          }
         "Play again"
         ]

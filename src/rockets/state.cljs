@@ -348,6 +348,9 @@
   (do-win game-state :player1))
 
 ; states modifiers
+(defn start-game [game-state]
+  (generate-game-state (:player1 game-state) (:player2 game-state) (:audio? game-state)))
+
 (defn move [game-state board direction]
   (case (:type game-state)
     :game (update-in game-state [board] (do-move-selection direction))
