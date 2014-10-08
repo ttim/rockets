@@ -155,43 +155,30 @@
 
 (q/defcomponent
   GameComponent [data world-atom]
-  (html
-    [:div {:style {:width boards-width, :height (+ board-height rockets-space-height), :position "relative"}}
-     [:div {:style {:position "absolute", :top 0}}
-      [:table {:style util/no-borders-style}
-       [:tr {:style util/no-borders-style}
-        [:td {:style util/no-borders-style}
-         (SpritesComponent
-           {:sprites (gamezone-sprites data),
-            :zones   [{
-                        :offset-x  (+ rockets-space-sprites-height board-sprites-height)
-                        :offset-y  1
-                        :width     state/size-n
-                        :height    2
-                        :component (HeaderComponent "W S A D + Q")}
-                      {
-                        :offset-x  (+ rockets-space-sprites-height board-sprites-height)
-                        :offset-y  (+ 1 board-sprites-width sprites-between-boards)
-                        :width     state/size-n
-                        :height    2
-                        :component (HeaderComponent "Arrows + Space")}
-                      {
-                        :offset-x  (- rockets-space-sprites-height player-name-sprite-offset-from-board)
-                        :offset-y  1
-                        :width     state/size-n
-                        :height    2
-                        :component (HeaderComponent (:player1 data))}
-                      {
-                        :offset-x  (- rockets-space-sprites-height player-name-sprite-offset-from-board)
-                        :offset-y  (+ 1 board-sprites-width sprites-between-boards)
-                        :width     state/size-n
-                        :height    2
-                        :component (HeaderComponent (:player2 data))}
-                      {
-                        :offset-x  0
-                        :offset-y  0
-                        :width     boards-sprites-width
-                        :height    rockets-space-sprites-height
-                        :component (RocketsComponent (:rockets data))}
-                      ]})
-         ]]]]]))
+  (let [keys-offset-x (+ rockets-space-sprites-height board-sprites-height)
+        players-name-offset-x (- rockets-space-sprites-height player-name-sprite-offset-from-board)
+        player1-offset-y 1
+        player2-offset-y (+ 1 board-sprites-width sprites-between-boards)]
+    (SpritesComponent
+      {:sprites (gamezone-sprites data),
+       :zones   [
+                  {:offset-x  keys-offset-x, :offset-y player1-offset-y
+                   :width     state/size-n, :height 2
+                   :component (HeaderComponent "W S A D + Q")}
+                  {:offset-x  keys-offset-x :offset-y player2-offset-y
+                   :width     state/size-n :height 2
+                   :component (HeaderComponent "Arrows + Space")}
+
+                  {:offset-x  players-name-offset-x :offset-y player1-offset-y
+                   :width     state/size-n :height 2
+                   :component (HeaderComponent (:player1 data))}
+                  {
+                    :offset-x  players-name-offset-x :offset-y player2-offset-y
+                    :width     state/size-n :height 2
+                    :component (HeaderComponent (:player2 data))}
+
+                  {
+                    :offset-x  0 :offset-y 0
+                    :width     boards-sprites-width :height rockets-space-sprites-height
+                    :component (RocketsComponent (:rockets data))}
+                  ]})))
