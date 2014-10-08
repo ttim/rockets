@@ -147,10 +147,6 @@
       (merge-sprites (boards-sprites data) rockets-space-sprites-height 0)))
 
 (q/defcomponent
-  EmptyWhiteComponent []
-  (html [:div {:style {:background-color "white" :width "100%" :height "100%"}}]))
-
-(q/defcomponent
   GameComponent [data world-atom]
   (let [keys-offset-x (+ rockets-space-sprites-height board-sprites-height)
         players-name-offset-x (- rockets-space-sprites-height player-name-sprite-offset-from-board)

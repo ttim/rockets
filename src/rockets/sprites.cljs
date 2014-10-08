@@ -64,6 +64,10 @@
   (html [:div {:style empty-style}]))
 
 (q/defcomponent
+  EmptyWhiteComponent []
+  (html [:div {:style {:background-color "white" :width "100%" :height "100%"}}]))
+
+(q/defcomponent
   FireComponent []
   (html [:div {:style fire-style}]))
 
