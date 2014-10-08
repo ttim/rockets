@@ -4,7 +4,7 @@
     [quiescent :as q :include-macros true]
     [clojure.string :as string]
     [rockets.util :as util]
-    [rockets.sprites :as sprites :refer [create-sprites, merge-sprites, sprite-width]]
+    [rockets.sprites :as sprites :refer [create-sprites, merge-sprites, sprite-width, add-zone]]
     [rockets.state :as state]))
 
 (def sprites-between-boards 4)
@@ -32,18 +32,14 @@
   (let [selected (board :selected)
         shuffle-selected? (and (= (selected :x) 0) (= (selected :y) -1))]
     (-> (create-sprites board-sprites-height board-sprites-width)
-        (merge-sprites (field-sprites (:cells board) selected) 0 1)
-        (merge-sprites [[(sprites/ShuffleComponent (assoc board :selected? shuffle-selected?))]] (dec state/size-n) 0)
-        (merge-sprites (create-sprites 1 state/size-m (fn [x y] (sprites/FireComponent))) state/size-n 1))))
+        (merge-sprites 0 1 (field-sprites (:cells board) selected))
+        (merge-sprites (dec state/size-n) 0 [[(sprites/ShuffleComponent (assoc board :selected? shuffle-selected?))]])
+        (merge-sprites state/size-n 1 (create-sprites 1 state/size-m (fn [x y] (sprites/FireComponent)))))))
 
 (defn boards-sprites [boards]
   (-> (create-sprites board-sprites-height boards-sprites-width)
-      (merge-sprites (board-sprites (:board1 boards)) 0 0)
-      (merge-sprites (board-sprites (:board2 boards)) 0 (+ sprites-between-boards (inc state/size-m)))))
-
-(defn gamezone-sprites [data]
-  (-> (create-sprites gamezone-height boards-sprites-width)
-      (merge-sprites (boards-sprites data) rockets-space-sprites-height 0)))
+      (merge-sprites 0 0 (board-sprites (:board1 boards)))
+      (merge-sprites 0 (+ sprites-between-boards (inc state/size-m)) (board-sprites (:board2 boards)))))
 
 ; rockets
 (def rockets-space-height (* sprite-width rockets-space-sprites-height))
@@ -100,32 +96,17 @@
   (html
     [:h1 {:style (assoc sprites/names-style :text-align "center")} name]))
 
-(q/defcomponent
-  GameComponent [data world-atom]
+(defn gamezone-sprites [data]
   (let [keys-offset-x (+ rockets-space-sprites-height board-sprites-height)
         players-name-offset-x (- rockets-space-sprites-height player-name-sprite-offset-from-board)
         player1-offset-y 1
         player2-offset-y (+ 1 board-sprites-width sprites-between-boards)]
-    (sprites/SpritesComponent
-      {:sprites (gamezone-sprites data),
-       :zones   [
-                  {:offset-x  keys-offset-x, :offset-y player1-offset-y
-                   :width     state/size-n, :height 2
-                   :component (HeaderComponent "W S A D + Q")}
-                  {:offset-x  keys-offset-x :offset-y player2-offset-y
-                   :width     state/size-n :height 2
-                   :component (HeaderComponent "Arrows + Space")}
+    (-> (create-sprites gamezone-height boards-sprites-width)
+        (merge-sprites rockets-space-sprites-height 0 (boards-sprites data))
+        (add-zone keys-offset-x player1-offset-y state/size-n 2 (HeaderComponent "W S A D + Q"))
+        (add-zone keys-offset-x player2-offset-y state/size-n 2 (HeaderComponent "Arrows + Space"))
+        (add-zone players-name-offset-x player1-offset-y state/size-n 2 (HeaderComponent (:player1 data)))
+        (add-zone players-name-offset-x player2-offset-y state/size-n 2 (HeaderComponent (:player2 data)))
+        (add-zone 0 0 boards-sprites-width rockets-space-sprites-height (RocketsComponent (:rockets data))))))
 
-                  {:offset-x  players-name-offset-x :offset-y player1-offset-y
-                   :width     state/size-n :height 2
-                   :component (HeaderComponent (:player1 data))}
-                  {
-                    :offset-x  players-name-offset-x :offset-y player2-offset-y
-                    :width     state/size-n :height 2
-                    :component (HeaderComponent (:player2 data))}
-
-                  {
-                    :offset-x  0 :offset-y 0
-                    :width     boards-sprites-width :height rockets-space-sprites-height
-                    :component (RocketsComponent (:rockets data))}
-                  ]})))
+(q/defcomponent GameComponent [data world-atom] (sprites/SpritesComponent (gamezone-sprites data)))

@@ -81,31 +81,38 @@
 (defn debug-sprites! [debug?]
   (reset! debug-sprites? debug?))
 
+(defrecord Sprites [table zones])
+(defrecord Zone [offset-x offset-y width height component])
+
 (defn create-sprites
   ([n m sprite-creator]
-   (into [] (for [x (range 0 n)] (into [] (for [y (range 0 m)] (sprite-creator x y))))))
+   (->Sprites (into [] (for [x (range 0 n)] (into [] (for [y (range 0 m)] (sprite-creator x y))))) []))
   ([n m] (create-sprites n m (fn [x y] nil))))
 
-(defn sh [sprites] (count sprites))
-(defn sw [sprites] (count (sprites 0)))
+(defn sh [sprites] (count (:table sprites)))
+(defn sw [sprites] (count ((:table sprites) 0)))
 
-(defn merge-sprites [sprites upper-sprites offset-x offset-y]
-  (create-sprites
-    (sh sprites) (sw sprites)
-    (fn [x y]
-      (let [original ((sprites x) y)
-            ux (- x offset-x)
-            uy (- y offset-y)]
-        (if (and (>= ux 0) (< ux (sh upper-sprites)))
-          (if (and (>= uy 0) (< uy (sw upper-sprites)))
-            ((upper-sprites ux) uy)
-            original)
-          original)))))
+(defn merge-sprites [sprites offset-x offset-y upper-sprites]
+  (let [bottom-table (:table sprites)
+        upper-table (:table upper-sprites)]
+    (create-sprites
+      (sh sprites) (sw sprites)
+      (fn [x y]
+        (let [original ((bottom-table x) y)
+              ux (- x offset-x)
+              uy (- y offset-y)]
+          (if (and (>= ux 0) (< ux (sh upper-sprites)))
+            (if (and (>= uy 0) (< uy (sw upper-sprites)))
+              ((upper-table ux) uy)
+              original)
+            original))))))
 
-; args {:sprites, :zones}
+(defn add-zone [sprites offset-x offset-y width height component]
+  (->Sprites (:table sprites) (conj (:zones sprites) (->Zone offset-x offset-y width height component))))
+
 (q/defcomponent
-  SpritesComponent [args]
-  (let [{:keys [sprites zones]} args
+  SpritesComponent [sprites]
+  (let [{:keys [table zones]} sprites
         debug-style (if @debug-sprites? {:border "1px double white"} {})]
     (html [:div {:style (merge {:position "relative"
                                 :width    (* (sw sprites) sprite-width)
@@ -120,7 +127,7 @@
                              :left     (* offset-y sprite-width)}} component])
 
            [:table {:style (merge util/no-borders-style {:position "absolute"})}
-            (for [sprites-line sprites]
+            (for [sprites-line table]
               [:tr {:style util/no-borders-style}
                (for [sprite sprites-line]
                  [:td {:style util/no-borders-style} (if (nil? sprite) (EmptyComponent) sprite)])])]
