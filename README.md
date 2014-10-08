@@ -20,4 +20,4 @@ To run on local machine run in the project root folder:
 
 This will start server on http://localhost:3449 and watch for local file changes. Browser code will be reloaded automatically (so only need to start lein once).
 
-For deployment start update.sh in the root folder.
+For deployment start ./build.sh && ./deploy_server.sh in the root folder.
