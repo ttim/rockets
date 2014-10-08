@@ -7,33 +7,53 @@
     [rockets.sprites :as sprites]
     [rockets.state :as state]))
 
-(q/defcomponent
-  SpritesComponent [sprites]
-  (html [:div {:style {:border "1px double white"}}
-         [:table {:style util/no-borders-style}
-          (for [sprites-line sprites]
-            [:tr {:style util/no-borders-style}
-             (for [sprite sprites-line]
-               [:td {:style util/no-borders-style} (if (nil? sprite) (sprites/EmptyComponent) sprite)])])]
-         ]))
-
+; start sprites framework
 (defn create-sprites
   ([n m sprite-creator]
    (into [] (for [x (range 0 n)] (into [] (for [y (range 0 m)] (sprite-creator x y))))))
   ([n m] (create-sprites n m (fn [x y] nil))))
 
+(defn sh [sprites] (count sprites))
+(defn sw [sprites] (count (sprites 0)))
+
 (defn merge-sprites [sprites upper-sprites offset-x offset-y]
   (create-sprites
-    (count sprites) (count (sprites 0))
+    (sh sprites) (sw sprites)
     (fn [x y]
       (let [original ((sprites x) y)
             ux (- x offset-x)
             uy (- y offset-y)]
-        (if (and (>= ux 0) (< ux (count upper-sprites)))
-          (if (and (>= uy 0) (< uy (count (upper-sprites 0))))
+        (if (and (>= ux 0) (< ux (sh upper-sprites)))
+          (if (and (>= uy 0) (< uy (sw upper-sprites)))
             ((upper-sprites ux) uy)
             original)
           original)))))
+
+; args {:sprites, :zones}
+(q/defcomponent
+  SpritesComponent [args]
+  (let [{:keys [sprites zones]} args]
+    (html [:div {:style {
+                          :border   "1px double white"
+                          :position "relative"
+                          :width    (* (sw sprites) sprites/sprite-width)
+                          :height   (* (sh sprites) sprites/sprite-width)}}
+           (for [zone zones
+                 :let [{:keys [offset-x, offset-y, width, height, component]} zone]]
+             [:div {:style {
+                             :position "absolute"
+                             :width    (* width sprites/sprite-width)
+                             :height   (* height sprites/sprite-width)
+                             :top      (* offset-x sprites/sprite-width)
+                             :left     (* offset-y sprites/sprite-width)}} component])
+
+           [:table {:style (merge util/no-borders-style {:position "absolute"})}
+            (for [sprites-line sprites]
+              [:tr {:style util/no-borders-style}
+               (for [sprite sprites-line]
+                 [:td {:style util/no-borders-style} (if (nil? sprite) (sprites/EmptyComponent) sprite)])])]
+           ])))
+; end sprites framework
 
 (defn field-sprites [cells selected]
   (create-sprites
@@ -138,6 +158,10 @@
       (merge-sprites (boards-sprites data) rockets-space-sprites-height 0)))
 
 (q/defcomponent
+  EmptyWhiteComponent []
+  (html [:div {:style {:background-color "white" :width "100%" :height "100%"}}]))
+
+(q/defcomponent
   GameComponent [data world-atom]
   (html
     [:div {:style {:width boards-width, :height (+ board-height rockets-space-height), :position "relative"}}
@@ -145,7 +169,9 @@
       [:table {:style util/no-borders-style}
        [:tr {:style util/no-borders-style}
         [:td {:style util/no-borders-style}
-         (SpritesComponent (gamezone-sprites data))]]]]
+         (SpritesComponent
+           {:sprites (gamezone-sprites data),
+            :zones   [{:offset-x 0, :offset-y 0, :width 1, :height 1, :component (EmptyWhiteComponent)}]})]]]]
      [:div {:style {:position "absolute"}} (RocketsComponent (:rockets data))]
      [:div {:style {:position "absolute"}} (PlayersComponent (assoc data :top (- rockets-space-height (* 5 sprites/sprite-width))))]
      [:div {:style {:position "absolute"}} (PlayersComponent {:player1 "W S A D + Q" :player2
