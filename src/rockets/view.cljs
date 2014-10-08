@@ -4,7 +4,7 @@
     [quiescent :as q :include-macros true]
     [clojure.string :as string]
     [rockets.util :as util]
-    [rockets.sprites :as sprites :refer [create-sprites, merge-sprites, sprite-width, add-zone]]
+    [rockets.sprites :as sprites :refer [create-sprites, merge-sprites, sprite-width, add-zone, single-sprite]]
     [rockets.state :as state]))
 
 ; start
@@ -52,7 +52,7 @@
         shuffle-selected? (and (= (selected :x) 0) (= (selected :y) -1))]
     (-> (create-sprites board-sprites-height board-sprites-width)
         (merge-sprites 0 1 (field-sprites (:cells board) selected))
-        (merge-sprites (dec state/size-n) 0 [[(sprites/ShuffleComponent (assoc board :selected? shuffle-selected?))]])
+        (merge-sprites (dec state/size-n) 0 (single-sprite (sprites/ShuffleComponent (assoc board :selected? shuffle-selected?))))
         (merge-sprites state/size-n 1 (create-sprites 1 state/size-m (fn [x y] (sprites/FireComponent)))))))
 
 (defn boards-sprites [boards]

@@ -88,6 +88,8 @@
   ([n m sprite-creator]
    (->Sprites (into [] (for [x (range 0 n)] (into [] (for [y (range 0 m)] (sprite-creator x y))))) []))
   ([n m] (create-sprites n m (fn [x y] nil))))
+(defn single-sprite [component]
+  (->Sprites [[component]] []))
 
 (defn sh [sprites] (count (:table sprites)))
 (defn sw [sprites] (count ((:table sprites) 0)))
