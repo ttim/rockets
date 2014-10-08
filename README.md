@@ -4,11 +4,11 @@ A two-player puzzle game.
 
 Each player is given a board where he can launch rockets by connecting them to fire sources with segments of fuse. To win, a player must launch all rockets located on his board. Trick is, when a rocket is launched, it flies off to the other players board (if there is enough fuel). This way players can mess with each others game, thus making the game more fun and interesting.
 
-Developed during [Clojure Cup](clojurecup.com) contest.
+Developed during [Clojure Cup](https://clojurecup.com) contest.
 
 ## Developer notes
 
-[This exellent article](http://solovyov.net/en/2014/cljs-start/) by Alexander Solovyov was used to setup the project. We follow its author advice to use [Quiescent](https://github.com/levand/quiescent) frontend framework.
+[This excellent article](http://solovyov.net/en/2014/cljs-start/) by Alexander Solovyov was used to setup the project. We follow its author advice to use [Quiescent](https://github.com/levand/quiescent) frontend framework.
 
 To start, install
 * [Leiningen](http://leiningen.org/);
