@@ -73,6 +73,7 @@
 (def boards-sprites-width (+ sprites-between-boards (* 2 board-sprites-width)))
 (def keys-zone-sprites-height 2)
 (def player-name-sprite-offset-from-board 5)
+(def gamezone-height (+ rockets-space-sprites-height board-sprites-height keys-zone-sprites-height))
 
 (defn board-sprites [board]
   (let [selected (board :selected)
@@ -142,7 +143,7 @@
     [:h1 {:style (assoc sprites/names-style :text-align "center")} name]))
 
 (defn gamezone-sprites [data]
-  (-> (create-sprites (+ rockets-space-sprites-height board-sprites-height keys-zone-sprites-height) boards-sprites-width)
+  (-> (create-sprites gamezone-height boards-sprites-width)
       (merge-sprites (boards-sprites data) rockets-space-sprites-height 0)))
 
 (q/defcomponent

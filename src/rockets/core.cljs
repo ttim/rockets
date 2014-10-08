@@ -33,7 +33,7 @@
   GameComponent [data world]
   (html
     [:div
-     [:div {:style {:width (+ game/boards-width rockets.sprites/sprite-width), :margin "0 auto"}}
+     [:div {:style {:width (+ (* rockets.sprites/sprite-width game/boards-sprites-width) rockets.sprites/sprite-width), :margin "0 auto"}}
       (case (:type data)
         :start (start/StartComponent data world)
         :game (game/GameComponent data world)
