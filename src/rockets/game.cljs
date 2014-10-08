@@ -187,6 +187,11 @@
                         :width     state/size-n
                         :height    2
                         :component (HeaderComponent (:player2 data))}
-                      ]})]]]]
-     [:div {:style {:position "absolute"}} (RocketsComponent (:rockets data))]
-     ]))
+                      {
+                        :offset-x  0
+                        :offset-y  0
+                        :width     boards-sprites-width
+                        :height    rockets-space-sprites-height
+                        :component (RocketsComponent (:rockets data))}
+                      ]})
+         ]]]]]))
