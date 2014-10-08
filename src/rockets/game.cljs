@@ -51,6 +51,7 @@
 (def board-sprites-height (inc state/size-n))
 (def board-sprites-width (inc state/size-m))
 (def boards-sprites-width (+ sprites-between-boards (* 2 board-sprites-width)))
+(def keys-zone-sprites-height 2)
 
 (defn board-sprites [board]
   (let [selected (board :selected)
@@ -133,7 +134,7 @@
       (PlayerNameComponent (:player2 args))]]))
 
 (defn gamezone-sprites [data]
-  (-> (create-sprites (+ rockets-space-sprites-height board-sprites-height) boards-sprites-width)
+  (-> (create-sprites (+ rockets-space-sprites-height board-sprites-height keys-zone-sprites-height) boards-sprites-width)
       (merge-sprites (boards-sprites data) rockets-space-sprites-height 0)))
 
 (q/defcomponent
@@ -143,7 +144,8 @@
      [:div {:style {:position "absolute", :top 0}}
       [:table {:style util/no-borders-style}
        [:tr {:style util/no-borders-style}
-        [:td {:style util/no-borders-style} (SpritesComponent (gamezone-sprites data))]]]]
+        [:td {:style util/no-borders-style}
+         (SpritesComponent (gamezone-sprites data))]]]]
      [:div {:style {:position "absolute"}} (RocketsComponent (:rockets data))]
      [:div {:style {:position "absolute"}} (PlayersComponent (assoc data :top (- rockets-space-height (* 5 sprites/sprite-width))))]
      [:div {:style {:position "absolute"}} (PlayersComponent {:player1 "W S A D + Q" :player2
