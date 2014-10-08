@@ -8,10 +8,6 @@
 .titleText, .inputField, .bigText, .normalText, .smallText {
     color:#00a2ff;
 }
-/*orange bg for vote button*/
-.voteButton {
-    background-color:#ff8407;
-}
 
 /*dark bg*/
 .dialog, .usual-background {
