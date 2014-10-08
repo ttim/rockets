@@ -4,57 +4,19 @@
     [quiescent :as q :include-macros true]
     [clojure.string :as string]
     [rockets.util :as util]
-    [rockets.sprites :as sprites]
+    [rockets.sprites :as sprites :refer [create-sprites, merge-sprites, sprite-width]]
     [rockets.state :as state]))
 
-; start sprites framework
-(defn create-sprites
-  ([n m sprite-creator]
-   (into [] (for [x (range 0 n)] (into [] (for [y (range 0 m)] (sprite-creator x y))))))
-  ([n m] (create-sprites n m (fn [x y] nil))))
+(def sprites-between-boards 4)
+(def rockets-space-sprites-height 6)
+(def board-sprites-height (inc state/size-n))
+(def board-sprites-width (inc state/size-m))
+(def boards-sprites-width (+ sprites-between-boards (* 2 board-sprites-width)))
+(def keys-zone-sprites-height 2)
+(def player-name-sprite-offset-from-board 5)
+(def gamezone-height (+ rockets-space-sprites-height board-sprites-height keys-zone-sprites-height))
 
-(defn sh [sprites] (count sprites))
-(defn sw [sprites] (count (sprites 0)))
-
-(defn merge-sprites [sprites upper-sprites offset-x offset-y]
-  (create-sprites
-    (sh sprites) (sw sprites)
-    (fn [x y]
-      (let [original ((sprites x) y)
-            ux (- x offset-x)
-            uy (- y offset-y)]
-        (if (and (>= ux 0) (< ux (sh upper-sprites)))
-          (if (and (>= uy 0) (< uy (sw upper-sprites)))
-            ((upper-sprites ux) uy)
-            original)
-          original)))))
-
-; args {:sprites, :zones}
-(q/defcomponent
-  SpritesComponent [args]
-  (let [{:keys [sprites zones]} args]
-    (html [:div {:style {
-                          :border   "1px double white"
-                          :position "relative"
-                          :width    (* (sw sprites) sprites/sprite-width)
-                          :height   (* (sh sprites) sprites/sprite-width)}}
-           (for [zone zones
-                 :let [{:keys [offset-x, offset-y, width, height, component]} zone]]
-             [:div {:style {
-                             :position "absolute"
-                             :width    (* width sprites/sprite-width)
-                             :height   (* height sprites/sprite-width)
-                             :top      (* offset-x sprites/sprite-width)
-                             :left     (* offset-y sprites/sprite-width)}} component])
-
-           [:table {:style (merge util/no-borders-style {:position "absolute"})}
-            (for [sprites-line sprites]
-              [:tr {:style util/no-borders-style}
-               (for [sprite sprites-line]
-                 [:td {:style util/no-borders-style} (if (nil? sprite) (sprites/EmptyComponent) sprite)])])]
-           ])))
-; end sprites framework
-
+; game-zone sprites
 (defn field-sprites [cells selected]
   (create-sprites
     state/size-n state/size-m
@@ -65,15 +27,6 @@
                                     :angle     (:orientation cell),
                                     :selected? (and (= x (:x selected)) (= y (:y selected))),
                                     :fire?     (:locked cell)}))))
-
-(def sprites-between-boards 4)
-(def rockets-space-sprites-height 6)
-(def board-sprites-height (inc state/size-n))
-(def board-sprites-width (inc state/size-m))
-(def boards-sprites-width (+ sprites-between-boards (* 2 board-sprites-width)))
-(def keys-zone-sprites-height 2)
-(def player-name-sprite-offset-from-board 5)
-(def gamezone-height (+ rockets-space-sprites-height board-sprites-height keys-zone-sprites-height))
 
 (defn board-sprites [board]
   (let [selected (board :selected)
@@ -88,7 +41,12 @@
       (merge-sprites (board-sprites (:board1 boards)) 0 0)
       (merge-sprites (board-sprites (:board2 boards)) 0 (+ sprites-between-boards (inc state/size-m)))))
 
-(def rockets-space-height (* sprites/sprite-width rockets-space-sprites-height))
+(defn gamezone-sprites [data]
+  (-> (create-sprites gamezone-height boards-sprites-width)
+      (merge-sprites (boards-sprites data) rockets-space-sprites-height 0)))
+
+; rockets
+(def rockets-space-height (* sprite-width rockets-space-sprites-height))
 
 (defn convert
   ([progress min-value max-value] (convert progress 0 100 min-value max-value))
@@ -98,7 +56,7 @@
 (defn calc-x-coordinate
   [player slot]
   (let [offset (if (= player :player1) 0 (+ board-sprites-width sprites-between-boards))]
-    (* sprites/sprite-width (+ 1 offset slot))))
+    (* sprite-width (+ 1 offset slot))))
 
 (defn calc-flying-rocket-coordinates [rocket]
   (let [source-player (:source-player rocket)
@@ -142,17 +100,13 @@
   (html
     [:h1 {:style (assoc sprites/names-style :text-align "center")} name]))
 
-(defn gamezone-sprites [data]
-  (-> (create-sprites gamezone-height boards-sprites-width)
-      (merge-sprites (boards-sprites data) rockets-space-sprites-height 0)))
-
 (q/defcomponent
   GameComponent [data world-atom]
   (let [keys-offset-x (+ rockets-space-sprites-height board-sprites-height)
         players-name-offset-x (- rockets-space-sprites-height player-name-sprite-offset-from-board)
         player1-offset-y 1
         player2-offset-y (+ 1 board-sprites-width sprites-between-boards)]
-    (SpritesComponent
+    (sprites/SpritesComponent
       {:sprites (gamezone-sprites data),
        :zones   [
                   {:offset-x  keys-offset-x, :offset-y player1-offset-y

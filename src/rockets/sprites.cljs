@@ -75,3 +75,51 @@
   CoolSpriteComponent [args]
   (html [:div {:style {:background-image "url(img/generated/bg.png)"}}
          (selected-state (sprite (args :type) (args :angle) (args :fire?)) (args :selected?))])) ;CoolSpriteComponent [type, angle, fire?, selected?]
+
+; start sprites framework
+(defn create-sprites
+  ([n m sprite-creator]
+   (into [] (for [x (range 0 n)] (into [] (for [y (range 0 m)] (sprite-creator x y))))))
+  ([n m] (create-sprites n m (fn [x y] nil))))
+
+(defn sh [sprites] (count sprites))
+(defn sw [sprites] (count (sprites 0)))
+
+(defn merge-sprites [sprites upper-sprites offset-x offset-y]
+  (create-sprites
+    (sh sprites) (sw sprites)
+    (fn [x y]
+      (let [original ((sprites x) y)
+            ux (- x offset-x)
+            uy (- y offset-y)]
+        (if (and (>= ux 0) (< ux (sh upper-sprites)))
+          (if (and (>= uy 0) (< uy (sw upper-sprites)))
+            ((upper-sprites ux) uy)
+            original)
+          original)))))
+
+; args {:sprites, :zones}
+(q/defcomponent
+  SpritesComponent [args]
+  (let [{:keys [sprites zones]} args]
+    (html [:div {:style {
+                          :border   "1px double white"
+                          :position "relative"
+                          :width    (* (sw sprites) sprite-width)
+                          :height   (* (sh sprites) sprite-width)}}
+           (for [zone zones
+                 :let [{:keys [offset-x, offset-y, width, height, component]} zone]]
+             [:div {:style {
+                             :position "absolute"
+                             :width    (* width sprite-width)
+                             :height   (* height sprite-width)
+                             :top      (* offset-x sprite-width)
+                             :left     (* offset-y sprite-width)}} component])
+
+           [:table {:style (merge util/no-borders-style {:position "absolute"})}
+            (for [sprites-line sprites]
+              [:tr {:style util/no-borders-style}
+               (for [sprite sprites-line]
+                 [:td {:style util/no-borders-style} (if (nil? sprite) (EmptyComponent) sprite)])])]
+           ])))
+; end sprites framework
