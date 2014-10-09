@@ -11,6 +11,10 @@
 ;; -------------------------------------------------------------------------------
 ;; Key events handling
 
+(def debug-keys? (atom false))
+(defn debug-keys! [debug?]
+  (reset! debug-keys? debug?))
+
 (def keycodes
   "Keycodes that interest us. Taken from
   http://docs.closure-library.googlecode.com/git/closure_goog_events_keynames.js.source.html#line33"
@@ -44,7 +48,7 @@
                     #(let [prevent? (prevention-predicate)
                            key-code (.-keyCode %)]
                       (do
-                        (js/console.log "!!!" key-code)
+                        (when @debug-keys? (js/console.log "key code: " key-code))
                         (when (and prevent? (contains? #{37 38 39 40 32} key-code))
                           (. % (preventDefault)))
                         (put! ev-chan (parse-event %)))))

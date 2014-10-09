@@ -66,6 +66,7 @@
 
 ; keyboard controller
 (def commands (chan))
+;(keys/debug-keys! true)
 (keys/init-events! commands (fn [] (= (@world :type) :game)))
 (def keys-handler
   (go
