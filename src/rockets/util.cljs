@@ -29,8 +29,17 @@
 (defn log [obj] (js/console.log (sablono.util/to-str obj)))
 
 ; render
+(def last-rendered-state (atom {}))
+(defn render-if-needed [key atom dom-element component-builder]
+  (when-not (= (@last-rendered-state key) @atom)
+    (q/render (component-builder) dom-element)
+    (reset! last-rendered-state (assoc @last-rendered-state key @atom))))
+
 (defn render! [key atom dom-element component-builder]
-  (q/render (component-builder) dom-element)
-  (add-watch
-    atom key
-    (fn [_ _ _ data] (q/render (component-builder) dom-element))))
+  (let [render-func #(render-if-needed key atom dom-element component-builder)]
+    (render-func)
+    (add-watch
+      atom key
+      (fn [_ _ _ data] (if (exists? js/requestAnimationFrame)
+                         (js/requestAnimationFrame render-func)
+                         (js/setTimeout render-func 16))))))
