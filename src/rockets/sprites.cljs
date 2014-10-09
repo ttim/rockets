@@ -81,44 +81,44 @@
 (defn debug-sprites! [debug?]
   (reset! debug-sprites? debug?))
 
-(defrecord Sprites [table zones])
+(defrecord Sprites [n m zones])
 (defrecord Zone [offset-x offset-y width height component])
 
 (defn create-sprites
-  ([n m sprite-creator]
-   (->Sprites (into [] (for [x (range 0 n)] (into [] (for [y (range 0 m)] (sprite-creator x y))))) []))
-  ([n m] (create-sprites n m (fn [x y] nil))))
+  ([n m] (->Sprites n m [])))
 (defn single-sprite [component]
-  (->Sprites [[component]] []))
-
-(defn sh [sprites] (count (:table sprites)))
-(defn sw [sprites] (count ((:table sprites) 0)))
-
-(defn merge-sprites [sprites offset-x offset-y upper-sprites]
-  (let [bottom-table (:table sprites)
-        upper-table (:table upper-sprites)]
-    (create-sprites
-      (sh sprites) (sw sprites)
-      (fn [x y]
-        (let [original ((bottom-table x) y)
-              ux (- x offset-x)
-              uy (- y offset-y)]
-          (if (and (>= ux 0) (< ux (sh upper-sprites)))
-            (if (and (>= uy 0) (< uy (sw upper-sprites)))
-              ((upper-table ux) uy)
-              original)
-            original))))))
+  (->Sprites 1 1 [(->Zone 0 0 1 1 component)]))
 
 (defn add-zone [sprites offset-x offset-y width height component]
-  (->Sprites (:table sprites) (conj (:zones sprites) (->Zone offset-x offset-y width height component))))
+  (->Sprites (:n sprites) (:m sprites) (conj (:zones sprites) (->Zone offset-x offset-y width height component))))
+
+(q/defcomponent
+  TableComponent [args]
+  (let [[n m cell-creator] args]
+    (html [:div {:style {:position "relative"
+                         :width    (* n sprite-width)
+                         :height   (* m sprite-width)}}
+           [:table {:style (merge util/no-borders-style {:position "absolute"})}
+            (for [i (range 0 n)]
+              [:tr {:style util/no-borders-style}
+               (for [j (range 0 m)
+                     :let [sprite (cell-creator i j)]]
+                 [:td {:style util/no-borders-style}
+                  (if (nil? sprite) (EmptyComponent) sprite)
+                  ])])]
+           ])))
+
+(defn add-table [sprites cell-creator]
+  (let [{:keys [n m]} sprites]
+    (add-zone sprites 0 0 n m (TableComponent [n m cell-creator]))))
 
 (q/defcomponent
   SpritesComponent [sprites]
-  (let [{:keys [table zones]} sprites
+  (let [{:keys [n m zones]} sprites
         debug-style (if @debug-sprites? {:border "1px double white"} {})]
     (html [:div {:style (merge {:position "relative"
-                                :width    (* (sw sprites) sprite-width)
-                                :height   (* (sh sprites) sprite-width)} debug-style)}
+                                :width    (* n sprite-width)
+                                :height   (* m sprite-width)} debug-style)}
            (for [zone zones
                  :let [{:keys [offset-x, offset-y, width, height, component]} zone]]
              [:div {:style {
@@ -127,11 +127,11 @@
                              :height   (* height sprite-width)
                              :top      (* offset-x sprite-width)
                              :left     (* offset-y sprite-width)}} component])
-
-           [:table {:style (merge util/no-borders-style {:position "absolute"})}
-            (for [sprites-line table]
-              [:tr {:style util/no-borders-style}
-               (for [sprite sprites-line]
-                 [:td {:style util/no-borders-style} (if (nil? sprite) (EmptyComponent) sprite)])])]
            ])))
+
+; todo: what if upper-sprites will be more than sprites?
+(defn add-sprites [sprites offset-x offset-y upper-sprites]
+  (let [{:keys [n m]} upper-sprites]
+    (add-zone sprites offset-x offset-y n m (SpritesComponent upper-sprites))))
+
 ; end sprites framework

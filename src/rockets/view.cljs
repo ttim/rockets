@@ -4,7 +4,7 @@
     [quiescent :as q :include-macros true]
     [clojure.string :as string]
     [rockets.util :as util]
-    [rockets.sprites :as sprites :refer [create-sprites, merge-sprites, sprite-width, add-zone, single-sprite]]
+    [rockets.sprites :as sprites :refer [create-sprites, add-table, add-sprites, sprite-width, add-zone, single-sprite]]
     [rockets.state :as state]))
 
 ; start
@@ -37,28 +37,31 @@
 
 ; game-zone sprites
 (defn field-sprites [cells selected]
-  (create-sprites
-    state/size-n state/size-m
-    #(let [x (- state/size-n (inc %1))
-           y %2
-           cell ((cells x) y)]
-      (sprites/CoolSpriteComponent {:type      (:cell-type cell),
-                                    :angle     (:orientation cell),
-                                    :selected? (and (= x (:x selected)) (= y (:y selected))),
-                                    :fire?     (:locked cell)}))))
+  (-> (create-sprites state/size-n state/size-m)
+      (add-table #(let [x (- state/size-n (inc %1))
+                        y %2
+                        cell ((cells x) y)]
+                   (sprites/CoolSpriteComponent {:type      (:cell-type cell),
+                                                 :angle     (:orientation cell),
+                                                 :selected? (and (= x (:x selected)) (= y (:y selected))),
+                                                 :fire?     (:locked cell)})))))
+
+(defn fire-sprites []
+  (-> (create-sprites 1 state/size-m)
+      (add-table (fn [x y] (sprites/FireComponent)))))
 
 (defn board-sprites [board]
   (let [selected (board :selected)
         shuffle-selected? (and (= (selected :x) 0) (= (selected :y) -1))]
     (-> (create-sprites board-sprites-height board-sprites-width)
-        (merge-sprites 0 1 (field-sprites (:cells board) selected))
-        (merge-sprites (dec state/size-n) 0 (single-sprite (sprites/ShuffleComponent (assoc board :selected? shuffle-selected?))))
-        (merge-sprites state/size-n 1 (create-sprites 1 state/size-m (fn [x y] (sprites/FireComponent)))))))
+        (add-sprites 0 1 (field-sprites (:cells board) selected))
+        (add-sprites (dec state/size-n) 0 (single-sprite (sprites/ShuffleComponent (assoc board :selected? shuffle-selected?))))
+        (add-sprites state/size-n 1 (fire-sprites)))))
 
 (defn boards-sprites [boards]
   (-> (create-sprites board-sprites-height boards-sprites-width)
-      (merge-sprites 0 0 (board-sprites (:board1 boards)))
-      (merge-sprites 0 (+ sprites-between-boards (inc state/size-m)) (board-sprites (:board2 boards)))))
+      (add-sprites 0 0 (board-sprites (:board1 boards)))
+      (add-sprites 0 (+ sprites-between-boards (inc state/size-m)) (board-sprites (:board2 boards)))))
 
 ; rockets
 (def rockets-space-height (* sprite-width rockets-space-sprites-height))
@@ -121,14 +124,16 @@
         player1-offset-y 1
         player2-offset-y (+ 1 board-sprites-width sprites-between-boards)]
     (-> (create-sprites gamezone-height boards-sprites-width)
-        (merge-sprites rockets-space-sprites-height 0 (boards-sprites data))
+        (add-sprites rockets-space-sprites-height 0 (boards-sprites data))
         (add-zone keys-offset-x player1-offset-y state/size-n 2 (HeaderComponent "W S A D + Q"))
         (add-zone keys-offset-x player2-offset-y state/size-n 2 (HeaderComponent "Arrows + Space"))
         (add-zone players-name-offset-x player1-offset-y state/size-n 2 (HeaderComponent (:player1 data)))
         (add-zone players-name-offset-x player2-offset-y state/size-n 2 (HeaderComponent (:player2 data)))
         (add-zone 0 0 boards-sprites-width rockets-space-sprites-height (RocketsComponent (:rockets data))))))
 
-(q/defcomponent GameComponent [data world-atom] (sprites/SpritesComponent ((util/with-time-debug :build-sprites #(gamezone-sprites data)))))
+(q/defcomponent GameComponent [data world-atom]
+                (let [sprites ((util/with-time-debug :build-sprites #(gamezone-sprites data)))]
+                  (sprites/SpritesComponent sprites)))
 
 ; finish
 (q/defcomponent
@@ -161,6 +166,6 @@
      [:div {:id "footer"}
       [:div.titleText {:id "left-footer"} "Awesome Rocketeers"]
       [:div.titleText {:id "right-footer"}
-       [:button.button { :on-click #(util/update-text world-atom :audio? (not (:audio? data)))
-                         :style {:color "#300a2ff" :width 30 :margin-right 5 :background-image (str "url(img/" (if (:audio? data) "sound_on" "sound_off") ".png)")}} "."]
+       [:button.button {:on-click #(util/update-text world-atom :audio? (not (:audio? data)))
+                        :style    {:color "#300a2ff" :width 30 :margin-right 5 :background-image (str "url(img/" (if (:audio? data) "sound_on" "sound_off") ".png)")}} "."]
        [:button.button {:on-click #(util/redirect-to util/twitter-share-url)} "Share"]]]]))
