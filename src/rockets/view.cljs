@@ -147,3 +147,20 @@
          }
         "Play again"
         ]]]]))
+
+; whole world
+(q/defcomponent
+  WorldComponent [data world-atom]
+  (html
+    [:div
+     [:div {:style {:width (+ (* sprite-width boards-sprites-width) sprite-width), :margin "0 auto"}}
+      (case (:type data)
+        :start (StartComponent data world-atom)
+        :game (GameComponent data world-atom)
+        :finish (FinishComponent data world-atom))]
+     [:div {:id "footer"}
+      [:div.titleText {:id "left-footer"} "Awesome Rocketeers"]
+      [:div.titleText {:id "right-footer"}
+       [:button.button { :on-click #(util/update-text world-atom :audio? (not (:audio? data)))
+                         :style {:color "#300a2ff" :width 30 :background-image (str "url(img/" (if (:audio? data) "sound_on" "sound_off") ".png)")}} "."]
+       [:button.button {:on-click #(util/redirect-to util/twitter-share-url)} "Share"]]]]))

@@ -28,26 +28,9 @@
 ;(rockets.sprites/debug-sprites! true)
 
 ; define render function
-(q/defcomponent
-  GameComponent [data world]
-  (html
-    [:div
-     [:div {:style {:width (+ (* rockets.sprites/sprite-width view/boards-sprites-width) rockets.sprites/sprite-width), :margin "0 auto"}}
-      (case (:type data)
-        :start (view/StartComponent data world)
-        :game (view/GameComponent data world)
-        :finish (view/FinishComponent data world))]
-     [:div {:id "footer"}
-      [:div.titleText {:id "left-footer"} "Awesome Rocketeers"]
-      [:div.titleText {:id "right-footer"}
-       [:button.button { :on-click #(util/update-text world :audio? (not (:audio? data)))
-                         :style {:color "#300a2ff" :width 30 :background-image (str "url(img/" (if (:audio? data) "sound_on" "sound_off") ".png)")}} "."]
-       [:button.button {:on-click #(util/redirect-to util/twitter-share-url)} "Share"]
-       ]]]))
-
 (defn render [data]
   (q/render
-    (GameComponent data world)
+    (view/WorldComponent data world)
     (.getElementById js/document "main-area")))
 
 ; render for first time
