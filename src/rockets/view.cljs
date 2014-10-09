@@ -128,7 +128,7 @@
         (add-zone players-name-offset-x player2-offset-y state/size-n 2 (HeaderComponent (:player2 data)))
         (add-zone 0 0 boards-sprites-width rockets-space-sprites-height (RocketsComponent (:rockets data))))))
 
-(q/defcomponent GameComponent [data world-atom] (sprites/SpritesComponent (gamezone-sprites data)))
+(q/defcomponent GameComponent [data world-atom] (sprites/SpritesComponent ((util/with-time-debug :build-sprites #(gamezone-sprites data)))))
 
 ; finish
 (q/defcomponent
