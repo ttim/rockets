@@ -1,6 +1,7 @@
 (ns rockets.util
   (:require
-    [clojure.browser.dom :as dom]))
+    [clojure.browser.dom :as dom]
+    [quiescent :as q :include-macros true]))
 
 (defn update-text
   [world-atom key value] (reset! world-atom (assoc @world-atom key value)))
@@ -26,3 +27,10 @@
     (str "https://twitter.com/intent/tweet?text=" text)))
 
 (defn log [obj] (js/console.log (sablono.util/to-str obj)))
+
+; render
+(defn render! [key atom dom-element component-builder]
+  (q/render (component-builder) dom-element)
+  (add-watch
+    atom key
+    (fn [_ _ _ data] (q/render (component-builder) dom-element))))

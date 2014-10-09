@@ -2,7 +2,6 @@
   (:require
     [figwheel.client :as fw]
     [sablono.core :as html :refer-macros [html]]
-    [quiescent :as q :include-macros true]
     [clojure.string :as string]
     [goog.events :as events]
     [goog.dom :as dom]
@@ -28,18 +27,7 @@
 ;(rockets.sprites/debug-sprites! true)
 
 ; define render function
-(defn render [data]
-  (q/render
-    (view/WorldComponent data world)
-    (.getElementById js/document "main-area")))
-
-; render for first time
-(defonce _first_time_render (render @world))
-
-; watch world state and re-render in case of change
-(add-watch
-  world ::render
-  (fn [_ _ _ data] (render data)))
+(util/render! :main-render world (.getElementById js/document "main-area") #(view/WorldComponent @world world))
 
 ; watch world for background painting
 (defn update-background [world]
