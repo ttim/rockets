@@ -132,8 +132,7 @@
         (add-zone 0 0 boards-sprites-width rockets-space-sprites-height (RocketsComponent (:rockets data))))))
 
 (q/defcomponent GameComponent [data world-atom]
-                (let [sprites ((util/with-time-debug :build-sprites #(gamezone-sprites data)))]
-                  (sprites/SpritesComponent sprites)))
+  (sprites/SpritesComponent ((util/with-time-debug :build-sprites #(gamezone-sprites data)))))
 
 ; finish
 (q/defcomponent
