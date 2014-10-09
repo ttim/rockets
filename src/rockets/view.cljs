@@ -134,7 +134,7 @@
 (q/defcomponent
   FinishComponent [data world-atom]
   (html
-    [:div {:style {:width game/boards-width :position "absolute" :height (+ game/board-height rockets-space-height)}}
+    [:div {:style {:width (* (inc boards-sprites-width) sprite-width) :position "absolute" :height (* gamezone-height sprite-width)}}
      [:div.dim {:style {:position "absolute"}} (GameComponent data world-atom)]
      [:div.dialogWrapper {:style {:position "absolute" :text-align "center"}}
       [:div.dialog
@@ -153,7 +153,7 @@
   WorldComponent [data world-atom]
   (html
     [:div
-     [:div {:style {:width (+ (* sprite-width boards-sprites-width) sprite-width), :margin "0 auto"}}
+     [:div {:style {:width (* (inc boards-sprites-width) sprite-width), :margin "0 auto"}}
       (case (:type data)
         :start (StartComponent data world-atom)
         :game (GameComponent data world-atom)
