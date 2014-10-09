@@ -28,6 +28,13 @@
 
 (defn log [obj] (js/console.log (sablono.util/to-str obj)))
 
+(defn current-time-ms [] (. (js/Date.) (getTime)))
+(defn with-time-debug [fn]
+  #(let [start-time (current-time-ms)]
+    (fn)
+    ;(log (- (current-time-ms) start-time))
+    ))
+
 ; render
 (def last-rendered-state (atom {}))
 (defn render-if-needed [key atom dom-element component-builder]
@@ -36,7 +43,7 @@
     (reset! last-rendered-state (assoc @last-rendered-state key @atom))))
 
 (defn render! [key atom dom-element component-builder]
-  (let [render-func #(render-if-needed key atom dom-element component-builder)]
+  (let [render-func (with-time-debug #(render-if-needed key atom dom-element component-builder))]
     (render-func)
     (add-watch
       atom key
