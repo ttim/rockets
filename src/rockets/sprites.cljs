@@ -117,8 +117,8 @@
   (let [{:keys [n m zones]} sprites
         debug-style (if @debug-sprites? {:border "1px double white"} {})]
     (html [:div {:style (merge {:position "relative"
-                                :width    (* n sprite-width)
-                                :height   (* m sprite-width)} debug-style)}
+                                :width    (* m sprite-width)
+                                :height   (* n sprite-width)} debug-style)}
            (for [zone zones
                  :let [{:keys [offset-x, offset-y, width, height, component]} zone]]
              [:div {:style {
