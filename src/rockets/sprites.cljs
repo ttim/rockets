@@ -96,8 +96,8 @@
   TableComponent [args]
   (let [[n m cell-creator] args]
     (html [:div {:style {:position "relative"
-                         :width    (* n sprite-width)
-                         :height   (* m sprite-width)}}
+                         :width    (* m sprite-width)
+                         :height   (* n sprite-width)}}
            [:table {:style (merge util/no-borders-style {:position "absolute"})}
             (for [i (range 0 n)]
               [:tr {:style util/no-borders-style}
