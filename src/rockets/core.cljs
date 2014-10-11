@@ -20,7 +20,10 @@
 ;(defonce world (atom state/finish-state))
 
 ; audio
-(audio/init! world)
+(add-watch
+  world ::world-audio
+  (fn [_ _ _ data]
+    (reset! audio/on? (:audio? data))))
 
 ;(util/bind-state-log! world (.getElementById js/document "state-log"))
 ;(reset! rockets.sprites/debug-sprites? true)
@@ -31,7 +34,6 @@
 ; watch world for background painting
 (defn update-background [world]
   (let [background-class (if (= (:type world) :finish) "grey-background" "usual-background")]
-    (js/console.log background-class)
     (set! (.-className (js/document.getElementById "body")) background-class)))
 (update-background @world)
 (add-watch

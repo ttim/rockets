@@ -1,36 +1,29 @@
 (ns rockets.audio)
 
-(def audios)
-(def audio-world)
+(def on? (atom true))
+(def audios (atom []))
 
 (defn audio [name]
-  (let [res (js/Audio. (str "sound/" name ".wav"))
-        old-audios audios]
-    (def audios (conj old-audios res))
+  (let [res (js/Audio. (str "sound/" name ".wav"))]
+    (reset! audios (conj @audios res))
     res))
 (defn play! [audio]
-  (let [audio? (:audio? @audio-world)]
+  (when @on?
     (set! (.-currentTime audio) 0)
-    (when audio? (. audio (play)))))
+    (. audio (play))))
 (defn stop! [audio]
   (do
     (. audio (pause))
     (set! (.-currentTime audio) 0)))
 
+(add-watch on? ::audio
+           (fn [_ _ old-data data] (when (and (not data) old-data) (doall (map stop! @audios)))))
 
-(defn init! [world-atom]
-  (def audio-world world-atom)
-  (add-watch
-    audio-world ::audio
-    (fn [_ _ old-data data]
-      (when (and (not (:audio? data)) (:audio? old-data))
-        (doall (map stop! audios))))))
-
-(defonce rocket-sound (audio "rocket1"))
-;(defonce rocket2-sound (audio "rocket2"))
-(defonce rotate-sound (audio "rotate1"))
-;(defonce rotate2-sound (audio "rotate2"))
-(defonce shuffle-sound (audio "shuffle"))
-(defonce win-sound (audio "tada"))
+(def rocket-sound (audio "rocket1"))
+;(def rocket2-sound (audio "rocket2"))
+(def rotate-sound (audio "rotate1"))
+;(def rotate2-sound (audio "rotate2"))
+(def shuffle-sound (audio "shuffle"))
+(def win-sound (audio "tada"))
 
 ;(js/console.log (sablono.util/to-str audios))
