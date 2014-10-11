@@ -78,8 +78,6 @@
 
 ; start sprites framework
 (def debug-sprites? (atom false))
-(defn debug-sprites! [debug?]
-  (reset! debug-sprites? debug?))
 
 (defrecord Sprites [height width zones])
 (defrecord Zone [offset-top offset-left height width component])

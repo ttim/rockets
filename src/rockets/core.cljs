@@ -21,10 +21,9 @@
 
 ; audio
 (audio/init! world)
-;(audio/play! audio/win-sound)
 
-;(util/bind-state-log world (.getElementById js/document "state-log"))
-;(rockets.sprites/debug-sprites! true)
+;(util/bind-state-log! world (.getElementById js/document "state-log"))
+;(reset! rockets.sprites/debug-sprites? true)
 
 ; define render function
 (util/render! :main-render world (.getElementById js/document "main-area") #(view/WorldComponent @world world))
