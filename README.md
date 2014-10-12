@@ -1,10 +1,12 @@
 # Awesome Rocketeers
 
+[Try the game here.](http://ttim.github.io/rockets/)
+---
 A two-player puzzle game.
 
 Each player is given a board where he can launch rockets by connecting them to fire sources with segments of fuse. To win, a player must launch all rockets located on his board. Trick is, when a rocket is launched, it flies off to the other players board (if there is enough fuel). This way players can mess with each others game, thus making the game more fun and interesting.
 
-Developed during [Clojure Cup](https://clojurecup.com) contest.
+Developed during [Clojure Cup](https://clojurecup.com) contest. See [description on ClojureCup website](https://clojurecup.com/#/apps/rockets) and [ClojureCup version](http://rockets.clojurecup.com/).
 
 ## Developer notes
 
