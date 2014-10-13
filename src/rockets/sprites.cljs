@@ -8,40 +8,43 @@
 (def sprite-width 36)
 (def rocket-height (* 2 sprite-width))
 
-(defn rocket-style-fn
-  [img-src] (merge {:width sprite-width :height rocket-height :background-image img-src} util/no-borders-style))
-(def rocket-style (rocket-style-fn "url(img/generated/rocket.png)"))
-(def rocket-fire-style (rocket-style-fn "url(img/generated/rocket_fire.png)"))
-
-(def base-style (merge {:width sprite-width :height sprite-width} util/no-borders-style))
-
-(def empty-style (merge base-style {:background-image "url(img/empty.png)"} util/no-borders-style))
-(def shuffle-style (merge base-style {:background-image "url(img/generated/shuffle.png)"} util/no-borders-style))
-(def fire-style (merge base-style {:background-image "url(img/fire.png)"} util/no-borders-style))
-
-(defn select-type [style type fire?]
-  (if (= type -1)
-    style
-    (let [img (str "url(img/generated/cell_" type (if fire? "_fire" "") ".png)")]
-      (assoc style :background-image img))))
-
+; styles transformers
+(defn with-dimensions [style width height]
+  (merge style {:width width :height height}))
+(defn with-image [style img-src]
+  (assoc style :background-image img-src))
 (defn rotate [style angle]
   (-> style
       (assoc :transform (str "rotate(" (* angle 90) "deg)"))
       (assoc :-webkit-transform (str "rotate(" (* angle 90) "deg)"))))
+(defn opacity [style opacity]
+  (-> style
+      (assoc :opacity (/ opacity 100))
+      (assoc :filter (str "alpha(opacity=" opacity ")"))))
 
-(defn sprite [type angle fire?]
-  [:div {:style (rotate (select-type base-style type fire?) angle)}]
-  )
+; sprite styles
+(def base-rocket-style (with-dimensions util/no-borders-style sprite-width rocket-height))
+(def rocket-style (with-image base-rocket-style "url(img/generated/rocket.png)"))
+(def rocket-fire-style (with-image base-rocket-style "url(img/generated/rocket_fire.png)"))
+
+(def base-style (with-dimensions util/no-borders-style sprite-width sprite-width))
+(def empty-style (with-image base-style "url(img/empty.png)"))
+(def shuffle-style (with-image base-style "url(img/generated/shuffle.png)"))
+(def fire-style (with-image base-style "url(img/fire.png)"))
+
+(defn cell-img-src [type fire?]
+  (str "url(img/generated/cell_" type (if fire? "_fire" "") ".png)"))
+
+(defn select-type [style type fire?]
+  (if (= type -1)
+    style
+    (assoc style :background-image (cell-img-src type fire?))))
 
 (defn selected-state [sprite selected?]
   (if selected? [:div {:style {:background-image "url(img/generated/selected.png)"}} sprite] sprite))
 
-(defn opacity [opacity]
-  {:opacity (/ opacity 100) :filter (str "alpha(opacity=" opacity ")")})
-
 (def names-style
-  (merge {:font-family "'Geo', sans-serif" :color "white"} (opacity 10)))
+  (opacity {:font-family "'Geo', sans-serif" :color "white"} 10))
 
 (q/defcomponent
   ShuffleComponent [args]                                   ;(selected time-to-reload)
@@ -49,7 +52,7 @@
     (let [selected? (:selected? args)
           time-to-reload (- 100 (:time-to-reload args))]
       [:div {:style {:background-image "url(img/generated/bg.png)"}}
-       (selected-state [:div {:style (merge shuffle-style (opacity time-to-reload))}] selected?)])))
+       (selected-state [:div {:style (opacity shuffle-style time-to-reload)}] selected?)])))
 
 (q/defcomponent
   RocketComponent [args]                                    ;[fire? fuel height]
@@ -72,9 +75,11 @@
   (html [:div {:style fire-style}]))
 
 (q/defcomponent
-  CoolSpriteComponent [args]
+  CoolSpriteComponent [args]                                ;CoolSpriteComponent [type, angle, fire?, selected?]
   (html [:div {:style {:background-image "url(img/generated/bg.png)"}}
-         (selected-state (sprite (args :type) (args :angle) (args :fire?)) (args :selected?))])) ;CoolSpriteComponent [type, angle, fire?, selected?]
+         (selected-state
+           [:div {:style (rotate (select-type base-style (:type args) (:fire? args)) (:angle args))}]
+           (:selected? args))]))
 
 ; start sprites framework
 (def debug-sprites? (atom false))
