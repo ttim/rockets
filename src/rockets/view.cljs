@@ -163,7 +163,9 @@
         :game (GameComponent data world-atom)
         :finish (FinishComponent data world-atom))]
      [:div {:id "footer"}
-      [:div.titleText {:id "left-footer"} "Awesome Rocketeers"]
+      [:div.titleText {:id "left-footer"}
+       [:div {:style {:float "left" :margin-right 5}} "Awesome Rocketeers"]
+       [:a {:href "https://github.com/ttim/rockets"} [:div.github]]]
       [:div.titleText {:id "right-footer"}
        [:button.button {:on-click #(util/update-text world-atom :audio? (not (:audio? data)))
                         :style    {:color "#300a2ff" :width 30 :margin-right 5 :background-image (str "url(img/" (if (:audio? data) "sound_on" "sound_off") ".png)")}} "."]

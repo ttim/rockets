@@ -143,6 +143,19 @@
     transform: translateY(30%);
 }
 
+.github {
+    background-image: url(../img/github_16.png);
+    width: 16px;
+    height: 16px;
+    top: 10px; /*this highly depends on footer height I actually want the image to be vertically centered by do not know how*/
+    position: relative;
+    float: right;
+}
+
+.github:hover {
+    background-image: url(../img/github_16_hover.png);
+}
+
 body {
     margin: 0px;
     padding: 0px;
@@ -176,4 +189,5 @@ body:after{
                    url(../img/generated/fuel_3.png)
 
                    url(../img/elonmusk.jpg);
+                   url(../img/github.png);
 }
