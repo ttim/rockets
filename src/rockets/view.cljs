@@ -164,7 +164,7 @@
         :finish (FinishComponent data world-atom))]
      [:div {:id "footer"}
       [:div.titleText {:id "left-footer"}
-       [:div {:style {:float "left" :margin-right 5}} "Awesome Rocketeers"]
+       [:div {:style {:float "left" :margin-right 5}} [:a {:href "about.html" :style {:text-decoration "none"}} "Awesome Rocketeers"]]
        [:a {:href "https://github.com/ttim/rockets"} [:div.github]]]
       [:div.titleText {:id "right-footer"}
        [:button.button {:on-click #(util/update-text world-atom :audio? (not (:audio? data)))
