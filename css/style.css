@@ -5,7 +5,7 @@
     background-color:#00a2ff;
 }
 /*blue fg*/
-.titleText, .inputField, .bigText, .normalText, .smallText {
+.titleText, .inputField, .bigText, .normalText, .smallText, a:link {
     color:#00a2ff;
 }
 
@@ -23,8 +23,12 @@
     background-color:#383859;
 }
 /*light fg*/
-.button:disabled, .voteButton:disabled {
+.button:disabled, .voteButton:disabled, a:visited {
     color:#383859;
+}
+
+a:visited {
+    color:#f60707;
 }
 
 /*yellow bg*/
@@ -32,7 +36,7 @@
     background-color:#f6ff07;
 }
 /*yellow fg*/
-.inputField:active, .inputField:focus {
+.inputField:active, .inputField:focus, a:hover, a:active {
     color:#f6ff07;
 }
 
@@ -143,6 +147,19 @@
     transform: translateY(30%);
 }
 
+.github {
+    background-image: url(../img/github_16.png);
+    width: 16px;
+    height: 16px;
+    top: 10px; /*this highly depends on footer height I actually want the image to be vertically centered by do not know how*/
+    position: relative;
+    float: right;
+}
+
+.github:hover {
+    background-image: url(../img/github_16_hover.png);
+}
+
 body {
     margin: 0px;
     padding: 0px;
@@ -176,4 +193,5 @@ body:after{
                    url(../img/generated/fuel_3.png)
 
                    url(../img/elonmusk.jpg);
+                   url(../img/github.png);
 }
