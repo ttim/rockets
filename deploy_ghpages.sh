@@ -5,7 +5,7 @@ message=`git log -1 --format='format:%s'`
 
 published=`git branch -r --contains $version`
 
-if [ -z $published ];
+if [ -z "$published" ];
 then
   echo "Push commit $version before uploading it. Please :)"
   exit 1
@@ -14,7 +14,7 @@ fi
 echo "Going to upload $version ... Sit tight!"
 
 rm -rf tmp_git
-git clone https://github.com/ttim/rockets.git tmp_git
+git clone git@github.com:ttim/rockets.git tmp_git
 cd tmp_git
 
 git checkout gh-pages
