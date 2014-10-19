@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script src="https://code.jquery.com/jquery-1.11.0.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Geo&subset=latin,cyrillic,latin-ext' rel='stylesheet'
           type='text/css'>
     <link href="css/style.css" rel="stylesheet" type="text/css">
@@ -29,7 +30,17 @@
            in russian about those two days.</p>
 
         <p>You are looking at the greatly improved version of the game the team made after the contest was over.
-          <a href="/">Have fun with it</a> or check out the <a href="https://github.com/ttim/rockets">source code</a>!
+          <a href="/">Have fun with it!</a>
+      </div>
+      <div style="float:right">
+        <div id="version" class="smallText" style="float:left;margin-right:5px">DEV
+        <script>
+          jQuery.get('build.number', function(data) {
+            document.getElementById('version').innerHTML = "v0." + data;
+            });
+        </script>
+        </div>
+        <a href="https://github.com/ttim/rockets"><div style="float:right;top:3px" class="github"/></a>
       </div>
     </div>
   </body>

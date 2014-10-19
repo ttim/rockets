@@ -151,7 +151,6 @@ a:visited {
     background-image: url(../img/github_16.png);
     width: 16px;
     height: 16px;
-    top: 10px; /*this highly depends on footer height I actually want the image to be vertically centered by do not know how*/
     position: relative;
     float: right;
 }

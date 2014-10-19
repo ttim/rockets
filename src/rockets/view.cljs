@@ -165,7 +165,7 @@
      [:div {:id "footer"}
       [:div.titleText {:id "left-footer"}
        [:div {:style {:float "left" :margin-right 5}} "Awesome Rocketeers"]
-       [:a {:href "https://github.com/ttim/rockets"} [:div.github]]]
+       [:a {:href "https://github.com/ttim/rockets"} [:div.github {:style {:top 10}}]]]
       [:div.titleText {:id "right-footer"}
        [:button.button {:on-click #(util/update-text world-atom :audio? (not (:audio? data)))
                         :style    {:height 32 :width 32 :margin-right 5 :background-image (str "url(img/" (if (:audio? data) "sound_on" "sound_off") ".png)")}} "."]
