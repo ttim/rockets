@@ -168,5 +168,5 @@
        [:a {:href "https://github.com/ttim/rockets"} [:div.github]]]
       [:div.titleText {:id "right-footer"}
        [:button.button {:on-click #(util/update-text world-atom :audio? (not (:audio? data)))
-                        :style    {:color "#300a2ff" :width 30 :margin-right 5 :background-image (str "url(img/" (if (:audio? data) "sound_on" "sound_off") ".png)")}} "."]
+                        :style    {:height 32 :width 32 :margin-right 5 :background-image (str "url(img/" (if (:audio? data) "sound_on" "sound_off") ".png)")}} "."]
        [:button.button {:on-click #(util/redirect-to util/twitter-share-url)} "Share"]]]]))
