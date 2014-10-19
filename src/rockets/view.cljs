@@ -164,9 +164,11 @@
         :finish (FinishComponent data world-atom))]
      [:div {:id "footer"}
       [:div.titleText {:id "left-footer"}
-       [:div {:style {:float "left" :margin-right 5}} [:a {:href "about.html" :style {:text-decoration "none" :color "#00a2ff"}} "Awesome Rocketeers"]]
+       [:div {:style {:float "left" :margin-right 5}} "Awesome Rocketeers"]
        [:a {:href "https://github.com/ttim/rockets"} [:div.github]]]
       [:div.titleText {:id "right-footer"}
        [:button.button {:on-click #(util/update-text world-atom :audio? (not (:audio? data)))
                         :style    {:height 32 :width 32 :margin-right 5 :background-image (str "url(img/" (if (:audio? data) "sound_on" "sound_off") ".png)")}} "."]
+       [:button.button {:on-click #(util/redirect-to "about.html")
+                        :style {:margin-right 5}} "About"]
        [:button.button {:on-click #(util/redirect-to util/twitter-share-url)} "Share"]]]]))
