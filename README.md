@@ -1,6 +1,6 @@
 # Awesome Rocketeers
 
-[Try the game here.](http://ttim.github.io/rockets/)
+[Try the game here.](http://rocketeers.io)
 ---
 A two-player puzzle game.
 
