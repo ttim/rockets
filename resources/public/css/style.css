@@ -5,7 +5,7 @@
     background-color:#00a2ff;
 }
 /*blue fg*/
-.titleText, .inputField, .bigText, .normalText, .smallText, a:link {
+.titleText, .inputField, .bigText, .normalText, .smallText{
     color:#00a2ff;
 }
 
@@ -23,12 +23,16 @@
     background-color:#383859;
 }
 /*light fg*/
-.button:disabled, .voteButton:disabled, a:visited {
+.button:disabled, .voteButton:disabled {
     color:#383859;
 }
 
+a:link{
+    color:#7ad083;
+}
+
 a:visited {
-    color:#f60707;
+    color:#576aa6;
 }
 
 /*yellow bg*/
